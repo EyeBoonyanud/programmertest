@@ -1,6 +1,7 @@
 const express = require("express");
 const oracledb = require("oracledb");
 const { Client } = require("pg");
+
 const app = express();
 const port = 3000;
 oracledb.initOracleClient({
@@ -117,7 +118,7 @@ app.get("/getDataPro", async (req, res) => {
         Name: strName,
       }
     );
-
+    //console.log(result)
     connection.release();
 
     const rows = result.rows;
@@ -129,32 +130,47 @@ app.get("/getDataPro", async (req, res) => {
 });
 
   // หน้าInsert DataProgreammer
-  app.post("/insertData", async (req, res) => {
+  app.put("/insertData", async (req, res) => {
     try {
       const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
       
-      const strSearch = req.body.value;
-      const strName = req.body.fname;
-  
+      const strID = req.query.id;
+      const strName = req.query.fname;
+      const strLast = req.query.last;
+      const strAge = req.query.age;
+      const strBirth = req.query.birth;
+      // const strDept = req.query.dept;
+      const strStatus = req.query.status;
+      const strTel = req.query.telephone;
+
+
+
+      console.log(strID, " ", strName, " ", strAge, " ", strLast, " ", strBirth , " ", strDept, " ", strStatus, " ", strTel);
+      
       // ทำการสร้างคิวรี่ Insert ที่ใช้เพื่อเพิ่มข้อมูลลงในฐานข้อมูล
       const insertQuery = `
-        INSERT INTO TRAIN_PROGRAMMER_PERSON (F_ID_CODE, F_NAME)
-        VALUES (:Search, :Name)
+        INSERT INTO TRAIN_PROGRAMMER_PERSON (F_ID_CODE, F_NAME, F_LASTNAME, F_AGE,  F_DEPT, F_STATUS, F_TEL)
+        VALUES (:ID, :Name, :Last, :Age, :Birth, :Dept ,:Status, :Tel)
       `;
-  
-      // ทำการ Execute คิวรี่ Insert
-      const result = await connection.execute(insertQuery, {
-        Search: strSearch,
+      
+      const data = {
+        ID: strID,
         Name: strName,
-      });
-  
-      connection.release();
-  
-      if (result.rowsAffected === 1) {
-        res.json({ message: 'Data inserted successfully' });
-      } else {
-        res.status(500).json({ error: 'Data insertion failed' });
-      }
+        Last: strLast,
+        Age: strAge,
+        // Birth: strBirth,
+        Dept: strDept,
+        Status: strStatus,
+        Tel: strTel,
+      };
+      
+  const option = {
+    autoCommit:true
+  }
+      // ทำการ Execute คิวรี่ Insert
+      const result = await connection.execute(insertQuery, data,option);
+    console.log('Data inserted successfully')
+     
     } catch (error) {
       console.error("Error inserting data:", error);
       res.status(500).json({ error: "An error occurred" });

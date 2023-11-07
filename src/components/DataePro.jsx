@@ -17,6 +17,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { format } from 'date-fns';
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -45,13 +46,40 @@ function IdProgrammer() {
   const handleOpenPopup = () => {
     setPopupOpen(true);
   };
-  const [age, setAge] = React.useState("");
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  //dropdawn department
+  const [department, setDept] = useState([]);
+  const handleDept = (event) => {
+    setDept(event.target.value);
   };
+  // dropdawn status
+  const [status, setStatus] =  useState([]);
+  const handleStatus = (event) => {
+    setStatus(event.target.value);
+  };
+
   const handleClosePopup = () => {
     setPopupOpen(false);
+  };
+  const Save = async () => {
+    try {
+      const ID = document.getElementById("ID").value;
+      const FirstName = document.getElementById("Name").value;
+      const Lastname = document.getElementById("Last").value;
+      const Telephone = document.getElementById("Telephone").value;
+      const Age = document.getElementById("Age").value;
+      const Birth = document.getElementById("Birth").value;
+
+
+      console.log(ID, "", FirstName, " ",Lastname," ",Telephone," ", Age," "," ",department," ",status);
+      // const Lastanme = document.getElementById("ID")
+
+      const rollNoSearch = await axios.put(
+        `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname}
+        &age=${Age}&birth=${Birth}&status=${status}&telephone=${Telephone}`
+      );
+    } catch (error) {
+      console.log("Save Error : ", error);
+    }
   };
   return (
     <div>
@@ -68,7 +96,7 @@ function IdProgrammer() {
           <tr>
             <td>
               <Button
-                style={{ borderRadius: "30px", marginLeft: "980px" }}
+                style={{ borderRadius: "30px", marginLeft: "700px" }}
                 variant="contained"
                 onClick={handleOpenPopup}
               >
@@ -95,6 +123,16 @@ function IdProgrammer() {
                 >
                   {/* เนื้อหาของ popup ที่คุณต้องการแสดง */}
                   <div class="container">
+                    <div
+                      class="row"
+                      style={{
+                        margin: "10px 0px 20px 0px",
+                        fontSize: "40px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      insert
+                    </div>
                     <div class="row">
                       <div
                         class="col-3"
@@ -103,12 +141,7 @@ function IdProgrammer() {
                         ID code
                       </div>
                       <div class="col-6">
-                        <TextField
-                          fullWidth
-                          size="small"
-                          label=""
-                          id="fullWidth"
-                        />
+                        <TextField fullWidth size="small" label="" id="ID" />
                       </div>
                     </div>
                     <div class="row">
@@ -119,12 +152,7 @@ function IdProgrammer() {
                         Firstname
                       </div>
                       <div class="col-9">
-                        <TextField
-                          fullWidth
-                          size="small"
-                          label=""
-                          id="fullWidth"
-                        />
+                        <TextField fullWidth size="small" label="" id="Name" />
                       </div>
                     </div>
                     <div class="row">
@@ -139,7 +167,7 @@ function IdProgrammer() {
                           fullWidth
                           size="small"
                           label=""
-                          id="fullWidth"
+                          id="Last"
                         />
                       </div>
                     </div>
@@ -155,7 +183,7 @@ function IdProgrammer() {
                           fullWidth
                           size="small"
                           label=""
-                          id="fullWidth"
+                          id="Age"
                         />
                       </div>
                       <div
@@ -170,27 +198,79 @@ function IdProgrammer() {
                         class="col-3"
                         style={{ margin: "10px 0px 10px 0px" }}
                       >
+                        Birthday
+                      </div>
+                      <div class="col-9">
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label=""
+                          id="Birth"
+                          style={{ width: "150px" }}
+                          type="date"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div
+                        class="col-3"
+                        style={{ margin: "10px 0px 10px 0px" }}
+                      >
                         Department
                       </div>
                       <div class="col-3">
                         <FormControl fullWidth>
-                         
                           <Select
                             size="small"
-                            style={{width:'300px'}}
+                            style={{ width: "300px" }}
                             labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={age}
-                            onChange={handleChange}>
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            id="Department"
+                            value={department}
+                            onChange={handleDept}
+                          >
+                            <MenuItem value="A">Ten</MenuItem>
+                            <MenuItem value="B">Twenty</MenuItem>
+                            <MenuItem value="C">Thirty</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
                     </div>
+                    <div class="row">
+                      <div
+                        class="col-3"
+                        style={{ margin: "10px 0px 10px 0px" }}
+                      >
+                        Status
+                      </div>
+                      <div class="col-3">
+                        <FormControl fullWidth>
+                          <Select
+                            size="small"
+                            style={{ width: "300px" }}
+                            labelId="demo-simple-select-label"
+                            id="Status"
+                            value={status}
+                            onChange={handleStatus}
+                          >
+                            <MenuItem value="ACTIVE">ACTIVE</MenuItem>
+                            <MenuItem value="INACTIVE">INACTIVE</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div
+                        class="col-3"
+                        style={{ margin: "10px 0px 10px 0px" }}
+                      >
+                        Telephone
+                      </div>
+                      <div class="col-9">
+                        <TextField fullWidth size="small" label="" id="Telephone" />
+                      </div>
+                    </div>
                   </div>
-                  <Button variant="contained" onClick={handleClosePopup}>
+                  <Button variant="contained" onClick={Save}>
                     Save
                   </Button>
                   <Button variant="contained" onClick={handleClosePopup}>
