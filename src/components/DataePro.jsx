@@ -11,16 +11,15 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import { Row } from "antd";
 import Modal from "@mui/material/Modal";
-
 import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { format } from "date-fns";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-
+import Swal from "sweetalert2";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import EditPro from "./EditPro";
+import Tooltip from "@mui/material/Tooltip";
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
   //สร้าง state variable dataRoll และ
@@ -28,7 +27,9 @@ function IdProgrammer() {
   //setDataRoll เป็นฟังก์ชันที่ใช้ในการอัพเดตค่าของ dataRoll.
 
   const [isPopupOpen, setPopupOpen] = useState(false);
-
+  const [isOpenEdit, setOpenEdit] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [data, setData] = useState([]);
   useEffect(() => {
     async function fetchData() {
       try {
@@ -38,6 +39,7 @@ function IdProgrammer() {
         );
         const dataRollResponse = rollNoResponse.data; // dataRollResponse และจากนั้นถูกใช้ในการอัพเดตค่าของ dataRoll
         setDataRoll(dataRollResponse);
+        setData(dataRollResponse);
         console.log("Roll Server list:", dataRollResponse);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการร้องขอข้อมูล:", error);
@@ -48,6 +50,21 @@ function IdProgrammer() {
   const handleOpenPopup = () => {
     setPopupOpen(true);
   };
+  const handleClosePopup = () => {
+    setPopupOpen(false);
+  };
+
+  const handleOpenEdit = (itemId) => {
+    const selectedRow = data.find((item) => item[0] === itemId);
+    if (selectedRow) {
+      setSelectedRowData(selectedRow);
+      setOpenEdit(true);
+    }
+  };
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
+
   //dropdawn department
   const [department, setDept] = useState("");
   const handleDept = (event) => {
@@ -59,59 +76,172 @@ function IdProgrammer() {
     setStatus(event.target.value);
   };
 
-  const handleClosePopup = () => {
-    setPopupOpen(false);
+  // const Save = async () => {
+  //   try {
+  //     const ID = document.getElementById("ID").value;
+  //     const FirstName = document.getElementById("Name").value;
+  //     const Lastname = document.getElementById("Last").value;
+  //     const Telephone = document.getElementById("Telephone").value;
+  //     const Age = document.getElementById("Age").value;
+  //     const Birth = document.getElementById("Birth").value;
+
+  //     console.log(
+  //       ID,
+  //       "",
+  //       FirstName,
+  //       " ",
+  //       Lastname,
+  //       " ",
+  //       Telephone,
+  //       " ",
+  //       Age,
+  //       " ",
+  //       " ",
+  //       department,
+  //       " ",
+  //       status
+  //     );
+  //     // const Lastanme = document.getElementById("ID")
+
+  //     const rollNoSearch = await axios.put(
+  //       `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname}
+  //       &age=${Age}&birth=${Birth}&dept=${department}&status=${status}&telephone=${Telephone}`
+  //     );
+
+  //     if (rollNoSearch.status === 200) {
+  //       alert("การอัปเดตข้อมูลเสร็จสมบูรณ์");
+  //     } else {
+  //       alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
+  //     }
+  //     handleClosePopup();
+  //     // }
+  //   } catch (error) {
+  //     console.log("Save Error : ", error);
+  //   }
+  // };
+  const Save = () => {
+    const ID = document.getElementById("ID").value;
+    const FirstName = document.getElementById("Name").value;
+    const Lastname = document.getElementById("Last").value;
+    const Telephone = document.getElementById("Telephone").value;
+    const Age = document.getElementById("Age").value;
+    const Birth = document.getElementById("Birth").value;
+    // const Birth = Birth_before.toISOString().slice(0, 10);
+    console.log(
+      ID,
+      "",
+      FirstName,
+      " ",
+      Lastname,
+      " ",
+      Telephone,
+      " ",
+      Age,
+      " ",
+      " ",
+      department,
+      " ",
+      status
+    );
+    // const Lastanme = document.getElementById("ID")
+    axios
+      .post(
+        `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${department}&birth=${Birth}&status=${status}&telephone=${Telephone}`
+      )
+      .then((response) => {
+        // const addedData = response.data;
+        // console.log("Added Data:", addedData);
+        if (response.status === 200) {
+          Swal.fire({
+            title: "Value Inserted !",
+            text: "",
+            icon: "success",
+            confirmButtonText: "Close!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
-  const Save = async () => {
+  const Delete = async (ID) => {
+    console.log(ID);
     try {
-      const ID = document.getElementById("ID").value;
-      const FirstName = document.getElementById("Name").value;
-      const Lastname = document.getElementById("Last").value;
-      const Telephone = document.getElementById("Telephone").value;
-      const Age = document.getElementById("Age").value;
-      const Birth = document.getElementById("Birth").value;
+      const shouldSave = await Swal.fire({
+        title: "Confirm data deletion",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "confirm",
+        cancelButtonText: "cancel",
+      });
 
-      console.log(
-        ID,
-        "",
-        FirstName,
-        " ",
-        Lastname,
-        " ",
-        Telephone,
-        " ",
-        Age,
-        " ",
-        " ",
-        department,
-        " ",
-        status
-      );
-      // const Lastanme = document.getElementById("ID")
-
-      const rollNoSearch = await axios.put(
-        `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname}
-        &age=${Age}&birth=${Birth}&dept=${department}&status=${status}&telephone=${Telephone}`
-      );
+      if (shouldSave.isConfirmed) {
+        const response = await axios.post(
+          `http://localhost:3000/deleteData?id=${ID}`
+        );
+        if (response.status === 200) {
+          Swal.fire({
+            title: "Delete Success!",
+            text: "",
+            icon: "success",
+            confirmButtonText: "Close!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        } else {
+          // Handle deletion failure
+          console.log("Data deletion failed");
+        }
+      }
     } catch (error) {
-      console.log("Save Error : ", error);
+      console.log("Error deleting data:", error);
     }
   };
+
+  const Update = async (ID) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/updateData?id=${ID}`,
+        updatedData
+      );
+      if (response.data.success) {
+        // Data updated successfully
+        // You can refresh the data or update the UI as needed
+        fetchData(); // Fetch updated data
+      } else {
+        // Handle update failure
+        console.log("Data update failed");
+      }
+    } catch (error) {
+      console.log("Error updating data:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
       <div
-  style={{
-    display: "flex",
-    justifyContent: "flex-end", // จัดตำแหน่งปุ่มทางขวา
-    margin: "100px 200px 0px 200px",
-    border: "1px solid red",
-  }}
->
-  <Button style={{ borderRadius: "30px" }} variant="contained" onClick={handleOpenPopup}>
-    Insert
-  </Button>
-</div>
+        style={{
+          display: "flex",
+          justifyContent: "flex-end", // จัดตำแหน่งปุ่มทางขวา
+          margin: "100px 200px 0px 200px",
+          border: "1px solid red",
+        }}
+      >
+        <Button
+          style={{ borderRadius: "30px" }}
+          variant="contained"
+          onClick={handleOpenPopup}
+        >
+          Insert
+        </Button>
+      </div>
       <table>
         <tr>
           <td>
@@ -257,15 +387,15 @@ function IdProgrammer() {
                   style={{ marginLeft: "270px", marginTop: "10px" }}
                 >
                   <Button
-  variant="contained"
-  onClick={() => {
-    Save();
-    handleClosePopup();
-  }}
-  style={{ marginRight: "10px", backgroundColor: "green" }}
->
-  Save
-</Button>
+                    variant="contained"
+                    onClick={() => {
+                      Save();
+                      handleClosePopup();
+                    }}
+                    style={{ marginRight: "10px", backgroundColor: "green" }}
+                  >
+                    Save
+                  </Button>
                   <Button
                     variant="contained"
                     onClick={handleClosePopup}
@@ -280,8 +410,13 @@ function IdProgrammer() {
         </tr>
       </table>
 
-      <Row></Row>
-
+      <EditPro
+        modalIsOpen={isOpenEdit}
+        closeInsertModal={() => setOpenEdit(false)}
+        SendID={selectedRowData}
+        // onSave={handleInsertSave}
+        onCancel={handleCloseEdit}
+      />
       <div
         className="Record"
         style={{ margin: "20px 200px 0px 200px", backgroundColor: "#A7C9FA" }}
@@ -294,6 +429,7 @@ function IdProgrammer() {
                 <TableCell>Firstname</TableCell>
                 <TableCell>Lestname</TableCell>
                 <TableCell>Age</TableCell>
+                <TableCell>Birthday</TableCell>
                 <TableCell>Department</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Telephone</TableCell>
@@ -311,13 +447,26 @@ function IdProgrammer() {
                   <TableCell>{item[1]}</TableCell>
                   <TableCell>{item[2]}</TableCell>
                   <TableCell>{item[3]}</TableCell>
+                  <TableCell>{item[4]}</TableCell>
                   <TableCell>{item[5]}</TableCell>
                   <TableCell>{item[6]}</TableCell>
                   <TableCell>{item[9]}</TableCell>
                   <TableCell>
-                    < EditNoteIcon  style={{color:'#F4D03F'}}/>
-                    </TableCell>
-                  <TableCell>< DeleteForeverIcon style={{color:'red'}}/></TableCell>
+                    <Tooltip title="Edit">
+                      <EditNoteIcon
+                        style={{ color: "#F4D03F" }}
+                        onClick={() => handleOpenEdit(item[0])}
+                      />
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title="Delete">
+                      <DeleteForeverIcon
+                        style={{ color: "red" }}
+                        onClick={() => Delete(item[0])}
+                      />
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

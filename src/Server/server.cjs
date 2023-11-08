@@ -130,7 +130,7 @@ app.get("/getDataPro", async (req, res) => {
 });
 
   // หน้าInsert DataProgreammer
-  app.put("/insertData", async (req, res) => {
+  app.post("/insertData", async (req, res) => {
     try {
       const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
       
@@ -168,7 +168,15 @@ app.get("/getDataPro", async (req, res) => {
     autoCommit:true
   }
       // ทำการ Execute คิวรี่ Insert
-      const result = await connection.execute(insertQuery, data,option);
+      const response = await connection.execute(insertQuery, data,option);
+    
+      if (response.rowsAffected === 1) {
+        console.log('Data inserted successfully');
+        res.status(200).json({ success: true, message: "Data inserted successfully" });
+      } else {
+        console.log('Data insertion failed');
+        res.status(500).json({ success: false, error: "Data insertion failed" });
+      }
     console.log('Data inserted successfully')
      
     } catch (error) {
@@ -176,7 +184,143 @@ app.get("/getDataPro", async (req, res) => {
       res.status(500).json({ error: "An error occurred" });
     }
   });
+ //Delete Programmer
+ app.post("/deleteData", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const strID = req.query.id; // Get the ID to be deleted
+
+    // Create a delete query
+    const deleteQuery = `
+      DELETE FROM TRAIN_PROGRAMMER_PERSON
+      WHERE F_ID_CODE = :ID
+    `;
+
+    const data = { ID: strID };
+
+    const option = {
+      autoCommit: true
+    };
+
+    // Execute the delete query
+    const response = await connection.execute(deleteQuery, data, option);
+
+    if (response.rowsAffected === 1) {
+      console.log('Data deleted successfully');
+      res.status(200).json({ success: true, message: "Data deleted successfully" });
+    } else {
+      console.log('Data deletion failed');
+      res.status(500).json({ success: false, error: "Data deletion failed" });
+    }
+  } catch (error) {
+    console.error("Error deleting data:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+// Edit
+app.post("/updateData", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const strID = req.query.id;
+      const strName = req.query.fname;
+      const strLast = req.query.last;
+      const strAge = req.query.age;
+      const strBirth = req.query.birth;
+      const strDept = req.query.dept;
+      const strStatus = req.query.status;
+      const strTel = req.query.telephone;
+
+    // Create an update query
+    const updateQuery = `
+      UPDATE TRAIN_PROGRAMMER_PERSON
+      SET
+        F_NAME = :Name,
+        F_LASTNAME = :Last,
+        F_AGE = :Age,
+        F_DEPT = :Dept,
+        F_BIRTHDAY = TO_DATE(:Birth, 'YYYY-MM-DD'),
+        F_STATUS = :Status,
+        F_TEL = :Tel
+      WHERE F_ID_CODE = :ID
+    `;
+
+    const data = {
+      ID: strID,
+      Name: strName,
+      Last: strLast ,
+      Age: strAge,
+      Dept: strDept ,
+      Birth: strBirth ,
+      Status: strStatus,
+      Tel: strTel
+    };
+
+    const option = {
+      autoCommit: true
+    };
+
+    // Execute the update query
+    const response = await connection.execute(updateQuery, data, option);
+
+    if (response.rowsAffected === 1) {
+      console.log('Data updated successfully');
+      res.status(200).json({ success: true, message: "Data updated successfully" });
+    } else {
+      console.log('Data update failed');
+      res.status(500).json({ success: false, error: "Data update failed" });
+    }
+  } catch (error) {
+    console.error("Error updating data:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
   
+// หน้า insert Dept
+  app.post("/insertDataDept", async (req, res) => {
+    try {
+      const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+      
+      const strID = req.query.id;
+      const strDept = req.query.dept;
+      const strStatus = req.query.status;
+    
+
+
+      console.log(strID, "", strDept, " ", strStatus, " ");
+      
+      // ทำการสร้างคิวรี่ Insert ที่ใช้เพื่อเพิ่มข้อมูลลงในฐานข้อมูล
+      const insertQuery = `
+      INSERT INTO TRAIN_PROGRAMMER_DEPT(DEPT_ID, DEPT_NAME, DEPT_STATUS)
+      VALUES (:ID,:Dept,:Status)
+      `;
+      
+      const data = {
+        ID: strID,
+        Dept: strDept,
+        Status: strStatus,
+      };
+      
+  const option = {
+    autoCommit:true
+  }
+      // ทำการ Execute คิวรี่ Insert
+      const response = await connection.execute(insertQuery, data,option);
+      if (response.rowsAffected === 1) {
+        console.log('Data inserted successfully');
+        res.status(200).json({ success: true, message: "Data inserted successfully" });
+      } else {
+        console.log('Data insertion failed');
+        res.status(500).json({ success: false, error: "Data insertion failed" });
+      }
+     
+    } catch (error) {
+      console.error("Error inserting data:", error);
+      res.status(500).json({ error: "An error occurred" });
+    }
+  });
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
