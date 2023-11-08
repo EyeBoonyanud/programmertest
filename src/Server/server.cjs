@@ -139,18 +139,18 @@ app.get("/getDataPro", async (req, res) => {
       const strLast = req.query.last;
       const strAge = req.query.age;
       const strBirth = req.query.birth;
-      // const strDept = req.query.dept;
+      const strDept = req.query.dept;
       const strStatus = req.query.status;
       const strTel = req.query.telephone;
 
 
 
-      console.log(strID, " ", strName, " ", strAge, " ", strLast, " ", strBirth , " ", strDept, " ", strStatus, " ", strTel);
+      console.log(strID, " ", strName, " ", strAge, " ", strLast, " ", strDept, " ", strStatus, " ", strTel);
       
       // ทำการสร้างคิวรี่ Insert ที่ใช้เพื่อเพิ่มข้อมูลลงในฐานข้อมูล
       const insertQuery = `
-        INSERT INTO TRAIN_PROGRAMMER_PERSON (F_ID_CODE, F_NAME, F_LASTNAME, F_AGE,  F_DEPT, F_STATUS, F_TEL)
-        VALUES (:ID, :Name, :Last, :Age, :Birth, :Dept ,:Status, :Tel)
+      INSERT INTO TRAIN_PROGRAMMER_PERSON (F_ID_CODE, F_NAME, F_LASTNAME, F_AGE,  F_DEPT,F_BIRTHDAY, F_STATUS, F_TEL)
+      VALUES (:ID, :Name, :Last, :Age ,:Dept,TO_DATE(:Birth, 'YYYY-MM-DD'),:Status, :Tel)
       `;
       
       const data = {
@@ -158,7 +158,7 @@ app.get("/getDataPro", async (req, res) => {
         Name: strName,
         Last: strLast,
         Age: strAge,
-        // Birth: strBirth,
+        Birth: strBirth,
         Dept: strDept,
         Status: strStatus,
         Tel: strTel,
