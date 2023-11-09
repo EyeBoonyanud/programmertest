@@ -9,7 +9,6 @@ import Paper from "@mui/material/Paper";
 import Header from "./Header";
 import axios from "axios";
 import Button from "@mui/material/Button";
-import { Row } from "antd";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,16 +19,29 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EditPro from "./EditPro";
 import Tooltip from "@mui/material/Tooltip";
+
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
-  //สร้าง state variable dataRoll และ
-  //setDataRoll โดยให้ dataRoll เป็นตัวแปรสำหรับเก็บข้อมูลที่จะถูกดึงมาจากเซิร์ฟเวอร์และ
-  //setDataRoll เป็นฟังก์ชันที่ใช้ในการอัพเดตค่าของ dataRoll.
-
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isOpenEdit, setOpenEdit] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [data, setData] = useState([]);
+  const handleOpenPopup = () => {
+    setPopupOpen(true);
+  };
+  const handleClosePopup = () => {
+    setPopupOpen(false);
+  };
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
+  const handleOpenEdit = (itemId) => {
+    const selectedRow = data.find((item) => item[0] === itemId);
+    if (selectedRow) {
+      setSelectedRowData(selectedRow);
+      setOpenEdit(true);
+    }
+  };
   useEffect(() => {
     async function fetchData() {
       try {
@@ -47,23 +59,6 @@ function IdProgrammer() {
     }
     fetchData();
   }, []);
-  const handleOpenPopup = () => {
-    setPopupOpen(true);
-  };
-  const handleClosePopup = () => {
-    setPopupOpen(false);
-  };
-
-  const handleOpenEdit = (itemId) => {
-    const selectedRow = data.find((item) => item[0] === itemId);
-    if (selectedRow) {
-      setSelectedRowData(selectedRow);
-      setOpenEdit(true);
-    }
-  };
-  const handleCloseEdit = () => {
-    setOpenEdit(false);
-  };
 
   //dropdawn department
   const [department, setDept] = useState("");
@@ -168,6 +163,7 @@ function IdProgrammer() {
         console.error("Error:", error);
       });
   };
+  // delete
   const Delete = async (ID) => {
     console.log(ID);
     try {
@@ -192,6 +188,7 @@ function IdProgrammer() {
           }).then((result) => {
             if (result.isConfirmed) {
               window.location.reload();
+              handleClosePopup();
             }
           });
         } else {
@@ -204,24 +201,24 @@ function IdProgrammer() {
     }
   };
 
-  const Update = async (ID) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:3000/updateData?id=${ID}`,
-        updatedData
-      );
-      if (response.data.success) {
-        // Data updated successfully
-        // You can refresh the data or update the UI as needed
-        fetchData(); // Fetch updated data
-      } else {
-        // Handle update failure
-        console.log("Data update failed");
-      }
-    } catch (error) {
-      console.log("Error updating data:", error);
-    }
-  };
+  // const Update = async (ID) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `http://localhost:3000/updateData?id=${ID}`,
+  //       updatedData
+  //     );
+  //     if (response.data.success) {
+  //       // Data updated successfully
+  //       // You can refresh the data or update the UI as needed
+  //       fetchData(); // Fetch updated data
+  //     } else {
+  //       // Handle update failure
+  //       console.log("Data update failed");
+  //     }
+  //   } catch (error) {
+  //     console.log("Error updating data:", error);
+  //   }
+  // };
 
   return (
     <div>
@@ -242,6 +239,10 @@ function IdProgrammer() {
           Insert
         </Button>
       </div>
+
+
+
+      
       <table>
         <tr>
           <td>
@@ -410,13 +411,20 @@ function IdProgrammer() {
         </tr>
       </table>
 
-      <EditPro
+      {/* <EditPro
         modalIsOpen={isOpenEdit}
         closeInsertModal={() => setOpenEdit(false)}
         SendID={selectedRowData}
         // onSave={handleInsertSave}
         onCancel={handleCloseEdit}
+      /> */}
+      <EditPro
+        modalIsOpen={isOpenEdit}
+        closeEditModal={() => setOpenEdit(false)}
+        onCancel={handleCloseEdit}
+        SendID={selectedRowData}
       />
+
       <div
         className="Record"
         style={{ margin: "20px 200px 0px 200px", backgroundColor: "#A7C9FA" }}
@@ -451,6 +459,14 @@ function IdProgrammer() {
                   <TableCell>{item[5]}</TableCell>
                   <TableCell>{item[6]}</TableCell>
                   <TableCell>{item[9]}</TableCell>
+                  {/* <TableCell>
+                    <Tooltip title="Edit">
+                      <EditNoteIcon
+                        style={{ color: "#F4D03F" }}
+                        onClick={() => handleOpenEdit(item[0])}
+                      />
+                    </Tooltip>
+                  </TableCell> */}
                   <TableCell>
                     <Tooltip title="Edit">
                       <EditNoteIcon
@@ -459,6 +475,7 @@ function IdProgrammer() {
                       />
                     </Tooltip>
                   </TableCell>
+
                   <TableCell>
                     <Tooltip title="Delete">
                       <DeleteForeverIcon

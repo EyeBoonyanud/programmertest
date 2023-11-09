@@ -9,7 +9,6 @@ import Paper from "@mui/material/Paper";
 import Header from "./Header";
 import axios from "axios";
 import Button from "@mui/material/Button";
-import { Row } from "antd";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,6 +17,7 @@ import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+
 function DetaDept() {
   useEffect(() => {
     async function fetchData() {
@@ -37,37 +37,27 @@ function DetaDept() {
 
   const [dataDept, setDataDept] = useState([]);
   const [isPopupOpen, setPopupOpen] = useState(false);
-  // console.log(dataDept);
+  const [status, setStatus] = useState("");
 
   const handleClosePopup = () => {
     setPopupOpen(false);
   };
+
   const handleOpenPopup = () => {
     setPopupOpen(true);
   };
-  // dropdawn status
-  const [status, setStatus] = useState([]);
-  const handleStatus = (event) => {
-    setStatus(event.target.value);
-  };
+
   const Save = async () => {
     try {
       const ID = document.getElementById("ID").value;
-      const department =document.getElementById("Dept").value;
+      const department = document.getElementById("Dept").value;
 
-      console.log(
-        ID,
-        "",
-        department,
-        " ",
-        status
-      );
-      // const Lastanme = document.getElementById("ID")
-      
+      console.log(ID, department, status);
+
       const rollNoSearch = await axios.post(
         `http://localhost:3000/insertDataDept?id=${ID}&dept=${department}&status=${status}`
       );
-     
+
       if (rollNoSearch.status === 200) {
         Swal.fire({
           title: "Value Inserted !",
@@ -77,16 +67,51 @@ function DetaDept() {
         }).then((result) => {
           if (result.isConfirmed) {
             window.location.reload();
+            handleClosePopup();
           }
         });
       }
-    // Close the popup
-    handleClosePopup();
-
     } catch (error) {
       console.log("Save Error : ", error);
     }
   };
+
+  const Delete = async (ID) => {
+    console.log(ID);
+    try {
+      const shouldSave = await Swal.fire({
+        title: "Confirm data deletion",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "confirm",
+        cancelButtonText: "cancel",
+      });
+
+      if (shouldSave.isConfirmed) {
+        const response = await axios.post(
+          `http://localhost:3000/deleteDataDept?id=${ID}`
+        );
+        if (response.status === 200) {
+          Swal.fire({
+            title: "Delete Success!",
+            text: "",
+            icon: "success",
+            confirmButtonText: "Close!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+              handleClosePopup();
+            }
+          });
+        } else {
+          // Handle deletion failure
+          console.log("Data deletion failed");
+        }
+      }
+    } catch (error) {
+      console.log("Error deleting data:", error);
+    }
+  }
 
   return (
     <div>
@@ -94,9 +119,8 @@ function DetaDept() {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end", // จัดตำแหน่งปุ่มทางขวา
+          justifyContent: "flex-end",
           margin: "100px 200px 0px 200px",
-          border: "1px solid red",
         }}
       >
         <Button
@@ -107,129 +131,128 @@ function DetaDept() {
           Insert
         </Button>
       </div>
-      <table>
-        <tr>
-          <td>
-            <Modal
-              open={isPopupOpen}
-              onClose={handleClosePopup}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  backgroundColor: "white",
-                  borderRadius: "10px",
-                  padding: "20px",
-                  width: "500px",
-                }}
-              >
-                {/* เนื้อหาของ popup ที่คุณต้องการแสดง */}
-                <div class="container">
-                  <div
-                    class="row"
-                    style={{
-                      margin: "10px 0px 20px 0px",
-                      fontSize: "40px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    insert
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      ID Code
-                    </div>
-                    <div class="col-6">
-                      <TextField fullWidth size="small" label="" id="ID" />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Name
-                    </div>
-                    <div class="col-6">
-                      <TextField fullWidth size="small" label="" id="Dept" />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Status
-                    </div>
-                    <div class="col-3">
-                      <FormControl fullWidth>
-                        <Select
-                          size="small"
-                          style={{ width: "205px" }}
-                          labelId="demo-simple-select-label"
-                          id="Status"
-                          value={status}
-                          onChange={handleStatus}
-                        >
-                          <MenuItem value="ACTIVE">ACTIVE</MenuItem>
-                          <MenuItem value="INACTIVE">INACTIVE</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="Button"
-                  style={{ marginLeft: "270px", marginTop: "10px" }}
-                >
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      Save();
-                      handleClosePopup();
-                    }}
-                    style={{ marginRight: "10px", backgroundColor: "green" }}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={handleClosePopup}
-                    style={{ backgroundColor: "gray" }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </Modal>
-          </td>
-        </tr>
-      </table>
-
-      <div className="Record" style={{ margin: "100px 200px 0px 200px" }}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead style={{backgroundColor:''}}>
-              <TableRow align="left">
-                <TableCell >Id Department</TableCell>
-                <TableCell >Department Name</TableCell>
-                <TableCell >Status</TableCell>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID Department</TableCell>
+              <TableCell>Department Name</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Edit</TableCell>
+              <TableCell>Delete</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {dataDept.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item[0]}</TableCell>
+                <TableCell>{item[1]}</TableCell>
+                <TableCell>{item[2]}</TableCell>
+                <TableCell>
+                  <EditNoteIcon
+                    style={{ color: "#F4D03F", cursor: "pointer" }}
+                    onClick={() => handleOpenEdit(item[0])}
+                  />
+                </TableCell>
+                <TableCell>
+                  <DeleteForeverIcon
+                    style={{ color: "red", cursor: "pointer" }}
+                    onClick={() => Delete(item[0])}
+                  />
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {dataDept.map((item, index) => (
-                <TableRow
-                  key={index}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell >{item[0]}</TableCell>
-                  <TableCell >{item[1]}</TableCell>
-                  <TableCell >{item[2]}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Modal
+        open={isPopupOpen}
+        onClose={handleClosePopup}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            borderRadius: "10px",
+            padding: "20px",
+            width: "500px",
+          }}
+        >
+          <div class="container">
+            <div
+              class="row"
+              style={{
+                margin: "10px 0px 20px 0px",
+                fontSize: "40px",
+                fontWeight: "bold",
+              }}
+            >
+              Insert
+            </div>
+            <div class="row">
+              <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
+                ID Code
+              </div>
+              <div class="col-6">
+                <TextField fullWidth size="small" label="" id="ID" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
+                Name
+              </div>
+              <div class="col-6">
+                <TextField fullWidth size="small" label="" id="Dept" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
+                Status
+              </div>
+              <div class="col-3">
+                <FormControl fullWidth>
+                  <Select
+                    size="small"
+                    style={{ width: "205px" }}
+                    labelId="demo-simple-select-label"
+                    id="Status"
+                    value={status}
+                    onChange={(event) => setStatus(event.target.value)}
+                  >
+                    <MenuItem value="ACTIVE">ACTIVE</MenuItem>
+                    <MenuItem value="INACTIVE">INACTIVE</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          </div>
+          <div class="Button" style={{ marginLeft: "270px", marginTop: "10px" }}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                Save();
+                handleClosePopup();
+              }}
+              style={{ marginRight: "10px", backgroundColor: "green" }}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleClosePopup}
+              style={{ backgroundColor: "gray" }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

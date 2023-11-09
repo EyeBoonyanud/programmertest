@@ -1,6 +1,5 @@
 const express = require("express");
 const oracledb = require("oracledb");
-const { Client } = require("pg");
 
 const app = express();
 const port = 3000;
@@ -319,6 +318,80 @@ app.post("/updateData", async (req, res) => {
       res.status(500).json({ error: "An error occurred" });
     }
   });
+ // หน้า delete Dept
+  app.post("/deleteDataDept", async (req, res) => {
+    try {
+      const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+      const strID = req.query.id; // Get the ID to be deleted
+  
+      // Create a delete query
+      const deleteQuery = `
+        DELETE FROM TRAIN_PROGRAMMER_DEPT
+        WHERE DEPT_ID = :ID
+      `;
+  
+      const data = { ID: strID };
+  
+      const option = {
+        autoCommit: true
+      };
+  
+      // Execute the delete query
+      const response = await connection.execute(deleteQuery, data, option);
+  
+      if (response.rowsAffected === 1) {
+        console.log('Data deleted successfully');
+        res.status(200).json({ success: true, message: "Data deleted successfully" });
+      } else {
+        console.log('Data deletion failed');
+        res.status(500).json({ success: false, error: "Data deletion failed" });
+      }
+    } catch (error) {
+      console.error("Error deleting data:", error);
+      res.status(500).json({ error: "An error occurred" });
+    }
+  });
+// หน้า update 
+
+app.post("/updateDataDept", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+      
+    const strID = req.query.id;
+    const strDept = req.query.dept;
+    const strStatus = req.query.status;
+
+    // สร้างคิวรี่ Update เพื่ออัปเดตข้อมูล
+    const updateQuery = `
+      UPDATE TRAIN_PROGRAMMER_DEPT
+      SET DEPT_NAME = :Dept, DEPT_STATUS = :Status
+      WHERE DEPT_ID = :ID
+    `;
+
+    const data = {
+      ID: strID,
+      Dept: strDept,
+      Status: strStatus,
+    };
+
+    const option = {
+      autoCommit: true
+    };
+
+    const response = await connection.execute(updateQuery, data, option);
+
+    if (response.rowsAffected === 1) {
+      console.log('Data updated successfully');
+      res.status(200).json({ success: true, message: "Data updated successfully" });
+    } else {
+      console.log('Data update failed');
+      res.status(500).json({ success: false, error: "Data update failed" });
+    }
+  } catch (error) {
+    console.error("Error updating data:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
 
 

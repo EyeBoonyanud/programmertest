@@ -6,21 +6,19 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import moment from "moment/moment";
 import Swal from "sweetalert2";
 function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [dataRoll, setDataRoll] = useState([]);
-  const [department, setDept] = useState("");
-  const handleDept = (event) => {
-    setDept(event.target.value);
+  const [status, setStatus] = useState([]);
+  // dropdawn status
+  const handleStatus = (event) => {
+    setStatus(event.target.value);
   };
-  console.log(SendID, "เข้าแล้วจ้าหนูอิอิ");
-  const [selectedDate, setSelectedDate] = useState("");
   
  
 
-
+ // ใช้กับ Date Piker
   useEffect(() => {
     if (SendID && SendID[4]) {
       const date = new Date(SendID[4]);
@@ -29,39 +27,23 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     }
   }, [SendID]);
 
-  // dropdawn status
+  
   const Save = () => {
     const ID = document.getElementById("ID").value;
-    const FirstName = document.getElementById("Name").value;
-    const Lastname = document.getElementById("Last").value;
-    const Telephone = document.getElementById("Telephone").value;
-    const Age = document.getElementById("Age").value;
-    const Birth = document.getElementById("Birth").value;
-    // const Birth = Birth_before.toISOString().slice(0, 10);
+    const Dept = document.getElementById("Dept").value;
     console.log(
       ID,
       "",
-      FirstName,
-      " ",
-      Lastname,
-      " ",
-      Telephone,
-      " ",
-      Age,
-      " ",
-      " ",
-      department,
-      " ",
+      Dept,
+      "",
       status
     );
-    // const Lastanme = document.getElementById("ID")
+   
     axios
       .post(
-        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${department}&birth=${Birth}&status=${status}&telephone=${Telephone}`
+        `http://localhost:3000/updateData?id=${ID}&dept=${Dept}&status=${status}`
       )
       .then((response) => {
-        // const addedData = response.data;
-        // console.log("Added Data:", addedData);
 
         if (response.status === 200) {
           Swal.fire({
@@ -83,10 +65,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
         console.error("Error:", error);
       });
   };
-  const [status, setStatus] = useState([]);
-  const handleStatus = (event) => {
-    setStatus(event.target.value);
-  };
+ 
 
   const handleClosePopup = () => {
     setPopupOpen(false);
@@ -97,7 +76,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
       try {
         const rollNoResponse = await axios.get(
           // axios เพื่อทำ GET request ไปยัง URL
-          "http://localhost:3000/getDataPro"
+          "http://localhost:3000/getDataDept"
         );
         const dataRollResponse = rollNoResponse.data; // dataRollResponse และจากนั้นถูกใช้ในการอัพเดตค่าของ dataRoll
         setDataRoll(dataRollResponse);
