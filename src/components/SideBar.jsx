@@ -23,7 +23,7 @@ function SidebarMenu({ isOpen, onClose }) {
     navigate("/DataDept");
   };
   const Home = () => {
-    navigate("/");
+    navigate("/Page1");
   };
   
 
@@ -50,7 +50,7 @@ function SidebarMenu({ isOpen, onClose }) {
             <ListItemIcon>
               <TransformIcon />
             </ListItemIcon>
-            <ListItemText primary="Home"></ListItemText>
+            <ListItemText primary="Search"></ListItemText>
           </ListItemButton>
         </div>
         {/* DataRecord */}

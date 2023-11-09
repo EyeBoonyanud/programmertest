@@ -94,6 +94,7 @@ app.get("/getDataPro", async (req, res) => {
   
       const rows = result.rows;
       res.json(rows);
+      
     } catch (error) {
       console.error("Error fetching Material_Trace:", error);
       res.status(500).json({ error: "An error occurred" });
@@ -354,7 +355,7 @@ app.post("/updateData", async (req, res) => {
 // หน้า update 
 
 app.post("/updateDataDept", async (req, res) => {
-  try {
+  try {const startTime = Date.now();
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
       
     const strID = req.query.id;
@@ -379,7 +380,7 @@ app.post("/updateDataDept", async (req, res) => {
     };
 
     const response = await connection.execute(updateQuery, data, option);
-
+    const endTime = Date.now();
     if (response.rowsAffected === 1) {
       console.log('Data updated successfully');
       res.status(200).json({ success: true, message: "Data updated successfully" });
@@ -387,6 +388,9 @@ app.post("/updateDataDept", async (req, res) => {
       console.log('Data update failed');
       res.status(500).json({ success: false, error: "Data update failed" });
     }
+   
+    const elapsedTime = endTime - startTime;
+    console.log(`Elapsed time: ${elapsedTime} milliseconds`);
   } catch (error) {
     console.error("Error updating data:", error);
     res.status(500).json({ error: "An error occurred" });

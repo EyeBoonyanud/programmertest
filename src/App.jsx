@@ -24,12 +24,12 @@ function App({}) {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Page1 />} />
+        <Route path="/Page1" element={<Page1 />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Sidebar" element={<SideBar />} />
         <Route path="/DataPro" element={<DataPro />} />
         <Route path="/DataDept" element={<DataDept />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/" element={<Login />} />
       </Routes>
     </>
   );

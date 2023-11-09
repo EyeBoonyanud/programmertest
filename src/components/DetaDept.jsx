@@ -17,7 +17,7 @@ import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-
+import EditDept from "./EditDept"
 function DetaDept() {
   useEffect(() => {
     async function fetchData() {
@@ -27,6 +27,7 @@ function DetaDept() {
         );
         const dataDeptArray = dataDeptResponse.data;
         setDataDept(dataDeptArray);
+        setData(dataDeptArray);
         console.log("Department Server list:", dataDeptArray);
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการร้องขอข้อมูล:", error);
@@ -38,7 +39,9 @@ function DetaDept() {
   const [dataDept, setDataDept] = useState([]);
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [status, setStatus] = useState("");
-
+  const [isOpenEdit, setOpenEdit] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [data, setData] = useState([]);
   const handleClosePopup = () => {
     setPopupOpen(false);
   };
@@ -112,6 +115,16 @@ function DetaDept() {
       console.log("Error deleting data:", error);
     }
   }
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
+  const handleOpenEdit = (itemId) => {
+    const selectedRow = data.find((item) => item[0] === itemId);
+    if (selectedRow) {
+      setSelectedRowData(selectedRow);
+      setOpenEdit(true);
+    }
+  };
 
   return (
     <div>
@@ -165,6 +178,13 @@ function DetaDept() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <EditDept
+        modalIsOpen={isOpenEdit}
+        closeEditModal={() => setOpenEdit(false)}
+        onCancel={handleCloseEdit}
+        SendID={selectedRowData}
+      />
 
       <Modal
         open={isPopupOpen}
