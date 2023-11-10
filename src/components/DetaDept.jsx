@@ -18,6 +18,8 @@ import Swal from "sweetalert2";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EditDept from "./EditDept"
+import Tooltip from "@mui/material/Tooltip";
+
 function DetaDept() {
   useEffect(() => {
     async function fetchData() {
@@ -118,6 +120,8 @@ function DetaDept() {
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
+
+
   const handleOpenEdit = (itemId) => {
     const selectedRow = data.find((item) => item[0] === itemId);
     if (selectedRow) {
@@ -138,15 +142,20 @@ function DetaDept() {
       >
         <Button
           style={{ borderRadius: "30px" }}
+          size ="large"
           onClick={handleOpenPopup}
           variant="contained"
         >
           Insert
         </Button>
       </div>
+      <div
+        className="Record"
+        style={{ margin: "20px 200px 0px 200px", backgroundColor: "#A7C9FA" }}
+      >
       <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
+        <Table Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead TableHead sx={{ backgroundColor: "#A7C9FA", align: "left" }}>
             <TableRow>
               <TableCell>ID Department</TableCell>
               <TableCell>Department Name</TableCell>
@@ -162,23 +171,27 @@ function DetaDept() {
                 <TableCell>{item[1]}</TableCell>
                 <TableCell>{item[2]}</TableCell>
                 <TableCell>
+                <Tooltip title="Edit">
                   <EditNoteIcon
-                    style={{ color: "#F4D03F", cursor: "pointer" }}
+                    style={{ color: "#F4D03F", cursor: "pointer" ,fontSize: '30px' }}
                     onClick={() => handleOpenEdit(item[0])}
                   />
+                  </Tooltip>
                 </TableCell>
                 <TableCell>
+                <Tooltip title="Delete">
                   <DeleteForeverIcon
-                    style={{ color: "red", cursor: "pointer" }}
+                    style={{ color: "red", cursor: "pointer" ,fontSize: '30px'  }}
                     onClick={() => Delete(item[0])}
                   />
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
+</div>
       <EditDept
         modalIsOpen={isOpenEdit}
         closeEditModal={() => setOpenEdit(false)}
@@ -207,6 +220,7 @@ function DetaDept() {
           <div class="container">
             <div
               class="row"
+             
               style={{
                 margin: "10px 0px 20px 0px",
                 fontSize: "40px",

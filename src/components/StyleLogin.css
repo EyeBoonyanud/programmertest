@@ -1,18 +1,21 @@
 
 .login-form{
-   
-    background-color: blue;
-    height:100%;
-    /* margin-left: 70px;
-    border-radius: 15px; */
+    
+    height:500px;
+    margin: 150px 20px 0px 20px;
+  
 }
 .ant-input-affix-wrapper.css-dev-only-do-not-override-qgg3xn{
   
 font-size: 20px;
 }
 .SS{
-    background-color: yellowgreen;
-    height:100%;
+
+    height: 500px;
+    border-radius: 15px 0px 0px 15px;
+    background-image: url('https://as1.ftcdn.net/v2/jpg/02/24/86/92/1000_F_224869243_WZHOVD3GqYq6ZUzRkZbQNTXzg1FzHwhd.jpg');
+    background-size: cover; /* ปรับขนาดรูปภาพให้เต็มพื้นที่ */
+    background-position: center; /* จัดตำแหน่งรูปภาพให้อยู่ตรงกลาง */
     
 }
 .BB{

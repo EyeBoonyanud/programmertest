@@ -35,7 +35,7 @@ function IdProgrammer() {
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
-  //เอาไว้ส่งค่าไปหน้า EDit
+  //เอาไว้ส่งค่าไปหน้า Edit
   const handleOpenEdit = (itemId) => {
     const selectedRow = data.find((item) => item[0] === itemId);
     if (selectedRow) {
@@ -61,6 +61,13 @@ function IdProgrammer() {
     fetchData();
   }, []);
 
+  // format Data Show
+  function formatDateString(rawDate) {
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const date = new Date(rawDate);
+    return date.toLocaleDateString(undefined, options);
+  }
+
   //dropdawn department
   const [department, setDept] = useState("");
   const handleDept = (event) => {
@@ -72,49 +79,7 @@ function IdProgrammer() {
     setStatus(event.target.value);
   };
 
-  // const Save = async () => {
-  //   try {
-  //     const ID = document.getElementById("ID").value;
-  //     const FirstName = document.getElementById("Name").value;
-  //     const Lastname = document.getElementById("Last").value;
-  //     const Telephone = document.getElementById("Telephone").value;
-  //     const Age = document.getElementById("Age").value;
-  //     const Birth = document.getElementById("Birth").value;
-
-  //     console.log(
-  //       ID,
-  //       "",
-  //       FirstName,
-  //       " ",
-  //       Lastname,
-  //       " ",
-  //       Telephone,
-  //       " ",
-  //       Age,
-  //       " ",
-  //       " ",
-  //       department,
-  //       " ",
-  //       status
-  //     );
-  //     // const Lastanme = document.getElementById("ID")
-
-  //     const rollNoSearch = await axios.put(
-  //       `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname}
-  //       &age=${Age}&birth=${Birth}&dept=${department}&status=${status}&telephone=${Telephone}`
-  //     );
-
-  //     if (rollNoSearch.status === 200) {
-  //       alert("การอัปเดตข้อมูลเสร็จสมบูรณ์");
-  //     } else {
-  //       alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
-  //     }
-  //     handleClosePopup();
-  //     // }
-  //   } catch (error) {
-  //     console.log("Save Error : ", error);
-  //   }
-  // };
+  // Save Oncilck
   const Save = () => {
     const ID = document.getElementById("ID").value;
     const FirstName = document.getElementById("Name").value;
@@ -164,7 +129,7 @@ function IdProgrammer() {
         console.error("Error:", error);
       });
   };
-  // delete
+  // Delete
   const Delete = async (ID) => {
     console.log(ID);
     try {
@@ -201,26 +166,7 @@ function IdProgrammer() {
       console.log("Error deleting data:", error);
     }
   };
-
-  // const Update = async (ID) => {
-  //   try {
-  //     const response = await axios.post(
-  //       `http://localhost:3000/updateData?id=${ID}`,
-  //       updatedData
-  //     );
-  //     if (response.data.success) {
-  //       // Data updated successfully
-  //       // You can refresh the data or update the UI as needed
-  //       fetchData(); // Fetch updated data
-  //     } else {
-  //       // Handle update failure
-  //       console.log("Data update failed");
-  //     }
-  //   } catch (error) {
-  //     console.log("Error updating data:", error);
-  //   }
-  // };
-
+  
   return (
     <div>
       <Header />
@@ -229,11 +175,12 @@ function IdProgrammer() {
           display: "flex",
           justifyContent: "flex-end", // จัดตำแหน่งปุ่มทางขวา
           margin: "100px 200px 0px 200px",
-          border: "1px solid red",
+          // border: "1px solid red",
         }}
       >
         <Button
           style={{ borderRadius: "30px" }}
+          size="large"
           variant="contained"
           onClick={handleOpenPopup}
         >
@@ -241,9 +188,6 @@ function IdProgrammer() {
         </Button>
       </div>
 
-
-
-      
       <table>
         <tr>
           <td>
@@ -394,7 +338,6 @@ function IdProgrammer() {
                       Save();
                       handleClosePopup();
                     }}
-                    style={{ marginRight: "10px", backgroundColor: "green" }}
                   >
                     Save
                   </Button>
@@ -412,13 +355,6 @@ function IdProgrammer() {
         </tr>
       </table>
 
-      {/* <EditPro
-        modalIsOpen={isOpenEdit}
-        closeInsertModal={() => setOpenEdit(false)}
-        SendID={selectedRowData}
-        // onSave={handleInsertSave}
-        onCancel={handleCloseEdit}
-      /> */}
       <EditPro
         modalIsOpen={isOpenEdit}
         closeEditModal={() => setOpenEdit(false)}
@@ -456,7 +392,7 @@ function IdProgrammer() {
                   <TableCell>{item[1]}</TableCell>
                   <TableCell>{item[2]}</TableCell>
                   <TableCell>{item[3]}</TableCell>
-                  <TableCell>{item[4]}</TableCell>
+                  <TableCell>{formatDateString(item[4])}</TableCell>
                   <TableCell>{item[5]}</TableCell>
                   <TableCell>{item[6]}</TableCell>
                   <TableCell>{item[9]}</TableCell>
@@ -471,7 +407,7 @@ function IdProgrammer() {
                   <TableCell>
                     <Tooltip title="Edit">
                       <EditNoteIcon
-                        style={{ color: "#F4D03F" }}
+                        style={{ color: "#F4D03F", fontSize: "30px" }}
                         onClick={() => handleOpenEdit(item[0])}
                       />
                     </Tooltip>
@@ -480,7 +416,7 @@ function IdProgrammer() {
                   <TableCell>
                     <Tooltip title="Delete">
                       <DeleteForeverIcon
-                        style={{ color: "red" }}
+                        style={{ color: "red", fontSize: "30px" }}
                         onClick={() => Delete(item[0])}
                       />
                     </Tooltip>

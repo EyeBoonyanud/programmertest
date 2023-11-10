@@ -1,6 +1,5 @@
 const express = require("express");
 const oracledb = require("oracledb");
-
 const app = express();
 const port = 3000;
 oracledb.initOracleClient({
@@ -22,10 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-
-// const client = new Client(pgConfig);
-// client.connect();
-
+// check เชื่อมต่อ database
 app.get("/checkconnect", async (req, res) => {
   try {
     const oracleConnection = await oracledb.getConnection(DBfpc_fpc_pctt);
@@ -40,17 +36,69 @@ app.get("/checkconnect", async (req, res) => {
     res.send("การเชื่อมต่อไม่สำเร็จ");
   }
 });
+
 // Login 
-app.get("/getLogin", async (req, res) => { 
+app.get("/getLogin", async (req, res) => {
   try {
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
-    const strUsername = req.query.value;
-    const strPassword = req.query.password; // แก้ตรงนี้ให้ถูกต้อง
+    const strUsername = req.query.username;
+    const strPassword = req.query.password;
+    console.log("SSSSS", strUsername);
+    console.log("SSSSS", strPassword);
 
-    const result = await connection.execute(`
-      SELECT * FROM TRAIN_PROGRAMMER_PERSON WHERE F_ID_CODE = '${strUsername}' AND F_NAME = '${strPassword}'`);
+    const result = await connection.execute(
+      `SELECT * FROM TRAIN_PROGRAMMER_PERSON WHERE F_ID_CODE = :username AND F_NAME = :password`,
+      { username: strUsername, password: strPassword }
+    );
 
+    const rows = result.rows;
+
+    // ตรวจสอบว่ามีข้อมูลที่ถูกต้องหรือไม่
+    if (rows && rows.length > 0) {
+      res.json(rows);
+    } else {
+      console.error("Login failed");
+      res.status(401).json({ error: "Invalid username or password" });
+    }
+    
+    console.log("aaaaa", strUsername);
+    console.log("SSSSS", strPassword);
+  } catch (error) {
+    console.error("Error fetching Material_Trace:", error);
+    res.status(500).json({ error: "An error occurred" });
+  } finally {
+    // await connection.close();
+  }
+});
+
+
+
+
+ // หน้า search
+ app.get("/getSearch", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const strSearch = req.query.value;
+    const strName = req.query.fname;
+    const strStatus = req.query.status;
+    console.log(strSearch);
+    console.log(strName);
+    console.log(strStatus);
+    const result = await connection.execute(
+      `
+      SELECT * FROM TRAIN_PROGRAMMER_PERSON
+      WHERE (F_ID_CODE = :Search OR :Search IS NULL)
+      AND (F_NAME = :Name OR :Name IS NULL)
+      AND (F_STATUS = :Status OR :Status IS NULL)`,
+      {
+        Search: strSearch || null,
+        Name: strName || null,
+        Status: strStatus || null
+      }
+    );
+     
     connection.release();
+    console.log(result);
 
     const rows = result.rows;
     res.json(rows);
@@ -59,7 +107,6 @@ app.get("/getLogin", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-
 
 // ดึงตารางหน้า programmer 
 app.get("/getDataPro", async (req, res) => { 
@@ -80,56 +127,8 @@ app.get("/getDataPro", async (req, res) => {
       res.status(500).json({ error: "An error occurred" });
     }
   });
-// ดึงตารางหน้า deptment
-  app.get("/getDataDept", async (req, res) => { 
-    try {
-      const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
-      const strVendorLot = req.query.VendorLot
-        ? req.query.VendorLot.trim().toUpperCase()
-        : "";
-      const result = await connection.execute(`
-      SELECT * FROM TRAIN_PROGRAMMER_DEPT `);
-  
-      connection.release();
-  
-      const rows = result.rows;
-      res.json(rows);
-      
-    } catch (error) {
-      console.error("Error fetching Material_Trace:", error);
-      res.status(500).json({ error: "An error occurred" });
-    }
-  });
- // หน้า search
- app.get("/getSearch", async (req, res) => { 
-  try {
-    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
-    const strSearch = req.query.value;
-    const strName = req.query.fname;
 
-
-    const result = await connection.execute(
-      `
-      SELECT * FROM TRAIN_PROGRAMMER_PERSON
-      WHERE (F_ID_CODE = :Search OR :Search IS NULL)
-      AND (F_NAME = :Name OR :Name IS NULL)`,
-      {
-        Search: strSearch,
-        Name: strName,
-      }
-    );
-    //console.log(result)
-    connection.release();
-
-    const rows = result.rows;
-    res.json(rows);
-  } catch (error) {
-    console.error("Error fetching Material_Trace:", error);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
-
-  // หน้าInsert DataProgreammer
+// หน้าInsert DataProgreammer
   app.post("/insertData", async (req, res) => {
     try {
       const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
@@ -217,7 +216,7 @@ app.get("/getDataPro", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-// Edit
+// หน้า Update Pro
 app.post("/updateData", async (req, res) => {
   try {
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
@@ -275,7 +274,26 @@ app.post("/updateData", async (req, res) => {
   }
 });
 
+// ดึงตารางหน้า deptment
+  app.get("/getDataDept", async (req, res) => { 
+    try {
+      const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+      const strVendorLot = req.query.VendorLot
+        ? req.query.VendorLot.trim().toUpperCase()
+        : "";
+      const result = await connection.execute(`
+      SELECT * FROM TRAIN_PROGRAMMER_DEPT `);
   
+      connection.release();
+  
+      const rows = result.rows;
+      res.json(rows);
+      
+    } catch (error) {
+      console.error("Error fetching Material_Trace:", error);
+      res.status(500).json({ error: "An error occurred" });
+    }
+  });
 // หน้า insert Dept
   app.post("/insertDataDept", async (req, res) => {
     try {
@@ -352,8 +370,7 @@ app.post("/updateData", async (req, res) => {
       res.status(500).json({ error: "An error occurred" });
     }
   });
-// หน้า update 
-
+// หน้า update  Dept
 app.post("/updateDataDept", async (req, res) => {
   try {const startTime = Date.now();
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
