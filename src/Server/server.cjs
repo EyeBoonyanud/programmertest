@@ -75,38 +75,89 @@ app.get("/getLogin", async (req, res) => {
 
 
  // หน้า search
- app.get("/getSearch", async (req, res) => {
+//  app.get("/getSearch", async (req, res) => {
+//   try {
+//     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+//     const strSearch = req.query.value;
+//     const strName = req.query.fname;
+//     const strStatus = req.query.status;
+//     console.log(strSearch);
+//     console.log(strName);
+//     console.log(strStatus);
+//     const result = await connection.execute(
+//       `
+//       SELECT * FROM TRAIN_PROGRAMMER_PERSON
+//       WHERE (F_ID_CODE = :Search OR :Search IS NULL)
+//       AND (F_NAME = :Name OR :Name IS NULL)
+//       AND (F_STATUS = :Status OR :Status IS NULL)`,
+//       {
+//         Search: strSearch || null,
+//         Name: strName || null,
+//         Status: strStatus || null
+//       }
+//     );
+     
+//     connection.release();
+//     console.log(result);
+
+//     const rows = result.rows;
+//     res.json(rows);
+//   } catch (error) {
+//     console.error("Error fetching Material_Trace:", error);
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// });
+
+// หน้า search
+app.get("/getSearch", async (req, res) => {
   try {
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
     const strSearch = req.query.value;
     const strName = req.query.fname;
     const strStatus = req.query.status;
-    console.log(strSearch);
-    console.log(strName);
-    console.log(strStatus);
-    const result = await connection.execute(
-      `
-      SELECT * FROM TRAIN_PROGRAMMER_PERSON
-      WHERE (F_ID_CODE = :Search OR :Search IS NULL)
-      AND (F_NAME = :Name OR :Name IS NULL)
-      AND (F_STATUS = :Status OR :Status IS NULL)`,
-      {
-        Search: strSearch || null,
-        Name: strName || null,
-        Status: strStatus || null
-      }
-    );
-     
-    connection.release();
-    console.log(result);
+    const secondRoundSearchValue = req.query.secondRoundSearchValue; // เพิ่มบรรทัดนี้
 
-    const rows = result.rows;
-    res.json(rows);
+    // ตรวจสอบว่าเป็นครั้งแรกหรือไม่
+    if (!secondRoundSearchValue) {
+      const result = await connection.execute(
+        `
+        SELECT * FROM TRAIN_PROGRAMMER_PERSON
+        WHERE (F_ID_CODE = :Search OR :Search IS NULL)
+        AND (F_NAME = :Name OR :Name IS NULL)
+        AND (F_STATUS = :Status OR :Status IS NULL)`,
+        {
+          Search: strSearch || null,
+          Name: strName || null,
+          Status: strStatus || null
+        }
+      );
+
+      connection.release();
+
+      const rows = result.rows;
+      res.json(rows);
+    } else {
+      // กรณีค้นหาครั้งที่ 2
+      const result = await connection.execute(
+        `
+        SELECT * FROM TRAIN_PROGRAMMER_PERSON
+        WHERE (F_ID_CODE = :SearchValue OR :SearchValue IS NULL)`,
+        {
+          SearchValue: secondRoundSearchValue || null
+        }
+      );
+
+      connection.release();
+
+      const rows = result.rows;
+      res.json(rows);
+    }
   } catch (error) {
     console.error("Error fetching Material_Trace:", error);
     res.status(500).json({ error: "An error occurred" });
   }
 });
+
 
 // ดึงตารางหน้า programmer 
 app.get("/getDataPro", async (req, res) => { 
@@ -228,7 +279,7 @@ app.post("/updateData", async (req, res) => {
       const strDept = req.query.dept;
       const strStatus = req.query.status;
       const strTel = req.query.telephone;
-
+    
     // Create an update query
     const updateQuery = `
       UPDATE TRAIN_PROGRAMMER_PERSON

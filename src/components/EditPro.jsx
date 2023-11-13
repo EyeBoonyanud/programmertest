@@ -12,7 +12,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [dataRoll, setDataRoll] = useState([]);
   const [department, setDept] = useState("");
   const handleDept = (event) => {
-    setDept(event.target.value);
+    setDept(event.target.value || (SendID ? SendID[5] : ""));
   };
   console.log(SendID, "เข้าแล้วจ้าหนูอิอิ");
   const [selectedDate, setSelectedDate] = useState("");
@@ -56,7 +56,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     // const Lastanme = document.getElementById("ID")
     axios
       .post(
-        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${department}&birth=${Birth}&status=${status}&telephone=${Telephone}`
+        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${department || (SendID ? SendID[5] : "")}&birth=${Birth}&status=${status || (SendID ? SendID[6] : "")}&telephone=${Telephone}`
       )
       .then((response) => {
         // const addedData = response.data;
@@ -82,9 +82,9 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
         console.error("Error:", error);
       });
   };
-  const [status, setStatus] = useState([]);
+  const [status, setStatus] = useState("");
   const handleStatus = (event) => {
-    setStatus(event.target.value);
+    setStatus(event.target.value || (SendID ? SendID[6] : ""));
   };
 
   const handleClosePopup = () => {

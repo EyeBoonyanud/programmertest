@@ -41,6 +41,8 @@ function IdProgrammer() {
     if (selectedRow) {
       setSelectedRowData(selectedRow);
       setOpenEdit(true);
+
+      
     }
   };
   useEffect(() => {

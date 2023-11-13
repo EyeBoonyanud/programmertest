@@ -10,10 +10,10 @@ import Swal from "sweetalert2";
 function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [dataRoll, setDataRoll] = useState([]);
-  const [status, setStatus] = useState([]); const [selectedDate, setSelectedDate] = useState("");
+  const [status, setStatus] = useState(""); const [selectedDate, setSelectedDate] = useState("");
   // dropdawn status
   const handleStatus = (event) => {
-    setStatus(event.target.value);
+    setStatus(event.target.value || (SendID ? SendID[2] : ""));
   };
   
   const Save = () => {
@@ -29,7 +29,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
    
     axios
       .post(
-        `http://localhost:3000/updateDataDept?id=${ID}&dept=${Dept}&status=${status}`
+        `http://localhost:3000/updateDataDept?id=${ID}&dept=${Dept}&status=${status || (SendID ? SendID[2] : "")}`
       )
       .then((response) => {
 

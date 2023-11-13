@@ -30,21 +30,22 @@ function Page1() {
   const [checkHead, setCheckHead] = useState("hidden");
   const [checkEmpty, setCheckEmpty] = useState("hidden");
   const [checkData, setCheckData] = useState("visible"); // datashow warning
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const [status, setStatus] = useState(""); // แก้เป็น string เนื่องจากดูเหมือนว่าจะใช้เป็นค่าเดียว
+  const [firstSearchData, setFirstSearchData] = useState([]); // เพิ่ม state นี้
+  const [secondRoundSearchValue, setSecondRoundSearchValue] = useState("");
+  
+  const [status, setStatus] = useState(""); 
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+ 
+  //ค้นหาครั้งที่ 1 
   const Search = async () => {
     const value = document.getElementById("Search").value;
     const fname = document.getElementById("Name").value;
-    console.log(value);
-    console.log(fname);
 
     if (!value && !fname) {
       try {
@@ -53,6 +54,7 @@ function Page1() {
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
+        setFirstSearchData(dataSearch); // เก็บข้อมูลที่ค้นหาจากชุดที่ 1
         setCheckHead("visible");
         setCheckEmpty("hidden");
         setCheckData("hidden");
@@ -65,9 +67,9 @@ function Page1() {
         const rollNoSearch = await axios.get(
           `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}`
         );
-        console.log(rollNoSearch);
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
+        setFirstSearchData(dataSearch); // เก็บข้อมูลที่ค้นหาจากชุดที่ 1
         setCheckHead("visible");
 
         // Update checkEmpty and checkData based on the length of dataSearch
@@ -85,52 +87,35 @@ function Page1() {
       }
     }
   };
-
-  // const Search = async () => {
-  //   const value = document.getElementById("Search").value;
-  //   const fname = document.getElementById("Name").value;
-  //   console.log(value);
-  //   console.log(fname);
-
-  //   if (!value && !fname  ) {
-  //     try {
-  //       const rollNoSearch = await axios.get(
-  //         `http://localhost:3000/getDataPro`
-  //       );
-  //       const dataSearch = rollNoSearch.data;
-  //       setSearch(dataSearch);
-  //       setCheckHead("visible");
-  //       setCheckEmpty("hidden");
-  //       setCheckData("hidden");
-  //       console.log("Roll Server list:", dataSearch);
-  //     } catch (error) {
-  //       console.error("Error requesting data:", error);
-  //     }
-  //   } else {
-  //     try {
-  //       const rollNoSearch = await axios.get(
-  //         `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}`
-  //       );
-  //       const dataSearch = rollNoSearch.data;
-  //       setSearch(dataSearch);
-  //       setCheckHead("visible");
-
-  //       // Update checkEmpty and checkData based on the length of dataSearch
-  //       if (dataSearch.length === 0) {
-  //         setCheckEmpty("visible");
-  //         setCheckData("hidden");
-  //       } else {
-  //         setCheckEmpty("hidden");
-  //         setCheckData("visible");
-  //       }
-
-  //       console.log("Roll Server list:", dataSearch);
-  //     } catch (error) {
-  //       console.error("Error requesting data:", error);
-  //     }
-  //   }
-  // };
-
+  //ค้นหาครั้งที่ 2 
+  const SearchSecondRound = async () => {
+    try {
+      const rollNoSearch = await axios.get(
+        `http://localhost:3000/getSearch?value=${firstSearchData.someValue}&status=${status}&secondRoundSearchValue=${secondRoundSearchValue}`
+      );
+      const dataSearch = rollNoSearch.data;
+  
+      // ต่อข้อมูลที่ค้นหาจากชุดที่ 2 เข้าไป
+      setSearch(dataSearch);
+      setCheckHead("visible");
+  
+      // Update checkEmpty and checkData based on the length of dataSearch
+      if (dataSearch.length === 0) {
+        setCheckEmpty("visible");
+        setCheckData("hidden");
+      } else {
+        setCheckEmpty("hidden");
+        setCheckData("visible");
+      }
+  
+      console.log("Roll Server list:", dataSearch);
+    } catch (error) {
+      console.error("Error requesting data:", error);
+    }
+  };
+  
+  
+  //เอาไว้ Reset ค่า ทั้งหมด 
   const handleResetData = () => {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
@@ -139,7 +124,7 @@ function Page1() {
     setCheckEmpty("hidden");
     setCheckData("visible");
   };
-
+ //ของตัวกากบาท เอาไว้เคลียร์ค่าในกากบาท
   const handleReset = () => {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
@@ -286,7 +271,47 @@ function Page1() {
           </div>
         </div>
       </div>
+      <div>
+        <Button
+          onClick={SearchSecondRound}
+          style={{
+            backgroundColor: "#80aaff",
+            marginLeft: "10px",
+            borderRadius: "4px",
+            width: "200px",
+            marginTop: "10px",
+            marginRight: "5px",
+          }}
+          variant="contained"
+          startIcon={<SearchIcon />}
+        >
+          Search Second Round
+        </Button>
 
+        <TextField
+          size="small"
+          style={{
+            backgroundColor: "white",
+            borderRadius: "4px",
+            width: "200px",
+            marginTop: "10px",
+          }}
+          id="SecondRoundSearch"
+          label="Search by ID"
+          value={secondRoundSearchValue}
+          onChange={(e) => setSecondRoundSearchValue(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <ClearIcon
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => setSecondRoundSearchValue("")}
+              />
+            ),
+          }}
+        ></TextField>
+      </div>
       <div
         className="table"
         style={{
