@@ -19,6 +19,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EditPro from "./EditPro";
 import Tooltip from "@mui/material/Tooltip";
+import { CSVLink } from "react-csv";
+import Checkbox from '@mui/material/Checkbox';
+
+
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -41,23 +45,33 @@ function IdProgrammer() {
     if (selectedRow) {
       setSelectedRowData(selectedRow);
       setOpenEdit(true);
-
-      
     }
   };
+  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const handleDept = (event) => {
+    setSelectedDepartment(event.target.value);
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
         const rollNoResponse = await axios.get(
-          // axios เพื่อทำ GET request ไปยัง URL
           "http://localhost:3000/getDataPro"
         );
-        const dataRollResponse = rollNoResponse.data; // dataRollResponse และจากนั้นถูกใช้ในการอัพเดตค่าของ dataRoll
+        const dataRollResponse = rollNoResponse.data;
         setDataRoll(dataRollResponse);
         setData(dataRollResponse);
         console.log("Roll Server list:", dataRollResponse);
+
+        const departmentsResponse = await axios.get(
+          "http://localhost:3000/getDepartments"
+        );
+        const departmentOptionsData = departmentsResponse.data;
+        setDepartmentOptions(departmentOptionsData);
+        console.log("Department Options:", departmentOptionsData);
       } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการร้องขอข้อมูล:", error);
+        console.error("Error fetching data:", error);
       }
     }
     fetchData();
@@ -71,10 +85,12 @@ function IdProgrammer() {
   }
 
   //dropdawn department
-  const [department, setDept] = useState("");
-  const handleDept = (event) => {
-    setDept(event.target.value);
-  };
+  // const [department, setDept] = useState("");
+  // const handleDept = (event) => {
+  //   setDept(event.target.value);
+  // };
+
+
   // dropdawn status
   const [status, setStatus] = useState([]);
   const handleStatus = (event) => {
@@ -102,18 +118,18 @@ function IdProgrammer() {
       Age,
       " ",
       " ",
-      department,
+      selectedDepartment,
       " ",
       status
     );
     // const Lastanme = document.getElementById("ID")
     axios
       .post(
-        `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${department}&birth=${Birth}&status=${status}&telephone=${Telephone}`
+        `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${selectedDepartment}&birth=${Birth}&status=${status}&telephone=${Telephone}`
       )
       .then((response) => {
         // const addedData = response.data;
-        // console.log("Added Data:", addedData);
+        console.log("", departmentOptions);
         if (response.status === 200) {
           Swal.fire({
             title: "Value Inserted !",
@@ -168,7 +184,8 @@ function IdProgrammer() {
       console.log("Error deleting data:", error);
     }
   };
-  
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
   return (
     <div>
       <Header />
@@ -188,6 +205,16 @@ function IdProgrammer() {
         >
           Insert
         </Button>
+        <CSVLink data={dataRoll} filename={"programmer_data.csv"}>
+  <Button
+    style={{ borderRadius: "30px", marginLeft: "10px" }}
+    size="large"
+    variant="contained"
+  >
+    DOWNLOAD
+  </Button>
+</CSVLink>
+
       </div>
 
       <table>
@@ -211,7 +238,6 @@ function IdProgrammer() {
                   width: "500px",
                 }}
               >
-                {/* เนื้อหาของ popup ที่คุณต้องการแสดง */}
                 <div class="container">
                   <div
                     class="row"
@@ -223,6 +249,8 @@ function IdProgrammer() {
                   >
                     insert
                   </div>
+                  
+
                   <div class="row">
                     <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
                       ID code
@@ -278,7 +306,7 @@ function IdProgrammer() {
                       Department
                     </div>
                     <div class="col-3">
-                      <FormControl fullWidth>
+                      {/* <FormControl fullWidth>
                         <Select
                           size="small"
                           style={{ width: "300px" }}
@@ -293,7 +321,22 @@ function IdProgrammer() {
                           <MenuItem value="R170">R170</MenuItem>
                           <MenuItem value="R190">R190</MenuItem>
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
+                      <Select
+                        id="Department"
+                        sx={{ width: "245%" }}
+                        native
+                        value={selectedDepartment}
+                        onChange={(e) => {
+                          setSelectedDepartment(e.target.value);
+                        }}
+                      >
+                        {departmentOptions.map((item) => (
+                          <option key={item[1]} value={item[0]}>
+                            {item[1]}
+                          </option>
+                        ))}
+                      </Select>
                     </div>
                   </div>
                   <div class="row">
@@ -372,6 +415,7 @@ function IdProgrammer() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead sx={{ backgroundColor: "#A7C9FA", align: "left" }}>
               <TableRow>
+              <TableCell>Select</TableCell>
                 <TableCell>Id Code</TableCell>
                 <TableCell>Firstname</TableCell>
                 <TableCell>Lestname</TableCell>
@@ -390,14 +434,15 @@ function IdProgrammer() {
                   key={index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
+                  <TableCell><Checkbox {...label} /></TableCell>
                   <TableCell>{item[0]}</TableCell>
                   <TableCell>{item[1]}</TableCell>
                   <TableCell>{item[2]}</TableCell>
                   <TableCell>{item[3]}</TableCell>
                   <TableCell>{formatDateString(item[4])}</TableCell>
-                  <TableCell>{item[5]}</TableCell>
+                  <TableCell>{item[8]}</TableCell>
                   <TableCell>{item[6]}</TableCell>
-                  <TableCell>{item[9]}</TableCell>
+                  <TableCell>{item[7]}</TableCell>
                   {/* <TableCell>
                     <Tooltip title="Edit">
                       <EditNoteIcon

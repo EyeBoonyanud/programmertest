@@ -43,8 +43,6 @@ app.get("/getLogin", async (req, res) => {
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
     const strUsername = req.query.username;
     const strPassword = req.query.password;
-    console.log("SSSSS", strUsername);
-    console.log("SSSSS", strPassword);
 
     const result = await connection.execute(
       `SELECT * FROM TRAIN_PROGRAMMER_PERSON WHERE F_ID_CODE = :username AND F_NAME = :password`,
@@ -60,9 +58,6 @@ app.get("/getLogin", async (req, res) => {
       console.error("Login failed");
       res.status(401).json({ error: "Invalid username or password" });
     }
-    
-    console.log("aaaaa", strUsername);
-    console.log("SSSSS", strPassword);
   } catch (error) {
     console.error("Error fetching Material_Trace:", error);
     res.status(500).json({ error: "An error occurred" });
@@ -115,7 +110,7 @@ app.get("/getSearch", async (req, res) => {
     const strSearch = req.query.value;
     const strName = req.query.fname;
     const strStatus = req.query.status;
-    const secondRoundSearchValue = req.query.secondRoundSearchValue; // เพิ่มบรรทัดนี้
+    const secondRoundSearchValue = req.query.secondRoundSearchValue; //ตัวแปร id ครั้งที่ 2 ที่ถูกค้นหา
 
     // ตรวจสอบว่าเป็นครั้งแรกหรือไม่
     if (!secondRoundSearchValue) {
@@ -167,7 +162,21 @@ app.get("/getDataPro", async (req, res) => {
         ? req.query.VendorLot.trim().toUpperCase()
         : "";
       const result = await connection.execute(`
-      SELECT * FROM TRAIN_PROGRAMMER_PERSON `);
+      SELECT 
+  F_ID_CODE,
+  F_NAME,
+  F_LASTNAME,
+  F_AGE,
+  F_BIRTHDAY,
+  F_DEPT,
+  F_STATUS,
+  F_TEL,
+  DEPT_NAME
+FROM 
+  TRAIN_PROGRAMMER_PERSON 
+LEFT JOIN 
+  TRAIN_PROGRAMMER_DEPT  ON F_DEPT = DEPT_ID
+`);
   
       connection.release();
   
@@ -465,6 +474,22 @@ app.post("/updateDataDept", async (req, res) => {
   }
 });
 
+// Example endpoint for getting department data
+app.get("/getDepartments", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const result = await connection.execute(`
+      SELECT DEPT_ID, DEPT_NAME FROM TRAIN_PROGRAMMER_DEPT
+    `);
+    connection.release();
+
+    const rows = result.rows;
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching department data:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
 
 app.listen(port, () => {

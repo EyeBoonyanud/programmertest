@@ -7,47 +7,52 @@ import {
   Typography,
   IconButton,
   AppBar,
+  FormControl,
+  Select,
+  MenuItem,
+  TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import MenuIcon from "@mui/icons-material/Menu";
-import Test from "./SideBar";
-import axios from "axios";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import { Empty } from "antd";
 import ClearIcon from "@mui/icons-material/Clear";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { FormControl, Select, MenuItem } from "@mui/material";
+import Test from "./SideBar";
+import axios from "axios";
+
 
 function Page1() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSearch, setSearch] = useState([]);
-  const [checkHead, setCheckHead] = useState("hidden");
-  const [checkEmpty, setCheckEmpty] = useState("hidden");
-  const [checkData, setCheckData] = useState("visible"); // datashow warning
-  const [firstSearchData, setFirstSearchData] = useState([]); // เพิ่ม state นี้
-  const [secondRoundSearchValue, setSecondRoundSearchValue] = useState("");
-  
-  const [status, setStatus] = useState(""); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); //ตัวแปรเปิดปิด Sidebar
+  const [isSearch, setSearch] = useState([]); //ตัวแปร Search
+  const [checkHead, setCheckHead] = useState("hidden"); //ตัวแปรเช็คค่าของ ตาราง
+  const [checkEmpty, setCheckEmpty] = useState("hidden"); // ตัวแปรเช็คค่าว่าง
+  const [checkData, setCheckData] = useState("visible"); // ตัวแปร datashow warning
+  const [firstSearchData, setFirstSearchData] = useState([]); // ตัวแปร ไว้เก็บค่าของ การ Search ครั้งแรก
+  const [secondRoundSearchValue, setSecondRoundSearchValue] = useState(""); // ตัวแปรไว้เก็บค่าครั้งที่ 2
+  // ชุดเก็บค่าของ status
+  const [status, setStatus] = useState(""); // เก็บค่า status
+  // เก็บค่า Dropdown ของ Status
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
-
+  // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
- 
-  //ค้นหาครั้งที่ 1 
+  //Search ครั้งที่ 1
   const Search = async () => {
     const value = document.getElementById("Search").value;
     const fname = document.getElementById("Name").value;
 
-    if (!value && !fname) {
+    console.log(status);
+
+    if (!value && !fname && !status ) {
       try {
         const rollNoSearch = await axios.get(
           `http://localhost:3000/getDataPro`
@@ -87,19 +92,18 @@ function Page1() {
       }
     }
   };
-  //ค้นหาครั้งที่ 2 
+  //Search ครั้งที่ 2
   const SearchSecondRound = async () => {
     try {
       const rollNoSearch = await axios.get(
-        `http://localhost:3000/getSearch?value=${firstSearchData.someValue}&status=${status}&secondRoundSearchValue=${secondRoundSearchValue}`
+        `http://localhost:3000/getSearch?value=&secondRoundSearchValue=${secondRoundSearchValue}`
       );
       const dataSearch = rollNoSearch.data;
-  
+
       // ต่อข้อมูลที่ค้นหาจากชุดที่ 2 เข้าไป
       setSearch(dataSearch);
       setCheckHead("visible");
-  
-      // Update checkEmpty and checkData based on the length of dataSearch
+
       if (dataSearch.length === 0) {
         setCheckEmpty("visible");
         setCheckData("hidden");
@@ -107,28 +111,31 @@ function Page1() {
         setCheckEmpty("hidden");
         setCheckData("visible");
       }
-  
+
       console.log("Roll Server list:", dataSearch);
     } catch (error) {
       console.error("Error requesting data:", error);
     }
   };
-  
-  
-  //เอาไว้ Reset ค่า ทั้งหมด 
+
+  //เอาไว้ Reset ค่า ทั้งหมด
   const handleResetData = () => {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
     setSearch([]);
+    setStatus("");
     setCheckHead("hidden");
     setCheckEmpty("hidden");
     setCheckData("visible");
   };
- //ของตัวกากบาท เอาไว้เคลียร์ค่าในกากบาท
+  //ของตัวกากบาท เอาไว้เคลียร์ค่าในกากบาท
   const handleReset = () => {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
   };
+
+
+  
 
   return (
     <>
@@ -172,7 +179,6 @@ function Page1() {
               padding: "10px",
             }}
           >
-            {/* ต่อไปนี้คือส่วนย่อยทั้งหมด */}
             <TextField
               size="small"
               style={{
@@ -267,7 +273,6 @@ function Page1() {
               Reset
             </Button>
             &nbsp;
-            {/* สิ้นสุดส่วนย่อย */}
           </div>
         </div>
       </div>
@@ -350,9 +355,9 @@ function Page1() {
                     <TableCell>{item[1]}</TableCell>
                     <TableCell>{item[2]}</TableCell>
                     <TableCell>{item[3]}</TableCell>
-                    <TableCell>{item[5]}</TableCell>
+                    <TableCell>{item[8]}</TableCell>
                     <TableCell>{item[6]}</TableCell>
-                    <TableCell>{item[9]}</TableCell>
+                    <TableCell>{item[7]}</TableCell>
                   </TableRow>
                 ))
               ) : (
