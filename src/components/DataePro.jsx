@@ -299,23 +299,6 @@ function IdProgrammer() {
                       Department
                     </div>
                     <div class="col-3">
-                      {/* <FormControl fullWidth>
-                        <Select
-                          size="small"
-                          style={{ width: "300px" }}
-                          labelId="demo-simple-select-label"
-                          id="Department"
-                          value={department}
-                          onChange={handleDept}
-                        >
-                          <MenuItem value="R120">R120</MenuItem>
-                          <MenuItem value="R140">R140</MenuItem>
-                          <MenuItem value="R150">R150</MenuItem>
-                          <MenuItem value="R170">R170</MenuItem>
-                          <MenuItem value="R190">R190</MenuItem>
-                        </Select>
-                      </FormControl> */}
-
                       <FormControl sx={{ width: "300px", marginRight: "5px" }}>
                         <Select
                           id="Department"
@@ -324,7 +307,6 @@ function IdProgrammer() {
                           onChange={(e) => {
                             setSelectedDepartment(e.target.value);
                           }}
-                          
                         >
                           {departmentOptions.map((item) => (
                             <MenuItem key={item[1]} value={item[0]}>

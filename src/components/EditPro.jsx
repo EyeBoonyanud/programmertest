@@ -12,23 +12,20 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [dataRoll, setDataRoll] = useState([]); 
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
-  // const handleDept = (event) => {
-  //   setSelectedDepartment(event.target.value || (SendID ? SendID[8] : ""));
-  // };
+  const handleDept = (event) => {
+    setSelectedDepartment(event.target.value || (SendID ? SendID[8] : ""));
+  };
 
 
-
-
-  console.log(SendID, "เข้าแล้วจ้าหนูอิอิ");
   const [selectedDate, setSelectedDate] = useState("");
-  
   useEffect(() => {
     if (SendID && SendID[8]) {
       setSelectedDepartment(SendID[8]);
     }
   }, [SendID]);
-  
-console.log("lllll",selectedDepartment)
+ 
+ 
+
 
   useEffect(() => {
     if (SendID && SendID[4]) {
@@ -124,6 +121,9 @@ console.log("lllll",selectedDepartment)
     }
     fetchData();
   }, []);
+
+
+
 
   return (
     <div>
@@ -239,15 +239,53 @@ console.log("lllll",selectedDepartment)
                 Department
               </div>
               <div class="col-3">
-              <FormControl sx={{ width: "300px", marginRight: "5px" }}>
+  {/* <FormControl sx={{ width: "300px", marginRight: "5px" }}>
   <Select
     id="Department"
     size="small"
     value={selectedDepartment}
+
     onChange={(e) => {
       setSelectedDepartment(e.target.value);
     }}
   >
+    <MenuItem value="">{selectedDepartment}</MenuItem>
+    {departmentOptions.map((item) => (
+      <MenuItem key={item[1]} value={item[0]}>
+        {item[1]}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl> */}
+
+{/* <FormControl sx={{ width: "300px", marginRight: "5px" }}>
+                  <select
+                    value={selectedDepartment}
+                    onChange={(e) => {
+                      setSelectedDepartment(e.target.value);
+                    }}
+                  >
+                    <option value="">{selectedDepartment}</option>
+                    {departmentOptions.map((item) => (
+                      <option key={item[1]} value={item[0]}>
+                        {item[1]}
+                      </option>
+                    ))}
+                  </select>
+                </FormControl> */}
+<FormControl sx={{ width: "300px", marginRight: "5px" }}>
+  <Select
+    value={selectedDepartment || (SendID ? SendID[8] : "")}
+    onChange={(e) => {
+      setSelectedDepartment(e.target.value);
+    }}
+    size="small"
+  >
+    {SendID && SendID[8] && (
+      <MenuItem key={SendID[8]} value={SendID[8]}>
+        {SendID[8]}
+      </MenuItem> //เอาไว้ดึงค่ามาโชว์
+    )}
     {departmentOptions.map((item) => (
       <MenuItem key={item[1]} value={item[0]}>
         {item[1]}
@@ -255,6 +293,8 @@ console.log("lllll",selectedDepartment)
     ))}
   </Select>
 </FormControl>
+
+
 
               </div>
             </div>
