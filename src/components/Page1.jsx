@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   TextField,
@@ -26,7 +26,6 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import Test from "./SideBar";
 import axios from "axios";
 
-
 function Page1() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); //ตัวแปรเปิดปิด Sidebar
   const [isSearch, setSearch] = useState([]); //ตัวแปร Search
@@ -41,6 +40,12 @@ function Page1() {
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
+  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const handleDept = (event) => {
+    setSelectedDepartment(event.target.value);
+    console.log("Selected Department:", event.target.value);
+  };
   // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -52,10 +57,11 @@ function Page1() {
 
     console.log(status);
 
-    if (!value && !fname && !status ) {
+    if (!value && !fname && !status && !selectedDepartment) {
       try {
         const rollNoSearch = await axios.get(
           `http://localhost:3000/getDataPro`
+          
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
@@ -70,7 +76,7 @@ function Page1() {
     } else {
       try {
         const rollNoSearch = await axios.get(
-          `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}`
+          `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}&dept=${selectedDepartment}`
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
@@ -92,6 +98,8 @@ function Page1() {
       }
     }
   };
+
+
   //Search ครั้งที่ 2
   const SearchSecondRound = async () => {
     try {
@@ -118,6 +126,28 @@ function Page1() {
     }
   };
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const departmentsResponse = await axios.get(
+          "http://localhost:3000/getDepartments"
+        );
+        const departmentOptionsData = departmentsResponse.data;
+        setDepartmentOptions(departmentOptionsData);
+        console.log("Department Options:", departmentOptionsData);
+      } catch (error) {
+        console.error("Error fetching department data:", error);
+      }
+    };
+  
+    fetchData(); // เรียก fetchData เมื่อ component ถูกโหลด
+  }, []);
+  useEffect(() => {
+    console.log("Selected Department (state):", selectedDepartment);
+  }, [selectedDepartment]);
+  
+
   //เอาไว้ Reset ค่า ทั้งหมด
   const handleResetData = () => {
     document.getElementById("Search").value = "";
@@ -133,9 +163,6 @@ function Page1() {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
   };
-
-
-  
 
   return (
     <>
@@ -241,6 +268,31 @@ function Page1() {
                 <MenuItem value="INACTIVE">INACTIVE</MenuItem>
               </Select>
             </FormControl>
+            <FormControl>
+  <Select
+    size="small"
+    id="Department"
+    sx={{
+      backgroundColor: "white",
+      borderRadius: "4px",
+      width: "200px",
+      marginTop: "10px",
+      marginRight: "5px",
+    }}
+    native
+    value={selectedDepartment}
+    onChange={(e) => {
+      setSelectedDepartment(e.target.value);
+    }}
+  >
+    {departmentOptions.map((item) => (
+      <option key={item[0]} value={item[0]}>
+        {item[1]}
+      </option>
+    ))}
+  </Select>
+</FormControl>
+
             <Button
               onClick={Search}
               style={{

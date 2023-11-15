@@ -111,19 +111,38 @@ app.get("/getSearch", async (req, res) => {
     const strName = req.query.fname;
     const strStatus = req.query.status;
     const secondRoundSearchValue = req.query.secondRoundSearchValue; //ตัวแปร id ครั้งที่ 2 ที่ถูกค้นหา
-
+    const strDept = req.query.dept;
+    console.log(strDept);
     // ตรวจสอบว่าเป็นครั้งแรกหรือไม่
     if (!secondRoundSearchValue) {
       const result = await connection.execute(
         `
-        SELECT * FROM TRAIN_PROGRAMMER_PERSON
-        WHERE (F_ID_CODE = :Search OR :Search IS NULL)
-        AND (F_NAME = :Name OR :Name IS NULL)
-        AND (F_STATUS = :Status OR :Status IS NULL)`,
+        SELECT 
+        TP.F_ID_CODE,
+        TP.F_NAME,
+        TP.F_LASTNAME,
+        TP.F_AGE,
+        TP.F_BIRTHDAY,
+        TP.F_DEPT,
+        TP.F_STATUS,
+        TP.F_TEL,
+        TD.DEPT_NAME
+      FROM 
+        TRAIN_PROGRAMMER_PERSON TP
+      LEFT JOIN 
+        TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
+      WHERE 
+        (TP.F_ID_CODE = :Search OR :Search IS NULL)
+        AND (TP.F_NAME = :Name OR :Name IS NULL)
+        AND (TP.F_STATUS = :Status OR :Status IS NULL)
+        AND (TP.F_DEPT = :Dept OR :Dept IS NULL)
+      
+      `,
         {
           Search: strSearch || null,
           Name: strName || null,
-          Status: strStatus || null
+          Status: strStatus || null,
+          Dept: strDept || null, 
         }
       );
 
@@ -135,7 +154,20 @@ app.get("/getSearch", async (req, res) => {
       // กรณีค้นหาครั้งที่ 2
       const result = await connection.execute(
         `
-        SELECT * FROM TRAIN_PROGRAMMER_PERSON
+        SELECT 
+        TP.F_ID_CODE,
+        TP.F_NAME,
+        TP.F_LASTNAME,
+        TP.F_AGE,
+        TP.F_BIRTHDAY,
+        TP.F_DEPT,
+        TP.F_STATUS,
+        TP.F_TEL,
+        TD.DEPT_NAME
+      FROM 
+        TRAIN_PROGRAMMER_PERSON TP
+      LEFT JOIN 
+        TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
         WHERE (F_ID_CODE = :SearchValue OR :SearchValue IS NULL)`,
         {
           SearchValue: secondRoundSearchValue || null
