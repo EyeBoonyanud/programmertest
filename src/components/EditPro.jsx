@@ -9,16 +9,26 @@ import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
 function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [dataRoll, setDataRoll] = useState([]);
-  const [department, setDept] = useState("");
-  const handleDept = (event) => {
-    setDept(event.target.value || (SendID ? SendID[5] : ""));
-  };
+  const [dataRoll, setDataRoll] = useState([]); 
+  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  // const handleDept = (event) => {
+  //   setSelectedDepartment(event.target.value || (SendID ? SendID[8] : ""));
+  // };
+
+
+
+
   console.log(SendID, "เข้าแล้วจ้าหนูอิอิ");
   const [selectedDate, setSelectedDate] = useState("");
   
- 
-
+  useEffect(() => {
+    if (SendID && SendID[8]) {
+      setSelectedDepartment(SendID[8]);
+    }
+  }, [SendID]);
+  
+console.log("lllll",selectedDepartment)
 
   useEffect(() => {
     if (SendID && SendID[4]) {
@@ -36,7 +46,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     const Telephone = document.getElementById("Telephone").value;
     const Age = document.getElementById("Age").value;
     const Birth = document.getElementById("Birth").value;
-    // const Birth = Birth_before.toISOString().slice(0, 10);
+   
     console.log(
       ID,
       "",
@@ -49,14 +59,14 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
       Age,
       " ",
       " ",
-      department,
+      selectedDepartment,
       " ",
       status
     );
     // const Lastanme = document.getElementById("ID")
     axios
       .post(
-        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${department || (SendID ? SendID[5] : "")}&birth=${Birth}&status=${status || (SendID ? SendID[6] : "")}&telephone=${Telephone}`
+        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname}&age=${Age}&dept=${selectedDepartment || (SendID ? SendID[8] : "")}&birth=${Birth}&status=${status || (SendID ? SendID[6] : "")}&telephone=${Telephone}`
       )
       .then((response) => {
         // const addedData = response.data;
@@ -99,6 +109,13 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
           "http://localhost:3000/getDataPro"
         );
         const dataRollResponse = rollNoResponse.data; // dataRollResponse และจากนั้นถูกใช้ในการอัพเดตค่าของ dataRoll
+
+        const departmentsResponse = await axios.get(
+          "http://localhost:3000/getDepartments"
+        );
+        const departmentOptionsData = departmentsResponse.data;
+        setDepartmentOptions(departmentOptionsData);
+        console.log("Department Options:", departmentOptionsData);
         setDataRoll(dataRollResponse);
         console.log("Roll Server list:", dataRollResponse);
       } catch (error) {
@@ -222,23 +239,23 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
                 Department
               </div>
               <div class="col-3">
-                <FormControl fullWidth>
-                  <Select
-                    size="small"
-                    style={{ width: "300px" }}
-                    labelId="demo-simple-select-label"
-                    id="Department"
-                    // value={department}
-                    onChange={handleDept}
-                    defaultValue={SendID ? SendID[5] : ""}
-                  >
-                    <MenuItem value="R120">R120</MenuItem>
-                    <MenuItem value="R140">R140</MenuItem>
-                    <MenuItem value="R150">R150</MenuItem>
-                    <MenuItem value="R170">R170</MenuItem>
-                    <MenuItem value="R190">R190</MenuItem>
-                  </Select>
-                </FormControl>
+              <FormControl sx={{ width: "300px", marginRight: "5px" }}>
+  <Select
+    id="Department"
+    size="small"
+    value={selectedDepartment}
+    onChange={(e) => {
+      setSelectedDepartment(e.target.value);
+    }}
+  >
+    {departmentOptions.map((item) => (
+      <MenuItem key={item[1]} value={item[0]}>
+        {item[1]}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
               </div>
             </div>
             <div class="row">
@@ -268,7 +285,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
               </div>
               <div class="col-9">
                 <TextField
-                  defaultValue={SendID ? SendID[9] : ""}
+                  defaultValue={SendID ? SendID[7] : ""}
                   fullWidth
                   size="small"
                   label=""

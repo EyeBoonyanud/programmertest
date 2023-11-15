@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   TextField,
@@ -16,6 +16,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  InputLabel,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -61,7 +62,6 @@ function Page1() {
       try {
         const rollNoSearch = await axios.get(
           `http://localhost:3000/getDataPro`
-          
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
@@ -99,7 +99,6 @@ function Page1() {
     }
   };
 
-
   //Search ครั้งที่ 2
   const SearchSecondRound = async () => {
     try {
@@ -126,7 +125,7 @@ function Page1() {
     }
   };
 
-
+  // Get ข้อมูลใน Department มาโชว์ ใน Dropdown
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -140,13 +139,9 @@ function Page1() {
         console.error("Error fetching department data:", error);
       }
     };
-  
+
     fetchData(); // เรียก fetchData เมื่อ component ถูกโหลด
   }, []);
-  useEffect(() => {
-    console.log("Selected Department (state):", selectedDepartment);
-  }, [selectedDepartment]);
-  
 
   //เอาไว้ Reset ค่า ทั้งหมด
   const handleResetData = () => {
@@ -154,6 +149,7 @@ function Page1() {
     document.getElementById("Name").value = "";
     setSearch([]);
     setStatus("");
+    setSelectedDepartment(""); 
     setCheckHead("hidden");
     setCheckEmpty("hidden");
     setCheckData("visible");
@@ -235,6 +231,7 @@ function Page1() {
                 borderRadius: "4px",
                 width: "200px",
                 marginTop: "10px",
+                marginRight:"5px"
               }}
               id="Name"
               label="Name"
@@ -250,6 +247,7 @@ function Page1() {
               }}
             ></TextField>
             <FormControl>
+              <InputLabel htmlFor="Status">Status</InputLabel>
               <Select
                 size="small"
                 style={{
@@ -268,31 +266,30 @@ function Page1() {
                 <MenuItem value="INACTIVE">INACTIVE</MenuItem>
               </Select>
             </FormControl>
-            <FormControl>
+            <FormControl sx={{ width: "220px",  marginRight: "5px" }}>
+  <InputLabel htmlFor="Department">Department</InputLabel>
   <Select
-    size="small"
     id="Department"
-    sx={{
+    size="small"
+    style={{
       backgroundColor: "white",
       borderRadius: "4px",
       width: "200px",
       marginTop: "10px",
       marginRight: "5px",
     }}
-    native
     value={selectedDepartment}
     onChange={(e) => {
       setSelectedDepartment(e.target.value);
     }}
   >
     {departmentOptions.map((item) => (
-      <option key={item[0]} value={item[0]}>
+      <MenuItem key={item[1]} value={item[0]}>
         {item[1]}
-      </option>
+      </MenuItem>
     ))}
   </Select>
 </FormControl>
-
             <Button
               onClick={Search}
               style={{

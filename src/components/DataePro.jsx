@@ -11,18 +11,14 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EditPro from "./EditPro";
 import Tooltip from "@mui/material/Tooltip";
 import { CSVLink } from "react-csv";
-import Checkbox from '@mui/material/Checkbox';
-
-
+import Checkbox from "@mui/material/Checkbox";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -89,7 +85,6 @@ function IdProgrammer() {
   // const handleDept = (event) => {
   //   setDept(event.target.value);
   // };
-
 
   // dropdawn status
   const [status, setStatus] = useState([]);
@@ -184,7 +179,7 @@ function IdProgrammer() {
       console.log("Error deleting data:", error);
     }
   };
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
   return (
     <div>
@@ -206,15 +201,14 @@ function IdProgrammer() {
           Insert
         </Button>
         <CSVLink data={dataRoll} filename={"programmer_data.csv"}>
-  <Button
-    style={{ borderRadius: "30px", marginLeft: "10px" }}
-    size="large"
-    variant="contained"
-  >
-    DOWNLOAD
-  </Button>
-</CSVLink>
-
+          <Button
+            style={{ borderRadius: "30px", marginLeft: "10px" }}
+            size="large"
+            variant="contained"
+          >
+            DOWNLOAD
+          </Button>
+        </CSVLink>
       </div>
 
       <table>
@@ -249,7 +243,6 @@ function IdProgrammer() {
                   >
                     insert
                   </div>
-                  
 
                   <div class="row">
                     <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
@@ -322,21 +315,24 @@ function IdProgrammer() {
                           <MenuItem value="R190">R190</MenuItem>
                         </Select>
                       </FormControl> */}
-                      <Select
-                        id="Department"
-                        sx={{ width: "245%" }}
-                        native
-                        value={selectedDepartment}
-                        onChange={(e) => {
-                          setSelectedDepartment(e.target.value);
-                        }}
-                      >
-                        {departmentOptions.map((item) => (
-                          <option key={item[1]} value={item[0]}>
-                            {item[1]}
-                          </option>
-                        ))}
-                      </Select>
+
+                      <FormControl sx={{ width: "300px", marginRight: "5px" }}>
+                        <Select
+                          id="Department"
+                          size="small"
+                          value={selectedDepartment}
+                          onChange={(e) => {
+                            setSelectedDepartment(e.target.value);
+                          }}
+                          
+                        >
+                          {departmentOptions.map((item) => (
+                            <MenuItem key={item[1]} value={item[0]}>
+                              {item[1]}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
                   </div>
                   <div class="row">
@@ -415,7 +411,7 @@ function IdProgrammer() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead sx={{ backgroundColor: "#A7C9FA", align: "left" }}>
               <TableRow>
-              <TableCell>Select</TableCell>
+                <TableCell>Select</TableCell>
                 <TableCell>Id Code</TableCell>
                 <TableCell>Firstname</TableCell>
                 <TableCell>Lestname</TableCell>
@@ -434,7 +430,9 @@ function IdProgrammer() {
                   key={index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell><Checkbox {...label} /></TableCell>
+                  <TableCell>
+                    <Checkbox {...label} />
+                  </TableCell>
                   <TableCell>{item[0]}</TableCell>
                   <TableCell>{item[1]}</TableCell>
                   <TableCell>{item[2]}</TableCell>
