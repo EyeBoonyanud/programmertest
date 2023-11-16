@@ -294,7 +294,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   >
  {SendID && SendID[5] && (
   <MenuItem key={SendID[5]} value={SendID[5]}>
-    {SendID[5]}
+    {/* {SendID[5]} */}
   </MenuItem>
 )}
     {departmentOptions.map((item) => (
