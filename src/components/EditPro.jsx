@@ -180,6 +180,11 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
                   size="small"
                   label=""
                   id="ID"
+                  inputProps={
+                    {
+                   
+                       readOnly: true }
+                }
                 />
               </div>
             </div>
