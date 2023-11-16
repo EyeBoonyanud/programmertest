@@ -16,9 +16,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EditPro from "./EditPro";
 import Tooltip from "@mui/material/Tooltip";
-import { CSVLink } from "react-csv";
+import { ExcelFile, ExcelSheet } from "react-data-export";
 import Checkbox from "@mui/material/Checkbox";
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Select, MenuItem, FormControl } from "@mui/material";
+//import * as XLSX from "xlsx";
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -81,10 +82,6 @@ function IdProgrammer() {
   }
 
   //dropdawn department
-  // const [department, setDept] = useState("");
-  // const handleDept = (event) => {
-  //   setDept(event.target.value);
-  // };
 
   // dropdawn status
   const [status, setStatus] = useState([]);
@@ -100,30 +97,21 @@ function IdProgrammer() {
     const Telephone = document.getElementById("Telephone").value;
     const Age = document.getElementById("Age").value;
     const Birth = document.getElementById("Birth").value;
-    // const Birth = Birth_before.toISOString().slice(0, 10);
     console.log(
       ID,
-      "",
       FirstName,
-      " ",
       Lastname,
-      " ",
       Telephone,
-      " ",
       Age,
-      " ",
-      " ",
       selectedDepartment,
-      " ",
       status
     );
-    // const Lastanme = document.getElementById("ID")
+
     axios
       .post(
         `http://localhost:3000/insertData?id=${ID}&fname=${FirstName}&last=${Lastname} &age=${Age}&dept=${selectedDepartment}&birth=${Birth}&status=${status}&telephone=${Telephone}`
       )
       .then((response) => {
-        // const addedData = response.data;
         console.log("", departmentOptions);
         if (response.status === 200) {
           Swal.fire({
@@ -181,15 +169,27 @@ function IdProgrammer() {
   };
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
+  const formatDataForExport = (data) => {
+    return data.map((item) => ({
+      IdCode: item[0],
+      Firstname: item[1],
+      Lastname: item[2],
+      Age: item[3],
+      Birthday: formatDateString(item[4]),
+      Department: item[8],
+      Status: item[6],
+      Telephone: item[7],
+    }));
+  };
+
   return (
     <div>
       <Header />
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end", // จัดตำแหน่งปุ่มทางขวา
+          justifyContent: "flex-end",
           margin: "100px 200px 0px 200px",
-          // border: "1px solid red",
         }}
       >
         <Button
@@ -200,183 +200,38 @@ function IdProgrammer() {
         >
           Insert
         </Button>
-        <CSVLink data={dataRoll} filename={"programmer_data.csv"}>
-          <Button
-            style={{ borderRadius: "30px", marginLeft: "10px" }}
-            size="large"
-            variant="contained"
-          >
-            DOWNLOAD
-          </Button>
-        </CSVLink>
+
+        <Button
+          style={{ borderRadius: "30px", marginLeft: "10px" }}
+          size="large"
+          variant="contained"
+        >
+          DOWNLOAD
+        </Button>
+
+        {/* <ExcelFile
+          element={
+            <Button
+              style={{ borderRadius: "30px", marginLeft: "10px" }}
+              size="large"
+              variant="contained"
+            >
+              Export to Excel
+            </Button>
+          }
+        >
+          <ExcelSheet data={formatDataForExport(data)} name="ProgrammerData" />
+        </ExcelFile> */}
       </div>
 
-      <table>
-        <tr>
-          <td>
-            <Modal
-              open={isPopupOpen}
-              onClose={handleClosePopup}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  backgroundColor: "white",
-                  borderRadius: "10px",
-                  padding: "20px",
-                  width: "500px",
-                }}
-              >
-                <div class="container">
-                  <div
-                    class="row"
-                    style={{
-                      margin: "10px 0px 20px 0px",
-                      fontSize: "40px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    insert
-                  </div>
-
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      ID code
-                    </div>
-                    <div class="col-6">
-                      <TextField fullWidth size="small" label="" id="ID" />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Firstname
-                    </div>
-                    <div class="col-9">
-                      <TextField fullWidth size="small" label="" id="Name" />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Lastname
-                    </div>
-                    <div class="col-9">
-                      <TextField fullWidth size="small" label="" id="Last" />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Age
-                    </div>
-                    <div class="col-4">
-                      <TextField fullWidth size="small" label="" id="Age" />
-                    </div>
-                    <div class="col-2" style={{ margin: "10px 0px 10px 0px" }}>
-                      Year
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Birthday
-                    </div>
-                    <div class="col-9">
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label=""
-                        id="Birth"
-                        style={{ width: "150px" }}
-                        type="date"
-                      />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Department
-                    </div>
-                    <div class="col-3">
-                      <FormControl sx={{ width: "300px", marginRight: "5px" }}>
-                        <Select
-                          id="Department"
-                          size="small"
-                          value={selectedDepartment}
-                          onChange={(e) => {
-                            setSelectedDepartment(e.target.value);
-                          }}
-                        >
-                          {departmentOptions.map((item) => (
-                            <MenuItem key={item[1]} value={item[0]}>
-                              {item[1]}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Status
-                    </div>
-                    <div class="col-3">
-                      <FormControl fullWidth>
-                        <Select
-                          size="small"
-                          style={{ width: "300px" }}
-                          labelId="demo-simple-select-label"
-                          id="Status"
-                          value={status}
-                          onChange={handleStatus}
-                        >
-                          <MenuItem value="ACTIVE">ACTIVE</MenuItem>
-                          <MenuItem value="INACTIVE">INACTIVE</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3" style={{ margin: "10px 0px 10px 0px" }}>
-                      Telephone
-                    </div>
-                    <div class="col-9">
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label=""
-                        id="Telephone"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="Button"
-                  style={{ marginLeft: "270px", marginTop: "10px" }}
-                >
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      Save();
-                      handleClosePopup();
-                    }}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={handleClosePopup}
-                    style={{ backgroundColor: "gray" }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </Modal>
-          </td>
-        </tr>
-      </table>
+      <Modal
+        open={isPopupOpen}
+        onClose={handleClosePopup}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {/* ข้อมูลที่นำเข้า */}
+      </Modal>
 
       <EditPro
         modalIsOpen={isOpenEdit}
@@ -423,14 +278,6 @@ function IdProgrammer() {
                   <TableCell>{item[8]}</TableCell>
                   <TableCell>{item[6]}</TableCell>
                   <TableCell>{item[7]}</TableCell>
-                  {/* <TableCell>
-                    <Tooltip title="Edit">
-                      <EditNoteIcon
-                        style={{ color: "#F4D03F" }}
-                        onClick={() => handleOpenEdit(item[0])}
-                      />
-                    </Tooltip>
-                  </TableCell> */}
                   <TableCell>
                     <Tooltip title="Edit">
                       <EditNoteIcon
@@ -439,7 +286,6 @@ function IdProgrammer() {
                       />
                     </Tooltip>
                   </TableCell>
-
                   <TableCell>
                     <Tooltip title="Delete">
                       <DeleteForeverIcon

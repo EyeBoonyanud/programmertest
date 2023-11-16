@@ -7,33 +7,44 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
+import { format } from 'date-fns';
 function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [dataRoll, setDataRoll] = useState([]); 
+  const [dataRoll, setDataRoll] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState([]);
   const handleDept = (event) => {
-    setSelectedDepartment(event.target.value || (SendID ? SendID[8] : ""));
+    setSelectedDepartment(event.target.value || (SendID ? SendID[5] : ""));
   };
-
 
   const [selectedDate, setSelectedDate] = useState("");
   useEffect(() => {
-    if (SendID && SendID[8]) {
-      setSelectedDepartment(SendID[8]);
+    if (SendID && SendID[5]) {
+      setSelectedDepartment(SendID[5]);
     }
   }, [SendID]);
- 
- 
 
+  // useEffect(() => {
+  //   if (SendID && SendID[4]) {
+  //     const date = new Date(SendID[4]);
+  //     const formattedDate = date.toISOString().split("T")[0];
+  //     setSelectedDate(formattedDate);
+  //   }
+  // }, [SendID]);
 
   useEffect(() => {
     if (SendID && SendID[4]) {
       const date = new Date(SendID[4]);
-      const formattedDate = date.toISOString().split("T")[0];
+      const formattedDate = format(date, 'yyyy-MM-dd');
       setSelectedDate(formattedDate);
     }
   }, [SendID]);
+
+
+
+
+
+  console.log("date", selectedDate);
 
   // dropdawn status
   const Save = () => {
@@ -43,7 +54,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     const Telephone = document.getElementById("Telephone").value;
     const Age = document.getElementById("Age").value;
     const Birth = document.getElementById("Birth").value;
-   
+
     console.log(
       ID,
       "",
@@ -63,7 +74,11 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     // const Lastanme = document.getElementById("ID")
     axios
       .post(
-        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname}&age=${Age}&dept=${selectedDepartment || (SendID ? SendID[8] : "")}&birth=${Birth}&status=${status || (SendID ? SendID[6] : "")}&telephone=${Telephone}`
+        `http://localhost:3000/updateData?id=${ID}&fname=${FirstName}&last=${Lastname}&age=${Age}&dept=${
+          selectedDepartment || (SendID ? SendID[5] : "")
+        }&birth=${Birth}&status=${
+          status || (SendID ? SendID[6] : "")
+        }&telephone=${Telephone}`
       )
       .then((response) => {
         // const addedData = response.data;
@@ -81,7 +96,6 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
               closeEditModal();
             }
           });
-          
         }
       })
 
@@ -97,7 +111,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const handleClosePopup = () => {
     setPopupOpen(false);
   };
- 
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -121,9 +135,6 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     }
     fetchData();
   }, []);
-
-
-
 
   return (
     <div>
@@ -239,7 +250,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
                 Department
               </div>
               <div class="col-3">
-  {/* <FormControl sx={{ width: "300px", marginRight: "5px" }}>
+                {/* <FormControl sx={{ width: "300px", marginRight: "5px" }}>
   <Select
     id="Department"
     size="small"
@@ -258,7 +269,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   </Select>
 </FormControl> */}
 
-{/* <FormControl sx={{ width: "300px", marginRight: "5px" }}>
+                {/* <FormControl sx={{ width: "300px", marginRight: "5px" }}>
                   <select
                     value={selectedDepartment}
                     onChange={(e) => {
@@ -273,7 +284,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
                     ))}
                   </select>
                 </FormControl> */}
-<FormControl sx={{ width: "300px", marginRight: "5px" }}>
+                <FormControl sx={{ width: "300px", marginRight: "5px" }}>
   <Select
     value={selectedDepartment || (SendID ? SendID[8] : "")}
     onChange={(e) => {
@@ -281,11 +292,11 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     }}
     size="small"
   >
-    {SendID && SendID[8] && (
-      <MenuItem key={SendID[8]} value={SendID[8]}>
-        {SendID[8]}
-      </MenuItem> //เอาไว้ดึงค่ามาโชว์
-    )}
+ {SendID && SendID[5] && (
+  <MenuItem key={SendID[5]} value={SendID[5]}>
+    {SendID[5]}
+  </MenuItem>
+)}
     {departmentOptions.map((item) => (
       <MenuItem key={item[1]} value={item[0]}>
         {item[1]}
@@ -293,9 +304,6 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
     ))}
   </Select>
 </FormControl>
-
-
-
               </div>
             </div>
             <div class="row">
@@ -343,7 +351,6 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
               onClick={() => {
                 Save();
                 closeEditModal();
-                
               }}
               style={{ marginRight: "10px", backgroundColor: "green" }}
             >

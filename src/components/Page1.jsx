@@ -26,6 +26,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Test from "./SideBar";
 import axios from "axios";
+import "./StyleLogin.css";
 
 function Page1() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); //ตัวแปรเปิดปิด Sidebar
@@ -33,24 +34,28 @@ function Page1() {
   const [checkHead, setCheckHead] = useState("hidden"); //ตัวแปรเช็คค่าของ ตาราง
   const [checkEmpty, setCheckEmpty] = useState("hidden"); // ตัวแปรเช็คค่าว่าง
   const [checkData, setCheckData] = useState("visible"); // ตัวแปร datashow warning
-  const [firstSearchData, setFirstSearchData] = useState([]); // ตัวแปร ไว้เก็บค่าของ การ Search ครั้งแรก
+  const [firstSearchData, setFirstSearchData] = useState([]); // ตัวแปร ไว้เก็บค่าของ การ Search ชุดที่ 1
   const [secondRoundSearchValue, setSecondRoundSearchValue] = useState(""); // ตัวแปรไว้เก็บค่าครั้งที่ 2
+  const [isFirstSearchDone, setIsFirstSearchDone] = useState(false); //ตัวแปรใช้สำหรับ check การซ่อนปุ่มเมื่อมีการ Search ของปุ่มแรกไปแล้ว ให้เป็น true ไปก่อน
+
+  // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   // ชุดเก็บค่าของ status
-  const [status, setStatus] = useState(""); // เก็บค่า status
-  // เก็บค่า Dropdown ของ Status
+  const [status, setStatus] = useState("");
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
-  const [departmentOptions, setDepartmentOptions] = useState([]);
+  //ชุดเก็บค่า ของ department
+  const [departmentOptions, setDepartmentOptions] = useState([]); //ตัวแปรไว้เก็บค่า ข้อมูล Data Dept ที่เป็น Dropdown
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const handleDept = (event) => {
     setSelectedDepartment(event.target.value);
     console.log("Selected Department:", event.target.value);
   };
-  // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+
   //Search ครั้งที่ 1
   const Search = async () => {
     const value = document.getElementById("Search").value;
@@ -69,6 +74,7 @@ function Page1() {
         setCheckHead("visible");
         setCheckEmpty("hidden");
         setCheckData("hidden");
+        setIsFirstSearchDone(true); // ถ้ามีการค้นหา ให้ Button กับ textfield ครั้งที่ 2 ให้เป็น True
         console.log("Roll Server list:", dataSearch);
       } catch (error) {
         console.error("Error requesting data:", error);
@@ -149,7 +155,7 @@ function Page1() {
     document.getElementById("Name").value = "";
     setSearch([]);
     setStatus("");
-    setSelectedDepartment(""); 
+    setSelectedDepartment("");
     setCheckHead("hidden");
     setCheckEmpty("hidden");
     setCheckData("visible");
@@ -200,6 +206,8 @@ function Page1() {
               boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.2)",
               height: "70px",
               padding: "10px",
+              width: "1300px",
+              
             }}
           >
             <TextField
@@ -231,7 +239,7 @@ function Page1() {
                 borderRadius: "4px",
                 width: "200px",
                 marginTop: "10px",
-                marginRight:"5px"
+                marginRight: "5px",
               }}
               id="Name"
               label="Name"
@@ -266,30 +274,30 @@ function Page1() {
                 <MenuItem value="INACTIVE">INACTIVE</MenuItem>
               </Select>
             </FormControl>
-            <FormControl sx={{ width: "220px",  marginRight: "5px" }}>
-  <InputLabel htmlFor="Department">Department</InputLabel>
-  <Select
-    id="Department"
-    size="small"
-    style={{
-      backgroundColor: "white",
-      borderRadius: "4px",
-      width: "200px",
-      marginTop: "10px",
-      marginRight: "5px",
-    }}
-    value={selectedDepartment}
-    onChange={(e) => {
-      setSelectedDepartment(e.target.value);
-    }}
-  >
-    {departmentOptions.map((item) => (
-      <MenuItem key={item[1]} value={item[0]}>
-        {item[1]}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+            <FormControl sx={{ width: "220px", marginRight: "5px" }}>
+              <InputLabel htmlFor="Department">Department</InputLabel>
+              <Select
+                id="Department"
+                size="small"
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: "4px",
+                  width: "200px",
+                  marginTop: "10px",
+                  marginRight: "5px",
+                }}
+                value={selectedDepartment}
+                onChange={(e) => {
+                  setSelectedDepartment(e.target.value);
+                }}
+              >
+                {departmentOptions.map((item) => (
+                  <MenuItem key={item[1]} value={item[0]}>
+                    {item[1]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Button
               onClick={Search}
               style={{
@@ -298,7 +306,6 @@ function Page1() {
                 borderRadius: "4px",
                 width: "200px",
                 marginTop: "10px",
-                marginRight: "5px",
               }}
               variant="contained"
               startIcon={<SearchIcon />}
@@ -310,11 +317,10 @@ function Page1() {
               onClick={handleResetData}
               style={{
                 backgroundColor: "#E5E5E5 ",
-                marginLeft: "10px",
                 borderRadius: "4px",
                 width: "200px",
                 marginTop: "10px",
-                marginRight: "5px",
+                color: "black",
               }}
               variant="contained"
               startIcon={<RefreshIcon />}
@@ -325,117 +331,134 @@ function Page1() {
           </div>
         </div>
       </div>
-      <div>
-        <Button
-          onClick={SearchSecondRound}
+      <div style={{ marginTop: "40px" }}>
+        <div
           style={{
-            backgroundColor: "#80aaff",
-            marginLeft: "10px",
-            borderRadius: "4px",
-            width: "200px",
-            marginTop: "10px",
-            marginRight: "5px",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "30px",
+            margin: "auto",
+            width: "1500px",
+            marginBottom: "20px",
           }}
-          variant="contained"
-          startIcon={<SearchIcon />}
         >
-          Search Second Round
-        </Button>
+          <div style={{ marginLeft: "78px" }}>
+            <TextField
+              size="small"
+              style={{
+                backgroundColor: "white",
+                borderRadius: "4px",
+                width: "200px",
+                marginTop: "10px",
+                visibility: isFirstSearchDone ? "visible" : "hidden",
+              }}
+              id="SecondRoundSearch"
+              label="Search by ID"
+              value={secondRoundSearchValue}
+              onChange={(e) => setSecondRoundSearchValue(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <ClearIcon
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setSecondRoundSearchValue("")}
+                  />
+                ),
+              }}
+            ></TextField>
+            <Button
+              onClick={SearchSecondRound}
+              style={{
+                backgroundColor: "#80aaff",
+                marginLeft: "10px",
+                borderRadius: "4px",
+                width: "200px",
+                marginTop: "10px",
+                marginRight: "5px",
+                visibility: isFirstSearchDone ? "visible" : "hidden",
+              }}
+              variant="contained"
+              startIcon={<SearchIcon />}
+            >
+              Search
+            </Button>
+          </div>
+        </div>
 
-        <TextField
-          size="small"
+        <div
+          className="table"
           style={{
-            backgroundColor: "white",
-            borderRadius: "4px",
-            width: "200px",
-            marginTop: "10px",
-          }}
-          id="SecondRoundSearch"
-          label="Search by ID"
-          value={secondRoundSearchValue}
-          onChange={(e) => setSecondRoundSearchValue(e.target.value)}
-          InputProps={{
-            endAdornment: (
-              <ClearIcon
-                style={{
-                  cursor: "pointer",
-                }}
-                onClick={() => setSecondRoundSearchValue("")}
-              />
-            ),
-          }}
-        ></TextField>
-      </div>
-      <div
-        className="table"
-        style={{
-          marginTop: "30px",
-          borderRadius: "10px",
-          boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        <TableContainer
-          style={{
-            visibility: checkHead,
-            boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.2)",
+            marginTop: "40px",
+            margin: "auto",
+            width: "1500px",
+
             borderRadius: "10px",
+            boxShadow: "5px 5px 15px rgba(0, 0, 0, 0.2)",
           }}
         >
-          <Table style={{ margin: "auto" }} aria-label="simple table">
-            <TableHead align="left" style={{ backgroundColor: "#A7C9FA" }}>
-              <TableRow>
-                <TableCell>Id Code</TableCell>
-                <TableCell>Firstname</TableCell>
-                <TableCell>Lestname</TableCell>
-                <TableCell>Age</TableCell>
-                <TableCell>Department</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Telephone</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody align="left">
-              {isSearch.length > 0 ? (
-                isSearch.map((item, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell>{item[0]}</TableCell>
-                    <TableCell>{item[1]}</TableCell>
-                    <TableCell>{item[2]}</TableCell>
-                    <TableCell>{item[3]}</TableCell>
-                    <TableCell>{item[8]}</TableCell>
-                    <TableCell>{item[6]}</TableCell>
-                    <TableCell>{item[7]}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow style={{ visibility: checkEmpty }}>
-                  <TableCell colSpan={7} align="center">
-                    <InfoCircleOutlined
-                      style={{
-                        visibility: checkData,
-                        fontSize: "30px",
-                        color: "#ffd580",
-                      }}
-                    />
-                    <text
-                      style={{
-                        visibility: checkData,
-                        fontSize: "25px",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      {" "}
-                      Please fill in information{" "}
-                    </text>
-                    <Empty style={{ visibility: checkEmpty }} />
-                  </TableCell>
+          <TableContainer
+            style={{
+              visibility: checkHead,
+              borderRadius: "5px",
+            }}
+          >
+            <Table>
+              <TableHead align="left" style={{ backgroundColor: "#A7C9FA" }}>
+                <TableRow>
+                  <TableCell>Id Code</TableCell>
+                  <TableCell>Firstname</TableCell>
+                  <TableCell>Lestname</TableCell>
+                  <TableCell>Age</TableCell>
+                  <TableCell>Department</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Telephone</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody align="left">
+                {isSearch.length > 0 ? (
+                  isSearch.map((item, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell>{item[0]}</TableCell>
+                      <TableCell>{item[1]}</TableCell>
+                      <TableCell>{item[2]}</TableCell>
+                      <TableCell>{item[3]}</TableCell>
+                      <TableCell>{item[8]}</TableCell>
+                      <TableCell>{item[6]}</TableCell>
+                      <TableCell>{item[7]}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow style={{ visibility: checkEmpty }}>
+                    <TableCell colSpan={7} align="center">
+                      <InfoCircleOutlined
+                        style={{
+                          visibility: checkData,
+                          fontSize: "30px",
+                          color: "#ffd580",
+                        }}
+                      />
+                      <text
+                        style={{
+                          visibility: checkData,
+                          fontSize: "25px",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        {" "}
+                        Please fill in information{" "}
+                      </text>
+                      <Empty style={{ visibility: checkEmpty }} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
       </div>
     </>
   );
