@@ -8,8 +8,9 @@ import DataDept from "./components/DetaDept";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./components/Home";
 import Login from './components/Login';
+import PdfViewer from './components/PdfViewer';
 
-
+const pdfUrl = 'https://example.com/path/to/your/pdf/document.pdf';
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 root.render(
@@ -30,6 +31,7 @@ function App({}) {
         <Route path="/DataPro" element={<DataPro />} />
         <Route path="/DataDept" element={<DataDept />} />
         <Route path="/" element={<Login />} />
+        <Route path="/PDF" element={<PdfViewer pdfUrl={pdfUrl} />} />
       </Routes>
     </>
   );

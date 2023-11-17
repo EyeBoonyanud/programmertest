@@ -34,10 +34,9 @@ function Page1() {
   const [checkHead, setCheckHead] = useState("hidden"); //ตัวแปรเช็คค่าของ ตาราง
   const [checkEmpty, setCheckEmpty] = useState("hidden"); // ตัวแปรเช็คค่าว่าง
   const [checkData, setCheckData] = useState("visible"); // ตัวแปร datashow warning
-  const [firstSearchData, setFirstSearchData] = useState([]); // ตัวแปร ไว้เก็บค่าของ การ Search ชุดที่ 1
   const [secondRoundSearchValue, setSecondRoundSearchValue] = useState(""); // ตัวแปรไว้เก็บค่าครั้งที่ 2
   const [isFirstSearchDone, setIsFirstSearchDone] = useState(false); //ตัวแปรใช้สำหรับ check การซ่อนปุ่มเมื่อมีการ Search ของปุ่มแรกไปแล้ว ให้เป็น true ไปก่อน
-
+  const [isDataSecond, setisDataSecond] = useState([]); 
   // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -70,7 +69,6 @@ function Page1() {
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
-        setFirstSearchData(dataSearch); // เก็บข้อมูลที่ค้นหาจากชุดที่ 1
         setCheckHead("visible");
         setCheckEmpty("hidden");
         setCheckData("hidden");
@@ -86,8 +84,8 @@ function Page1() {
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
-        setFirstSearchData(dataSearch); // เก็บข้อมูลที่ค้นหาจากชุดที่ 1
         setCheckHead("visible");
+        setIsFirstSearchDone(true);
 
         // Update checkEmpty and checkData based on the length of dataSearch
         if (dataSearch.length === 0) {
@@ -106,28 +104,52 @@ function Page1() {
   };
 
   //Search ครั้งที่ 2
+  // const SearchSecondRound = async () => {
+  //   try {
+  //     const rollNoSearch = await axios.get(
+  //       `http://localhost:3000/getSearch?value=&secondRoundSearchValue=${secondRoundSearchValue}`
+  //     );
+  //     const dataSearch = rollNoSearch.data;
+
+  //     // ต่อข้อมูลที่ค้นหาจากชุดที่ 2 เข้าไป
+  //     setSearch(dataSearch);
+  //     setCheckHead("visible");
+
+  //     if (dataSearch.length === 0) {
+  //       setCheckEmpty("visible");
+  //       setCheckData("hidden");
+  //     } else {
+  //       setCheckEmpty("hidden");
+  //       setCheckData("visible");
+  //     }
+
+  //     console.log("Roll Server list:", dataSearch);
+  //   } catch (error) {
+  //     console.error("Error requesting data:", error);
+  //   }
+  // };
+
   const SearchSecondRound = async () => {
-    try {
-      const rollNoSearch = await axios.get(
-        `http://localhost:3000/getSearch?value=&secondRoundSearchValue=${secondRoundSearchValue}`
-      );
-      const dataSearch = rollNoSearch.data;
+    // console.log("malaa", isSearch);
 
-      // ต่อข้อมูลที่ค้นหาจากชุดที่ 2 เข้าไป
-      setSearch(dataSearch);
-      setCheckHead("visible");
-
-      if (dataSearch.length === 0) {
-        setCheckEmpty("visible");
-        setCheckData("hidden");
-      } else {
+    for (let i = 0; i < isSearch.length; i++) {
+      // console.log("มา", isSearch[i][0]);
+      if (secondRoundSearchValue == isSearch[i][0]) {
+        console.log("เจอ", [isSearch[i]]);
+        setSearch([isSearch[i]]);
+        setCheckHead("visible");
         setCheckEmpty("hidden");
-        setCheckData("visible");
-      }
+        setSearch(isSearch);
+      } else {
+        console.log("ไม่เจอvvvvvvvvvvvvvv");
+        // setCheckHead("hidden");
+        // setCheckEmpty("visible");
+        // setSearch([]);
+        // if (isSearch.length != 0)
+        //
 
-      console.log("Roll Server list:", dataSearch);
-    } catch (error) {
-      console.error("Error requesting data:", error);
+        //
+      }
     }
   };
 
@@ -159,13 +181,14 @@ function Page1() {
     setCheckHead("hidden");
     setCheckEmpty("hidden");
     setCheckData("visible");
+    setIsFirstSearchDone(false);
   };
   //ของตัวกากบาท เอาไว้เคลียร์ค่าในกากบาท
   const handleReset = () => {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
   };
-
+  console.log(isSearch, "//////////");
   return (
     <>
       <AppBar position="static">
@@ -207,7 +230,6 @@ function Page1() {
               height: "70px",
               padding: "10px",
               width: "1300px",
-              
             }}
           >
             <TextField

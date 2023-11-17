@@ -182,17 +182,18 @@ function IdProgrammer() {
     }
   };
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-   
+
+  // Export xlsx
   const dataExport = [];
   const sortedTableFirst = dataRoll.map((item) => [
-   item[0],
-   item[1],
-   item[2],
-   item[3],
-   formatDateString(item[4]),
-   item[8],
-   item[6],
-   item[7],
+    item[0],
+    item[1],
+    item[2],
+    item[3],
+    formatDateString(item[4]),
+    item[8],
+    item[6],
+    item[7],
   ]);
   sortedTableFirst.sort((a, b) => {
     for (let i = 0; i < Math.min(a.length, b.length); i++) {
@@ -201,10 +202,13 @@ function IdProgrammer() {
     }
     return 0;
   });
- 
+
   dataExport.push(...sortedTableFirst);
 
   const exportToExcelTable1 = () => {
+    const selectedData = dataRoll.filter((item) =>
+      selectedRows.includes(item[0])
+    );
     const ws = XLSX.utils.aoa_to_sheet([
       [
         "Id Code",
@@ -214,8 +218,7 @@ function IdProgrammer() {
         "Birthday",
         "Department",
         "Status",
-        "Telephone"
-      
+        "Telephone",
       ],
       ...sortedTableFirst,
     ]);
@@ -223,7 +226,26 @@ function IdProgrammer() {
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     XLSX.writeFile(wb, `RollLeaf_.xlsx`);
   };
-  
+
+  const [selectedRows, setSelectedRows] = useState([]);
+  const handleCheckboxChange = (id) => {
+    if (selectedRows.includes(id)) {
+      // ถ้า ID อยู่ใน selectedRows แล้ว ให้นำออก
+      setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
+    } else {
+      // ถ้า ID ยังไม่อยู่ใน selectedRows ให้เพิ่มเข้าไป
+      setSelectedRows((prev) => [...prev, id]);
+    }
+  };
+
+  // สร้าง function สำหรับ Export ที่เลือก
+  const exportSelectedRows = () => {
+    const selectedData = dataRoll.filter((item) =>
+      selectedRows.includes(item[0])
+    );
+    // นำ selectedData ไปใช้ต่อตามที่คุณต้องการ
+    console.log("Selected Data:", selectedData);
+  };
 
   return (
     <div>
@@ -245,17 +267,15 @@ function IdProgrammer() {
           Insert
         </Button>
         <Button
-        style={{ borderRadius: "30px" }}
-            component="label"
-            variant="contained"
-            startIcon={<FileDownloadIcon />}
-            className="btnExport"
-            onClick={
-               exportToExcelTable1 
-            }
-          >
-            Export
-          </Button>
+          style={{ borderRadius: "30px" }}
+          component="label"
+          variant="contained"
+          startIcon={<FileDownloadIcon />}
+          className="btnExport"
+          onClick={exportToExcelTable1}
+        >
+          Export
+        </Button>
 
         {/* <CSVLink data={dataRoll} filename={"programmer_data.csv"}>
           <Button
@@ -469,9 +489,13 @@ function IdProgrammer() {
                   key={index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell>
-                    <Checkbox {...label} />
-                  </TableCell>
+                 <TableCell>
+  <Checkbox
+    {...label}
+    onChange={() => handleCheckboxChange(item[0])}
+    checked={selectedRows.includes(item[0])}
+  />
+</TableCell>
                   <TableCell>{item[0]}</TableCell>
                   <TableCell>{item[1]}</TableCell>
                   <TableCell>{item[2]}</TableCell>
