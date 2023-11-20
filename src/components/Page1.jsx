@@ -36,7 +36,7 @@ function Page1() {
   const [checkData, setCheckData] = useState("visible"); // ตัวแปร datashow warning
   const [secondRoundSearchValue, setSecondRoundSearchValue] = useState(""); // ตัวแปรไว้เก็บค่าครั้งที่ 2
   const [isFirstSearchDone, setIsFirstSearchDone] = useState(false); //ตัวแปรใช้สำหรับ check การซ่อนปุ่มเมื่อมีการ Search ของปุ่มแรกไปแล้ว ให้เป็น true ไปก่อน
-  const [isDataSecond, setisDataSecond] = useState([]); 
+  const [isDataSecond, setisDataSecond] = useState([]);
   // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -80,7 +80,7 @@ function Page1() {
     } else {
       try {
         const rollNoSearch = await axios.get(
-          `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}&dept=${selectedDepartment}`
+          `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}&dept=${selectedDepartment}&searchValue=${secondRoundSearchValue}`
         );
         const dataSearch = rollNoSearch.data;
         setSearch(dataSearch);
@@ -104,54 +104,70 @@ function Page1() {
   };
 
   //Search ครั้งที่ 2
+  const SearchSecondRound = async () => {
+    const value = document.getElementById("Search").value;
+    const fname = document.getElementById("Name").value;
+    try {
+      //secondRoundSearchValue
+      const rollNoSearch = await axios.get(
+        `http://localhost:3000/getSearch?value=${value}&fname=${fname}&status=${status}&dept=${selectedDepartment}&searchValue=${secondRoundSearchValue}`
+      );
+      const dataSearch = rollNoSearch.data;
+
+      // ต่อข้อมูลที่ค้นหาจากชุดที่ 2 เข้าไป
+      setSearch(dataSearch);
+      setCheckHead("visible");
+
+      if (dataSearch.length === 0) {
+        setCheckEmpty("visible");
+        setCheckData("hidden");
+      } else {
+        setCheckEmpty("hidden");
+        setCheckData("visible");
+      }
+
+      console.log("Roll Server list:", dataSearch);
+    } catch (error) {
+      console.error("Error requesting data:", error);
+    }
+  };
+
   // const SearchSecondRound = async () => {
-  //   try {
-  //     const rollNoSearch = await axios.get(
-  //       `http://localhost:3000/getSearch?value=&secondRoundSearchValue=${secondRoundSearchValue}`
-  //     );
-  //     const dataSearch = rollNoSearch.data;
+  //   // console.log("malaa", isSearch);
 
-  //     // ต่อข้อมูลที่ค้นหาจากชุดที่ 2 เข้าไป
-  //     setSearch(dataSearch);
-  //     setCheckHead("visible");
-
-  //     if (dataSearch.length === 0) {
-  //       setCheckEmpty("visible");
-  //       setCheckData("hidden");
-  //     } else {
+  //   for (let i = 0; i < isSearch.length; i++) {
+  //     // console.log("มา", isSearch[i][0]);
+  //     if (secondRoundSearchValue === isSearch[i][0]) {
+  //       console.log("เจอ", [isSearch[i]]);
+  //       setisDataSecond([isSearch[i]]);
+  //       setCheckHead("visible");
   //       setCheckEmpty("hidden");
-  //       setCheckData("visible");
-  //     }
 
-  //     console.log("Roll Server list:", dataSearch);
-  //   } catch (error) {
-  //     console.error("Error requesting data:", error);
+  //     } else {
+  //       console.log("ไม่เจอvvvvvvvvvvvvvv");
+  //       setCheckHead("hidden");
+  //       setCheckEmpty("visible");
+  //       // setSearch([]);
+  //       // if (isSearch.length != 0)
+  //       //
+
+  //       //
+  //     }
   //   }
   // };
 
-  const SearchSecondRound = async () => {
-    // console.log("malaa", isSearch);
+  // const SearchSecondRound = () => {
+  //   const filteredData = isSearch.filter(item => item[0] === secondRoundSearchValue);
 
-    for (let i = 0; i < isSearch.length; i++) {
-      // console.log("มา", isSearch[i][0]);
-      if (secondRoundSearchValue == isSearch[i][0]) {
-        console.log("เจอ", [isSearch[i]]);
-        setSearch([isSearch[i]]);
-        setCheckHead("visible");
-        setCheckEmpty("hidden");
-        setSearch(isSearch);
-      } else {
-        console.log("ไม่เจอvvvvvvvvvvvvvv");
-        // setCheckHead("hidden");
-        // setCheckEmpty("visible");
-        // setSearch([]);
-        // if (isSearch.length != 0)
-        //
-
-        //
-      }
-    }
-  };
+  //   if (filteredData.length > 0) {
+  //     setSearch(filteredData);
+  //     setCheckHead("visible");
+  //     setCheckEmpty("hidden");
+  //   } else {
+  //     setCheckHead("hidden");
+  //     setCheckEmpty("visible");
+  //   }
+  // };
 
   // Get ข้อมูลใน Department มาโชว์ ใน Dropdown
   useEffect(() => {
@@ -175,7 +191,6 @@ function Page1() {
   const handleResetData = () => {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
-    setSearch([]);
     setStatus("");
     setSelectedDepartment("");
     setCheckHead("hidden");
@@ -189,6 +204,7 @@ function Page1() {
     document.getElementById("Name").value = "";
   };
   console.log(isSearch, "//////////");
+
   return (
     <>
       <AppBar position="static">

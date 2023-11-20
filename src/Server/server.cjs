@@ -68,50 +68,20 @@ app.get("/getLogin", async (req, res) => {
 
 
 
-
- // หน้า search
-//  app.get("/getSearch", async (req, res) => {
-//   try {
-//     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
-//     const strSearch = req.query.value;
-//     const strName = req.query.fname;
-//     const strStatus = req.query.status;
-//     console.log(strSearch);
-//     console.log(strName);
-//     console.log(strStatus);
-//     const result = await connection.execute(
-//       `
-//       SELECT * FROM TRAIN_PROGRAMMER_PERSON
-//       WHERE (F_ID_CODE = :Search OR :Search IS NULL)
-//       AND (F_NAME = :Name OR :Name IS NULL)
-//       AND (F_STATUS = :Status OR :Status IS NULL)`,
-//       {
-//         Search: strSearch || null,
-//         Name: strName || null,
-//         Status: strStatus || null
-//       }
-//     );
-     
-//     connection.release();
-//     console.log(result);
-
-//     const rows = result.rows;
-//     res.json(rows);
-//   } catch (error) {
-//     console.error("Error fetching Material_Trace:", error);
-//     res.status(500).json({ error: "An error occurred" });
-//   }
-// });
-
-// หน้า search
+// หน้า search ทั้งหมด
 app.get("/getSearch", async (req, res) => {
   try {
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
     const strSearch = req.query.value;
     const strName = req.query.fname;
     const strStatus = req.query.status;
-    const secondRoundSearchValue = req.query.secondRoundSearchValue; //ตัวแปร id ครั้งที่ 2 ที่ถูกค้นหา
+    const secondRoundSearchValue = req.query.searchValue; //ตัวแปร id ครั้งที่ 2 ที่ถูกค้นหา
     const strDept = req.query.dept;
+    console.log("-----------")
+    console.log(strSearch);
+    console.log(strName);
+    console.log(strStatus);
+    console.log(secondRoundSearchValue);
     console.log(strDept);
     // ตรวจสอบว่าเป็นครั้งแรกหรือไม่
     if (!secondRoundSearchValue) {
@@ -151,39 +121,157 @@ app.get("/getSearch", async (req, res) => {
       const rows = result.rows;
       res.json(rows);
     } else {
+      console.log("nnnnnn")
       // กรณีค้นหาครั้งที่ 2
-      const result = await connection.execute(
-        `
-        SELECT 
-        TP.F_ID_CODE,
-        TP.F_NAME,
-        TP.F_LASTNAME,
-        TP.F_AGE,
-        TP.F_BIRTHDAY,
-        TP.F_DEPT,
-        TP.F_STATUS,
-        TP.F_TEL,
-        TD.DEPT_NAME
-      FROM 
-        TRAIN_PROGRAMMER_PERSON TP
-      LEFT JOIN 
-        TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
-        WHERE (F_ID_CODE = :SearchValue OR :SearchValue IS NULL)`,
-        {
-          SearchValue: secondRoundSearchValue || null
-        }
-      );
-
+      if(strName!=""){
+        console.log("xxxxxxxxx")
+        const result = await connection.execute(
+          `
+          SELECT 
+          TP.F_ID_CODE,
+          TP.F_NAME,
+          TP.F_LASTNAME,
+          TP.F_AGE,
+          TP.F_BIRTHDAY,
+          TP.F_DEPT,
+          TP.F_STATUS,
+          TP.F_TEL,
+          TD.DEPT_NAME
+        FROM 
+          TRAIN_PROGRAMMER_PERSON TP
+        LEFT JOIN 
+          TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
+          WHERE (F_ID_CODE = :SearchValue )
+          AND (TP.F_NAME = :Name )
+          `,
+          
+          {
+            SearchValue: secondRoundSearchValue,
+             Name: strName ,
+           
+          }
+        );
+        
       connection.release();
 
       const rows = result.rows;
       res.json(rows);
+      }
+      else if (strStatus!=""){
+        console.log("hereee")
+        const result = await connection.execute(
+          `
+          SELECT 
+          TP.F_ID_CODE,
+          TP.F_NAME,
+          TP.F_LASTNAME,
+          TP.F_AGE,
+          TP.F_BIRTHDAY,
+          TP.F_DEPT,
+          TP.F_STATUS,
+          TP.F_TEL,
+          TD.DEPT_NAME
+        FROM 
+          TRAIN_PROGRAMMER_PERSON TP
+        LEFT JOIN 
+          TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
+          WHERE (F_ID_CODE = :SearchValue )
+          AND (TP.F_STATUS = :Status )
+        `,
+          {
+            SearchValue: secondRoundSearchValue || null,
+         
+           Status: strStatus || null,
+        
+          }
+        );
+        
+      connection.release();
+
+      const rows = result.rows;
+      res.json(rows);
+      }
+       else if (strDept!=""){
+        const result = await connection.execute(
+          `
+          SELECT 
+          TP.F_ID_CODE,
+          TP.F_NAME,
+          TP.F_LASTNAME,
+          TP.F_AGE,
+          TP.F_BIRTHDAY,
+          TP.F_DEPT,
+          TP.F_STATUS,
+          TP.F_TEL,
+          TD.DEPT_NAME
+        FROM 
+          TRAIN_PROGRAMMER_PERSON TP
+        LEFT JOIN 
+          TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
+          WHERE (F_ID_CODE = :SearchValue )
+          AND (TP.F_DEPT = :Dept )
+        `,
+          {
+            SearchValue: secondRoundSearchValue ,
+         
+            Dept: strDept , 
+        
+          }
+        );
+        
+      connection.release();
+
+      const rows = result.rows;
+      res.json(rows);
+      }
+
+      
+      else{
+        const result = await connection.execute(
+          `
+          SELECT 
+          TP.F_ID_CODE,
+          TP.F_NAME,
+          TP.F_LASTNAME,
+          TP.F_AGE,
+          TP.F_BIRTHDAY,
+          TP.F_DEPT,
+          TP.F_STATUS,
+          TP.F_TEL,
+          TD.DEPT_NAME
+        FROM 
+          TRAIN_PROGRAMMER_PERSON TP
+        LEFT JOIN 
+          TRAIN_PROGRAMMER_DEPT TD ON TP.F_DEPT = TD.DEPT_ID
+        WHERE 
+          (TP.F_ID_CODE = :Search OR :Search IS NULL)
+          AND (TP.F_NAME = :Name OR :Name IS NULL)
+          AND (TP.F_STATUS = :Status OR :Status IS NULL)
+          AND (TP.F_DEPT = :Dept OR :Dept IS NULL)
+        
+        `,
+          {
+            Search: secondRoundSearchValue || null,
+            Name: strName || null,
+            Status: strStatus || null,
+            Dept: strDept || null, 
+          }
+        );
+  
+        connection.release();
+  
+        const rows = result.rows;
+        res.json(rows);
+      }
+ 
     }
   } catch (error) {
     console.error("Error fetching Material_Trace:", error);
     res.status(500).json({ error: "An error occurred" });
   }
 });
+
+
 
 
 // ดึงตารางหน้า programmer 
