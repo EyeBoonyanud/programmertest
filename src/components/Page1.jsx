@@ -36,7 +36,7 @@ function Page1() {
   const [checkData, setCheckData] = useState("visible"); // ตัวแปร datashow warning
   const [secondRoundSearchValue, setSecondRoundSearchValue] = useState(""); // ตัวแปรไว้เก็บค่าครั้งที่ 2
   const [isFirstSearchDone, setIsFirstSearchDone] = useState(false); //ตัวแปรใช้สำหรับ check การซ่อนปุ่มเมื่อมีการ Search ของปุ่มแรกไปแล้ว ให้เป็น true ไปก่อน
-  const [isDataSecond, setisDataSecond] = useState([]);
+  // const [isDataSecond, setisDataSecond] = useState([]);
   // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -197,6 +197,8 @@ function Page1() {
     setCheckEmpty("hidden");
     setCheckData("visible");
     setIsFirstSearchDone(false);
+    setSearch([]);
+    setSecondRoundSearchValue("");
   };
   //ของตัวกากบาท เอาไว้เคลียร์ค่าในกากบาท
   const handleReset = () => {
