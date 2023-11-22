@@ -205,26 +205,49 @@ function IdProgrammer() {
 
   dataExport.push(...sortedTableFirst);
 
+  // ออกExport Data for Excel 
   const exportToExcelTable1 = () => {
     const selectedData = dataRoll.filter((item) =>
       selectedRows.includes(item[0])
     );
-    const ws = XLSX.utils.aoa_to_sheet([
-      [
-        "Id Code",
-        "Firstname",
-        "Lestname",
-        "Age",
-        "Birthday",
-        "Department",
-        "Status",
-        "Telephone",
-      ],
-      ...sortedTableFirst,
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    XLSX.writeFile(wb, `RollLeaf_.xlsx`);
+  
+    if (selectedRows.length > 0 && selectedData.length > 0) {
+      // ถ้ามี checkbox ถูกเลือก
+      const ws = XLSX.utils.aoa_to_sheet([
+        [
+          "Id Code",
+          "Firstname",
+          "Lestname",
+          "Age",
+          "Birthday",
+          "Department",
+          "Status",
+          "Telephone",
+        ],
+        ...selectedData,
+      ]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.writeFile(wb, `Selected_RollLeaf_.xlsx`);
+    } else {
+      // ถ้าไม่มี checkbox ถูกเลือก หรือไม่มีข้อมูลที่ถูกเลือก
+      const ws = XLSX.utils.aoa_to_sheet([
+        [
+          "Id Code",
+          "Firstname",
+          "Lestname",
+          "Age",
+          "Birthday",
+          "Department",
+          "Status",
+          "Telephone",
+        ],
+        ...dataRoll,
+      ]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.writeFile(wb, `RollLeaf_.xlsx`);
+    }
   };
 
   const [selectedRows, setSelectedRows] = useState([]);
@@ -253,9 +276,9 @@ function IdProgrammer() {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end", // จัดตำแหน่งปุ่มทางขวา
+          justifyContent: "flex-end", 
           margin: "100px 200px 0px 200px",
-          // border: "1px solid red",
+          
         }}
       >
         <Button
@@ -276,16 +299,9 @@ function IdProgrammer() {
         >
           Export
         </Button>
+      
 
-        {/* <CSVLink data={dataRoll} filename={"programmer_data.csv"}>
-          <Button
-            style={{ borderRadius: "30px", marginLeft: "10px" }}
-            size="large"
-            variant="contained"
-          >
-            DOWNLOAD
-          </Button>
-        </CSVLink> */}
+     
       </div>
 
       <table>

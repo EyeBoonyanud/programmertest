@@ -1,25 +1,17 @@
 import React, { useRef } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import html2pdf from "html2pdf.js";
+import jsPDF from "jspdf";
 
-const PdfViewer = () => {
+
+const PDFdata = () => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const tableRef = useRef();
   const downloadAsPDF = () => {
     const input = tableRef.current;
-
-    // กำหนด options สำหรับ html2pdf
-    const options = {
-      margin: 10,
-      filename: "your-file-name.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-    };
-
-    html2pdf().from(input).set(options).outputPdf();
+    html2pdf(input);
+  
   };
-
   return (
     <>
       <table
@@ -252,4 +244,4 @@ const PdfViewer = () => {
   );
 };
 
-export default PdfViewer;
+export default PDFdata;

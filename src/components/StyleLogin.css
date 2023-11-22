@@ -36,4 +36,130 @@ font-size: 20px;
     background-color: #c8daff;
   }
 
- 
+  .receipt-box {
+    /* height: 200mm;
+    width: 210mm; */
+    width: 793.706px;
+    height: 1122.52px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    border: 2px solid #e4e4e4;
+  }
+  .receipt-modal-header {
+    border-bottom: 1px solid #fff;
+    color: #fff;
+  }
+   
+  .receipt-box .actual-receipt {
+    width: 100%;
+    display: flex;
+  }
+   
+  .btnMaterialRetrive {
+    width: 100px;
+    margin-left: 10px !important;
+  }
+  .tbMaterialdiv {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+  }
+  .tbMaterialContainer {
+    width: 600px !important;
+    /* width: 1000px !important; */
+    border: 2px solid #026767 !important;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .tbMaterialT {
+    color: white;
+    background: #026767;
+    position: sticky;
+    top: 0;
+  }
+  .tbMaterialT th {
+    color: white;
+    text-align: center;
+    font-weight: 600 !important;
+  }
+  .tbMaterialTD {
+    text-align: center !important;
+  }
+  .tbMaterialContainer::-webkit-scrollbar {
+    width: 15px;
+  }
+   
+  .tbMaterialContainer::-webkit-scrollbar-track {
+    background-color: #02676716;
+    border-radius: 100px;
+  }
+   
+  .tbMaterialContainer::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+    background-color: #02676790;
+  }
+   
+  .btnMaterialReturn {
+    display: flex;
+    justify-content: center;
+    margin-left: 50px;
+  }
+  .tb1 {
+    border: 1px solid black !important;
+    border-collapse: collapse;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
+  }
+   
+  .tb1 th {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+  }
+   
+  .tb1 th {
+    background-color: #f2f2f2;
+  }
+  .tb1 .tb1header {
+    border-right: 1px solid black !important;
+    border-bottom: 1px solid black !important;
+  }
+  .app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #d1e8ff;
+  }
+   
+  .download-button {
+    display: inline-block;
+    background-color: #5a8fd5;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+   
+  .download-button:hover {
+    background-color: #3a68b7;
+  }
+
+  /* CSS ที่ใช้กำหนดรูปแบบการพิมพ์ */
+@media print {
+    @page {
+      size: landscape; /* กำหนดเป็นแนวนอน */
+      margin: 10mm; /* กำหนดขอบข้างเมื่อพิมพ์ */
+    }
+  
+    /* เพิ่มสไตล์ที่คุณต้องการที่นี่ */
+  }
+  

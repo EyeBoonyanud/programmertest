@@ -7,10 +7,11 @@ import DataPro from "./components/DataePro";
 import DataDept from "./components/DetaDept";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./components/Home";
-import Login from './components/Login';
-import PdfViewer from './components/PdfViewer';
+import Login from "./components/Login";
+import PdfViewer from "./components/PdfViewer";
+import PdfData from "./components/PDFdata";
 
-const pdfUrl = 'https://example.com/path/to/your/pdf/document.pdf';
+const pdfUrl = "https://example.com/path/to/your/pdf/document.pdf";
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 root.render(
@@ -25,13 +26,14 @@ function App({}) {
   return (
     <>
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path="/Page1" element={<Page1 />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Sidebar" element={<SideBar />} />
         <Route path="/DataPro" element={<DataPro />} />
         <Route path="/DataDept" element={<DataDept />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/PDF" element={<PdfViewer pdfUrl={pdfUrl} />} />
+        <Route path="/PDF" element={<PdfViewer />} />
+        <Route path="/PDFData" element={<PdfData />} />
       </Routes>
     </>
   );
