@@ -36,7 +36,10 @@ const PdfViewer = () => {
           <td colSpan="5">FAM : 01-2345-67-8901</td>
         </tr>
         <tr>
-          <td colSpan="2" style={{ border: "1px solid black" }}>
+          <td
+            colSpan="2"
+            style={{ border: "1px solid black"}}
+          >
             &nbsp; 1) Requester
           </td>
           <td colSpan="4" style={{ border: "1px solid black" }}>

@@ -27,6 +27,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import Test from "./SideBar";
 import axios from "axios";
 import "./StyleLogin.css";
+import Header from "./Header";
 
 function Page1() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); //ตัวแปรเปิดปิด Sidebar
@@ -209,27 +210,8 @@ function Page1() {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleSidebar}
-          >
-            <MenuIcon />
-            <Test isOpen={isSidebarOpen} onClose={toggleSidebar} />
-          </IconButton>
-
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          ></Typography>
-        </Toolbar>
-      </AppBar>
+    <Header/>
+     
 
       <div style={{ margin: "0px 50px 0px 50px" }}>
         <div style={{ marginTop: "80px" }}>

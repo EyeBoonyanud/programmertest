@@ -21,6 +21,8 @@ import Checkbox from "@mui/material/Checkbox";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import * as XLSX from "xlsx";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import { useNavigate } from "react-router-dom";
+
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -269,6 +271,10 @@ function IdProgrammer() {
     // นำ selectedData ไปใช้ต่อตามที่คุณต้องการ
     console.log("Selected Data:", selectedData);
   };
+  const navigate = useNavigate();
+  const GoPDF = () =>{
+    navigate('/PDFData');
+  }
 
   return (
     <div>
@@ -298,6 +304,17 @@ function IdProgrammer() {
           onClick={exportToExcelTable1}
         >
           Export
+        </Button>
+        
+        <Button
+          style={{ borderRadius: "30px" }}
+          component="label"
+          variant="contained"
+          startIcon={<FileDownloadIcon />}
+          className="btnExport"
+          onClick={GoPDF}
+        >
+         PDF
         </Button>
       
 
