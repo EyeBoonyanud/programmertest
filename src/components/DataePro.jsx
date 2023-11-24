@@ -22,7 +22,7 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import * as XLSX from "xlsx";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useNavigate } from "react-router-dom";
-
+import PDFdata from "./PDFdata";
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -207,12 +207,12 @@ function IdProgrammer() {
 
   dataExport.push(...sortedTableFirst);
 
-  // ออกExport Data for Excel 
+  // ออกExport Data for Excel
   const exportToExcelTable1 = () => {
     const selectedData = dataRoll.filter((item) =>
       selectedRows.includes(item[0])
     );
-  
+
     if (selectedRows.length > 0 && selectedData.length > 0) {
       // ถ้ามี checkbox ถูกเลือก
       const ws = XLSX.utils.aoa_to_sheet([
@@ -261,20 +261,26 @@ function IdProgrammer() {
       // ถ้า ID ยังไม่อยู่ใน selectedRows ให้เพิ่มเข้าไป
       setSelectedRows((prev) => [...prev, id]);
     }
+    // เรียกฟังก์ชัน onSelectedRows ที่ถูกส่งมาจาก `PDFData`
+    onSelectedRows(selectedRows);
   };
 
-  // สร้าง function สำหรับ Export ที่เลือก
+  // สร้าง function สำหรับ PDF ที่เลือก
   const exportSelectedRows = () => {
     const selectedData = dataRoll.filter((item) =>
       selectedRows.includes(item[0])
     );
     // นำ selectedData ไปใช้ต่อตามที่คุณต้องการ
     console.log("Selected Data:", selectedData);
+    navigate("/PDFdata", { state: { selectedData } }); //ส่งค่าparameter ไปพร้อมกับ navigate
   };
   const navigate = useNavigate();
-  const GoPDF = () =>{
-    navigate('/PDFData');
-  }
+
+
+  
+  // const GoPDF = () =>{
+  //   navigate('/PDFData');
+  // }
 
   return (
     <div>
@@ -282,9 +288,8 @@ function IdProgrammer() {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end", 
+          justifyContent: "flex-end",
           margin: "100px 200px 0px 200px",
-          
         }}
       >
         <Button
@@ -305,20 +310,17 @@ function IdProgrammer() {
         >
           Export
         </Button>
-        
+
         <Button
           style={{ borderRadius: "30px" }}
           component="label"
           variant="contained"
           startIcon={<FileDownloadIcon />}
           className="btnExport"
-          onClick={GoPDF}
+          onClick={exportSelectedRows}
         >
-         PDF
+          PDF
         </Button>
-      
-
-     
       </div>
 
       <table>
@@ -522,13 +524,13 @@ function IdProgrammer() {
                   key={index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                 <TableCell>
-  <Checkbox
-    {...label}
-    onChange={() => handleCheckboxChange(item[0])}
-    checked={selectedRows.includes(item[0])}
-  />
-</TableCell>
+                  <TableCell>
+                    <Checkbox
+                      {...label}
+                      onChange={() => handleCheckboxChange(item[0])}
+                      checked={selectedRows.includes(item[0])}
+                    />
+                  </TableCell>
                   <TableCell>{item[0]}</TableCell>
                   <TableCell>{item[1]}</TableCell>
                   <TableCell>{item[2]}</TableCell>
