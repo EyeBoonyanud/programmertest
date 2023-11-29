@@ -18,6 +18,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const location = useLocation();
   const usernameElement = location.state?.user || [];
   const [mail, setMail] = useState("");
+  const [name, setName] =useState("");
   console.log("uuuuu", usernameElement);
   const handleDept = (event) => {
     setSelectedDepartment(event.target.value || (SendID ? SendID[5] : ""));
@@ -92,7 +93,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
             const sendemail = axios.post("http://localhost:3000/sendEmail", {
               toEmail: mail,
               subject: "Subject of the Email",
-              emailMessage: `แก้ไขข้อมูล${SendID[0]}`,
+              emailMessage: `แก้ไขข้อมูล${SendID[0]} by ${name} `,
             });
 
             Swal.fire({
@@ -125,6 +126,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
       if (response.data.length > 0) {
         console.log("ttttt", response.data);
         setMail(response.data[0]);
+        setName(response.data[1]);
         
         // console.log("Check", emailMessage);
       }

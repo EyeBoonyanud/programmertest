@@ -657,13 +657,14 @@ app.post('/sendEmail', async (req, res) => {
 app.get("/getSendEmail", async (req, res) => {
   try {
     const strIDMail = req.query.InputEMAIL;
+   
     
     const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
     const result = await connection.execute(
       `
-      SELECT  F_EMAIL
+      SELECT  F_EMAIL , F_NAME
       FROM TRAIN_PROGRAMMER_PERSON
-      WHERE F_ID_CODE = :id
+      WHERE F_ID_CODE = :id     
       `,
       {
         id: strIDMail,
