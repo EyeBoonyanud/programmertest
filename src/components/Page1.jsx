@@ -17,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -210,8 +211,7 @@ function Page1() {
 
   return (
     <>
-    <Header/>
-     
+      <Header />
 
       <div style={{ margin: "0px 50px 0px 50px" }}>
         <div style={{ marginTop: "80px" }}>
@@ -297,8 +297,8 @@ function Page1() {
               </Select>
             </FormControl>
             <FormControl sx={{ width: "220px", marginRight: "5px" }}>
-              <InputLabel htmlFor="Department">Department</InputLabel>
-              <Select
+              <InputLabel htmlFor="Department"></InputLabel>
+              <Autocomplete
                 id="Department"
                 size="small"
                 style={{
@@ -308,17 +308,20 @@ function Page1() {
                   marginTop: "10px",
                   marginRight: "5px",
                 }}
-                value={selectedDepartment}
-                onChange={(e) => {
-                  setSelectedDepartment(e.target.value);
+                options={departmentOptions}
+                getOptionLabel={(item) => item[1]}
+                value={
+                  departmentOptions.find(
+                    (item) => item[0] === selectedDepartment
+                  ) || null
+                }
+                onChange={(e, newValue) => {
+                  setSelectedDepartment(newValue ? newValue[0] : "");
                 }}
-              >
-                {departmentOptions.map((item) => (
-                  <MenuItem key={item[1]} value={item[0]}>
-                    {item[1]}
-                  </MenuItem>
-                ))}
-              </Select>
+                renderInput={(params) => (
+                  <TextField {...params} label="Department" />
+                )}
+              />
             </FormControl>
             <Button
               onClick={Search}

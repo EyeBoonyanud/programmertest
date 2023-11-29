@@ -10,6 +10,8 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import PdfViewer from "./components/PdfViewer";
 import PdfData from "./components/PDFdata";
+// import TestPDF from "./components/TestPDF";
+import Email from "./components/Email";
 
 const pdfUrl = "https://example.com/path/to/your/pdf/document.pdf";
 const rootElement = document.getElementById("root");
@@ -34,6 +36,8 @@ function App({}) {
         <Route path="/DataDept" element={<DataDept />} />
         <Route path="/PDF" element={<PdfViewer />} />
         <Route path="/PDFData" element={<PdfData />} />
+        {/* <Route path="/TestPDF" element={<TestPDF />} /> */}
+        <Route path="/Email" element={<Email />} />
       </Routes>
     </>
   );

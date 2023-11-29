@@ -7,12 +7,18 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
-import { format } from 'date-fns';
+import { format } from "date-fns";
+import { useLocation } from "react-router-dom";
+
 function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [dataRoll, setDataRoll] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState([]);
+  const location = useLocation();
+  const usernameElement = location.state?.user || [];
+  const [mail, setMail] = useState("");
+  console.log("uuuuu", usernameElement);
   const handleDept = (event) => {
     setSelectedDepartment(event.target.value || (SendID ? SendID[5] : ""));
   };
@@ -35,18 +41,15 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   useEffect(() => {
     if (SendID && SendID[4]) {
       const date = new Date(SendID[4]);
-      const formattedDate = format(date, 'yyyy-MM-dd');
+      const formattedDate = format(date, "yyyy-MM-dd");
       setSelectedDate(formattedDate);
     }
   }, [SendID]);
 
-
-
-
-
   console.log("date", selectedDate);
 
   // dropdawn status
+
   const Save = () => {
     const ID = document.getElementById("ID").value;
     const FirstName = document.getElementById("Name").value;
@@ -85,17 +88,27 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
         // console.log("Added Data:", addedData);
 
         if (response.status === 200) {
-          Swal.fire({
-            title: "completed",
-            text: "",
-            icon: "success",
-            confirmButtonText: "Close!",
-          }).then((response) => {
-            if (response.isConfirmed) {
-              window.location.reload();
-              closeEditModal();
-            }
-          });
+          try {
+            const sendemail = axios.post("http://localhost:3000/sendEmail", {
+              toEmail: mail,
+              subject: "Subject of the Email",
+              emailMessage: `แก้ไขข้อมูล${SendID[0]}`,
+            });
+
+            Swal.fire({
+              title: "completed",
+              text: "",
+              icon: "success",
+              confirmButtonText: "Close!",
+            }).then((response) => {
+              if (response.isConfirmed) {
+                window.location.reload();
+                closeEditModal();
+              }
+            });
+          } catch (error) {
+            console.error("Error sending email:", error);
+          }
         }
       })
 
@@ -103,6 +116,39 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
         console.error("Error:", error);
       });
   };
+
+  useEffect(() => {
+    const GetDataMail = async () => {
+      const response = await axios.get(
+        `http://localhost:3000/getSendEmail?InputEMAIL=${usernameElement}`
+      );
+      if (response.data.length > 0) {
+        console.log("ttttt", response.data);
+        setMail(response.data[0]);
+        
+        // console.log("Check", emailMessage);
+      }
+
+    };
+    GetDataMail()
+  }, []);
+  
+console.log("mailมาแล้ว",mail);
+ 
+
+  // const sendEmail = async () => {
+  //   try {
+  //     const response = await axios.post("http://localhost:3000/sendEmail", {
+  //       toEmail: 'boonyanucheye123@gmail.com',
+  //       subject: "Subject of the Email",
+  //       emailMessage:`แก้ไขข้อมูล${SendID[0]}` ,
+  //     });
+
+  //     console.log(response.data.message);
+  //   } catch (error) {
+  //     console.error("Error sending email:", error);
+  //   }
+  // };
   const [status, setStatus] = useState("");
   const handleStatus = (event) => {
     setStatus(event.target.value || (SendID ? SendID[6] : ""));
@@ -180,11 +226,9 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
                   size="small"
                   label=""
                   id="ID"
-                  inputProps={
-                    {
-                   
-                       readOnly: true }
-                }
+                  inputProps={{
+                    readOnly: true,
+                  }}
                 />
               </div>
             </div>
@@ -290,25 +334,25 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
                   </select>
                 </FormControl> */}
                 <FormControl sx={{ width: "300px", marginRight: "5px" }}>
-  <Select
-    value={selectedDepartment || (SendID ? SendID[8] : "")}
-    onChange={(e) => {
-      setSelectedDepartment(e.target.value);
-    }}
-    size="small"
-  >
- {SendID && SendID[5] && (
-  <MenuItem key={SendID[5]} value={SendID[5]}>
-    {/* {SendID[5]} */}
-  </MenuItem>
-)}
-    {departmentOptions.map((item) => (
-      <MenuItem key={item[1]} value={item[0]}>
-        {item[1]}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+                  <Select
+                    value={selectedDepartment || (SendID ? SendID[8] : "")}
+                    onChange={(e) => {
+                      setSelectedDepartment(e.target.value);
+                    }}
+                    size="small"
+                  >
+                    {SendID && SendID[5] && (
+                      <MenuItem key={SendID[5]} value={SendID[5]}>
+                        {/* {SendID[5]} */}
+                      </MenuItem>
+                    )}
+                    {departmentOptions.map((item) => (
+                      <MenuItem key={item[1]} value={item[0]}>
+                        {item[1]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
             </div>
             <div class="row">

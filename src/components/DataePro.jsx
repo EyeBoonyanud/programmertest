@@ -97,7 +97,7 @@ function IdProgrammer() {
   };
 
   // Save Oncilck
-  const Save = () => {
+  const Save =  () => {
     const ID = document.getElementById("ID").value;
     const FirstName = document.getElementById("Name").value;
     const Lastname = document.getElementById("Last").value;
@@ -130,6 +130,7 @@ function IdProgrammer() {
         // const addedData = response.data;
         console.log("", departmentOptions);
         if (response.status === 200) {
+       
           Swal.fire({
             title: "Value Inserted !",
             text: "",
@@ -146,6 +147,9 @@ function IdProgrammer() {
         console.error("Error:", error);
       });
   };
+
+ 
+
   // Delete
   const Delete = async (ID) => {
     console.log(ID);

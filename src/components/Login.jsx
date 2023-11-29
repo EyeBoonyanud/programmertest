@@ -11,6 +11,10 @@ function Login() {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
+  // navigate('/EditPro', { state: { usernameElement } }); 
+
+
+
   const handleLogin = async () => {
     const usernameElement = document.getElementById("Username");
     const passwordElement = document.getElementById("Password");
@@ -18,7 +22,7 @@ function Login() {
     if (usernameElement && passwordElement) {
       const user = usernameElement.value;
       const password = passwordElement.value;
-  
+     
       try {
         const response = await fetch(`http://localhost:3000/getLogin?username=${user}&password=${password}`);
   
@@ -28,7 +32,7 @@ function Login() {
   
           
           if (data && data.length > 0) {
-            navigate('/Page1'); 
+            navigate('/DataPro', { state: { user } }); 
           } else {
             console.error('Login failed');
             alert('Invalid username or password');

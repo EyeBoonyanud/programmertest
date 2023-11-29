@@ -1,7 +1,13 @@
 const express = require("express");
 const oracledb = require("oracledb");
+const nodemailer = require(
+  'nodemailer'
+  );
+
 const app = express();
+const fs = require('fs');
 const port = 3000;
+
 oracledb.initOracleClient({
   tnsAdmin: "D:\\app\\Administrator\\product\\11.2.0\\client_1\\network\\admin",
   
@@ -11,7 +17,6 @@ const DBfpc_fpc_pctt = {
   password: "fpc",
   connectString: "PCTTLIV",
 };
-
 
 
 app.use((req, res, next) => {
@@ -611,6 +616,68 @@ app.get("/getDepartments", async (req, res) => {
   }
 });
 
+  
+app.use(express.json());
+ 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'paiboon.wongthongdee@gmail.com',
+    pass: 'gnrh cfpo xzop dsyg',
+  },
+});
+ 
+app.post('/sendEmail', async (req, res) => {
+
+ 
+  try {
+    const pdfAttachment = fs.readFileSync('D:/API Outsystem/Test React Native/src/assets/Testpdf.pdf');
+    const mailOptions = {
+      from: 'paiboon.wongthongdee@gmail.com',
+      to: req.body.toEmail,
+      subject: req.body.subject,
+      text: req.body.emailMessage,
+      attachments: [
+        {
+          filename: 'TestPdf.pdf', 
+          content: pdfAttachment,
+        },
+      ],
+    };
+ 
+    console.log("Email Sended")
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'An error occurred while sending email' });
+  }
+});
+ 
+app.get("/getSendEmail", async (req, res) => {
+  try {
+    const strIDMail = req.query.InputEMAIL;
+    
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const result = await connection.execute(
+      `
+      SELECT  F_EMAIL
+      FROM TRAIN_PROGRAMMER_PERSON
+      WHERE F_ID_CODE = :id
+      `,
+      {
+        id: strIDMail,
+      }
+    );
+    connection.release();
+    const rows = result.rows;
+    // console.log(rows);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching Data:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
