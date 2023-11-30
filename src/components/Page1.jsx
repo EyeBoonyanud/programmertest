@@ -29,9 +29,10 @@ import Test from "./SideBar";
 import axios from "axios";
 import "./StyleLogin.css";
 import Header from "./Header";
+import { useLocation } from "react-router-dom";
+
 
 function Page1() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); //ตัวแปรเปิดปิด Sidebar
   const [isSearch, setSearch] = useState([]); //ตัวแปร Search
   const [checkHead, setCheckHead] = useState("hidden"); //ตัวแปรเช็คค่าของ ตาราง
   const [checkEmpty, setCheckEmpty] = useState("hidden"); // ตัวแปรเช็คค่าว่าง
@@ -40,9 +41,10 @@ function Page1() {
   const [isFirstSearchDone, setIsFirstSearchDone] = useState(false); //ตัวแปรใช้สำหรับ check การซ่อนปุ่มเมื่อมีการ Search ของปุ่มแรกไปแล้ว ให้เป็น true ไปก่อน
   // const [isDataSecond, setisDataSecond] = useState([]);
   // ตัว 3 ขีด เอาไว้บอกว่าเปิดหรือปิด
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const location = useLocation();
+  const usernameElement = location.state?.user || []
+  console.log("User เข้าแล่ว",usernameElement)
+  
 
   // ชุดเก็บค่าของ status
   const [status, setStatus] = useState("");
@@ -207,7 +209,7 @@ function Page1() {
     document.getElementById("Search").value = "";
     document.getElementById("Name").value = "";
   };
-  console.log(isSearch, "//////////");
+ 
 
   return (
     <>

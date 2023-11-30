@@ -4,6 +4,7 @@ import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./StyleLogin.css";
 
+
 function Login() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
@@ -11,112 +12,114 @@ function Login() {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
-  // navigate('/EditPro', { state: { usernameElement } }); 
-
-
+  // navigate('/EditPro', { state: { usernameElement } });
 
   const handleLogin = async () => {
     const usernameElement = document.getElementById("Username");
     const passwordElement = document.getElementById("Password");
-  
+
     if (usernameElement && passwordElement) {
       const user = usernameElement.value;
       const password = passwordElement.value;
-     
+
       try {
-        const response = await fetch(`http://localhost:3000/getLogin?username=${user}&password=${password}`);
-  
+        const response = await fetch(
+          `http://localhost:3000/getLogin?username=${user}&password=${password}`
+        );
+
         if (response.ok) {
           const data = await response.json();
-          console.log('Login successful', data);
-  
-          
+          console.log("Login successful", data);
+
           if (data && data.length > 0) {
-            navigate('/DataPro', { state: { user } }); 
+            localStorage.setItem("token", user);
+            navigate("/Page1", { state: { user } });
+         
           } else {
-            console.error('Login failed');
-            alert('Invalid username or password');
+            console.error("Login failed");
+            alert("Invalid username or password");
           }
         } else {
-          console.error('Login failed');
-          alert('Invalid username or password');
+          console.error("Login failed");
+          alert("Invalid username or password");
         }
       } catch (error) {
-        console.error('Error during login:', error);
+        console.error("Error during login:", error);
       }
     } else {
-      console.error('Username or password element not found');
+      console.error("Username or password element not found");
     }
   };
-  
 
   return (
-    <div className="ALL">
-      <div className="BB">
-        <div className="formLogin">
-          <div className="row">
-            <div className="col-6">
-              <div className="SS"></div>
-            </div>
-            <div className="col-6">
-              <Form
-                name="normal_login"
-                className="login-form"
-                initialValues={{
-                  remember: true,
-                }}
-                onFinish={onFinish}
-              >
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your Username!",
-                    },
-                  ]}
+   
+      <div className="ALL">
+        <div className="BB">
+          <div className="formLogin">
+            <div className="row">
+              <div className="col-6">
+                <div className="SS"></div>
+              </div>
+              <div className="col-6">
+                <Form
+                  name="normal_login"
+                  className="login-form"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={onFinish}
                 >
-                  <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    id="Username"
-                    onChange={(e) => setUser(e.target.value)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your Password!",
-                    },
-                  ]}
-                >
-                  <Input
-                    prefix={<LockOutlined className="site-form-item-icon" />}
-                    type="password"
-                    id="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </Form.Item>
-                <Form.Item>
-                  <Button
-                    style={{
-                      fontSize: "20px",
-                      width: "100px",
-                      height: "50px",
-                    }}
-                    type="primary"
-                    htmlType="submit"
-                    className="login-form-button"
-                    onClick={handleLogin}
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Username!",
+                      },
+                    ]}
                   >
-                    Log in
-                  </Button>
-                </Form.Item>
-              </Form>
+                    <Input
+                      prefix={<UserOutlined className="site-form-item-icon" />}
+                      id="Username"
+                      onChange={(e) => setUser(e.target.value)}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Password!",
+                      },
+                    ]}
+                  >
+                    <Input
+                      prefix={<LockOutlined className="site-form-item-icon" />}
+                      type="password"
+                      id="Password"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button
+                      style={{
+                        fontSize: "20px",
+                        width: "100px",
+                        height: "50px",
+                      }}
+                      type="primary"
+                      htmlType="submit"
+                      className="login-form-button"
+                      onClick={handleLogin}
+                    >
+                      Log in
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    
   );
 }
 

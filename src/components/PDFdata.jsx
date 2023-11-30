@@ -61,6 +61,7 @@ function PDFdata() {
         {selectedData.map((item, index) => (
           <div style={{ padding: "30px" }} key={item[0]}>
             <table
+           
               className="bordertable"
               ref={(el) => (tableRef.current[index] = el)}
               style={{

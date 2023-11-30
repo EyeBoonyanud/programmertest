@@ -8,10 +8,14 @@ const app = express();
 const fs = require('fs');
 const port = 3000;
 
+
+
 oracledb.initOracleClient({
   tnsAdmin: "D:\\app\\Administrator\\product\\11.2.0\\client_1\\network\\admin",
-  
+
 });
+
+
 const DBfpc_fpc_pctt = {
   user: "fpc",
   password: "fpc",
@@ -70,6 +74,7 @@ app.get("/getLogin", async (req, res) => {
     // await connection.close();
   }
 });
+
 
 
 

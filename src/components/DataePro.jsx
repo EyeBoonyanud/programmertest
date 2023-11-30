@@ -16,7 +16,6 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import EditPro from "./EditPro";
 import Tooltip from "@mui/material/Tooltip";
-// import { CSVLink } from "react-csv";
 import Checkbox from "@mui/material/Checkbox";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import * as XLSX from "xlsx";
@@ -39,7 +38,6 @@ function IdProgrammer() {
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
-  //เอาไว้ส่งค่าไปหน้า Edit
   const handleOpenEdit = (itemId) => {
     const selectedRow = data.find((item) => item[0] === itemId);
     if (selectedRow) {
@@ -52,7 +50,7 @@ function IdProgrammer() {
   const handleDept = (event) => {
     setSelectedDepartment(event.target.value);
   };
-
+  
   useEffect(() => {
     async function fetchData() {
       try {
@@ -265,8 +263,7 @@ function IdProgrammer() {
       // ถ้า ID ยังไม่อยู่ใน selectedRows ให้เพิ่มเข้าไป
       setSelectedRows((prev) => [...prev, id]);
     }
-    // เรียกฟังก์ชัน onSelectedRows ที่ถูกส่งมาจาก `PDFData`
-    onSelectedRows(selectedRows);
+   
   };
 
   // สร้าง function สำหรับ PDF ที่เลือก

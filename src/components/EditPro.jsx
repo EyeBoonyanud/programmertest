@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -8,37 +8,27 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
-import { useLocation } from "react-router-dom";
+
 
 function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [dataRoll, setDataRoll] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState([]);
-  const location = useLocation();
-  const usernameElement = location.state?.user || [];
   const [mail, setMail] = useState("");
-  const [name, setName] =useState("");
-  console.log("uuuuu", usernameElement);
-  const handleDept = (event) => {
-    setSelectedDepartment(event.target.value || (SendID ? SendID[5] : ""));
-  };
+  const [name, setName] = useState("");
 
+
+ 
+  const user = localStorage.getItem("token");
+  console.log("User ส่งมาแล้ว", user);
+  
   const [selectedDate, setSelectedDate] = useState("");
   useEffect(() => {
     if (SendID && SendID[5]) {
       setSelectedDepartment(SendID[5]);
     }
   }, [SendID]);
-
-  // useEffect(() => {
-  //   if (SendID && SendID[4]) {
-  //     const date = new Date(SendID[4]);
-  //     const formattedDate = date.toISOString().split("T")[0];
-  //     setSelectedDate(formattedDate);
-  //   }
-  // }, [SendID]);
-
   useEffect(() => {
     if (SendID && SendID[4]) {
       const date = new Date(SendID[4]);
@@ -49,7 +39,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
 
   console.log("date", selectedDate);
 
-  // dropdawn status
+
 
   const Save = () => {
     const ID = document.getElementById("ID").value;
@@ -121,22 +111,21 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
   useEffect(() => {
     const GetDataMail = async () => {
       const response = await axios.get(
-        `http://localhost:3000/getSendEmail?InputEMAIL=${usernameElement}`
+        `http://localhost:3000/getSendEmail?InputEMAIL=${user}`
       );
       if (response.data.length > 0) {
-        console.log("ttttt", response.data);
-        setMail(response.data[0]);
-        setName(response.data[1]);
-        
+        console.log("ttttt", response.data[1]);
+        setMail(response.data[0][0]);
+        setName(response.data[0][1]);
+
         // console.log("Check", emailMessage);
       }
-
     };
-    GetDataMail()
+    GetDataMail();
   }, []);
-  
-console.log("mailมาแล้ว",mail);
- 
+
+  console.log("mailมาแล้ว", mail);
+  console.log("name จ้า ", name);
 
   // const sendEmail = async () => {
   //   try {
@@ -151,6 +140,7 @@ console.log("mailมาแล้ว",mail);
   //     console.error("Error sending email:", error);
   //   }
   // };
+
   const [status, setStatus] = useState("");
   const handleStatus = (event) => {
     setStatus(event.target.value || (SendID ? SendID[6] : ""));
@@ -420,5 +410,7 @@ console.log("mailมาแล้ว",mail);
     </div>
   );
 }
+
+
 
 export default EditPro;
