@@ -8,19 +8,24 @@ import { useLocation } from "react-router-dom";
 
 function PDFdata() {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const tableRef = useRef([]); 
+  const tableRef = useRef([]);
   const location = useLocation();
   const selectedData = location.state?.selectedData || [];
- 
+
+  let x = [];
+  x = selectedData;
+  console.log("gggg", x);
+  console.log("ข้อมูล", selectedData);
   const downloadAsPDF = () => {
     const container = document.createElement("bordertable");
- 
+
     tableRef.current.forEach((item, index) => {
       const clone = item.cloneNode(true);
       container.appendChild(clone);
-      clone.style.marginBottom = index < tableRef.current.length -1 ? "11px" : "0";
+      clone.style.marginBottom =
+        index < tableRef.current.length - 1 ? "11px" : "0";
     });
- 
+
     const options = {
       margin: 10,
       filename: "exported-file.pdf",
@@ -28,13 +33,10 @@ function PDFdata() {
       html2canvas: { scale: 2 },
       jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
     };
-    
+
     html2pdf(container, options);
   };
-  // useEffect(() => {
-  //   console.log("tableRef.current:", selectedData);
-  // }, [selectedData]);
- 
+
   return (
     <>
       <div>
@@ -57,11 +59,10 @@ function PDFdata() {
             Download as PDF
           </Button>
         </div>
-        
+
         {selectedData.map((item, index) => (
           <div style={{ padding: "30px" }} key={item[0]}>
             <table
-           
               className="bordertable"
               ref={(el) => (tableRef.current[index] = el)}
               style={{
@@ -195,103 +196,13 @@ function PDFdata() {
                 <td>Book Value (Baht)</td>
                 <td>New Cost Center</td>
               </tr>
-             
-              <tr style={{ height: "25px" }}>
-                <td >{item[1]}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr> 
-              <tr style={{ height: "25px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>{" "}
-              <tr style={{ height: "25px" }}>
-                <td> </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>{" "}
-              <tr style={{ height: "25px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>{" "}
-              <tr style={{ height: "25px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr style={{ height: "25px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr style={{ height: "25px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr style={{ height: "25px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
+              {x.map((item, index) => (
+                <tr key={index} style={{ height: "25px" }}>
+                  {item.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
               <tr
                 style={{
                   height: "25px",

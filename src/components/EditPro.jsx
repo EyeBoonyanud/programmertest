@@ -75,8 +75,7 @@ function EditPro({ modalIsOpen, closeEditModal, onCancel, SendID }) {
         }&telephone=${Telephone}`
       )
       .then((response) => {
-        // const addedData = response.data;
-        // console.log("Added Data:", addedData);
+      
 
         if (response.status === 200) {
           try {

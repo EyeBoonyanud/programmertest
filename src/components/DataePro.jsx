@@ -50,7 +50,7 @@ function IdProgrammer() {
   const handleDept = (event) => {
     setSelectedDepartment(event.target.value);
   };
-  
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -82,20 +82,14 @@ function IdProgrammer() {
     return date.toLocaleDateString(undefined, options);
   }
 
-  //dropdawn department
-  // const [department, setDept] = useState("");
-  // const handleDept = (event) => {
-  //   setDept(event.target.value);
-  // };
 
-  // dropdawn status
   const [status, setStatus] = useState([]);
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
 
   // Save Oncilck
-  const Save =  () => {
+  const Save = () => {
     const ID = document.getElementById("ID").value;
     const FirstName = document.getElementById("Name").value;
     const Lastname = document.getElementById("Last").value;
@@ -128,7 +122,6 @@ function IdProgrammer() {
         // const addedData = response.data;
         console.log("", departmentOptions);
         if (response.status === 200) {
-       
           Swal.fire({
             title: "Value Inserted !",
             text: "",
@@ -145,8 +138,6 @@ function IdProgrammer() {
         console.error("Error:", error);
       });
   };
-
- 
 
   // Delete
   const Delete = async (ID) => {
@@ -263,7 +254,6 @@ function IdProgrammer() {
       // ถ้า ID ยังไม่อยู่ใน selectedRows ให้เพิ่มเข้าไป
       setSelectedRows((prev) => [...prev, id]);
     }
-   
   };
 
   // สร้าง function สำหรับ PDF ที่เลือก
@@ -277,8 +267,6 @@ function IdProgrammer() {
   };
   const navigate = useNavigate();
 
-
-  
   // const GoPDF = () =>{
   //   navigate('/PDFData');
   // }

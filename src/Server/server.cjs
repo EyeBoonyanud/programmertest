@@ -624,14 +624,23 @@ app.get("/getDepartments", async (req, res) => {
   
 app.use(express.json());
  
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: 'paiboon.wongthongdee@gmail.com',
+//     pass: 'gnrh cfpo xzop dsyg',
+//   },
+// });
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: '10.17.220.200', // Replace with your SMTP server's IP address
+  port: 25, // Replace with your SMTP server's port
+  secure: false, // Set to true if using SSL/TLS
   auth: {
     user: 'paiboon.wongthongdee@gmail.com',
     pass: 'gnrh cfpo xzop dsyg',
   },
 });
- 
+
 app.post('/sendEmail', async (req, res) => {
 
  
