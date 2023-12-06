@@ -82,7 +82,6 @@ function IdProgrammer() {
     return date.toLocaleDateString(undefined, options);
   }
 
-
   const [status, setStatus] = useState([]);
   const handleStatus = (event) => {
     setStatus(event.target.value);
@@ -244,15 +243,32 @@ function IdProgrammer() {
       XLSX.writeFile(wb, `RollLeaf_.xlsx`);
     }
   };
-
+  const [selectAll, setSelectAll] = useState(false);
+  const handleSelectAll = () => {
+    const allIds = dataRoll.map((item) => item[0]);
+    if (selectAll) {
+      // ถ้าเลือกทั้งหมดให้ยกเลิกการเลือกทั้งหมด
+      setSelectedRows([]);
+    } else {
+      // ถ้ายังไม่ได้เลือกทั้งหมดให้ทำการเลือกทั้งหมด
+      setSelectedRows(allIds);
+    }
+    // สลับสถานะ SelectAll
+    setSelectAll(!selectAll);
+  };
   const [selectedRows, setSelectedRows] = useState([]);
   const handleCheckboxChange = (id) => {
-    if (selectedRows.includes(id)) {
-      // ถ้า ID อยู่ใน selectedRows แล้ว ให้นำออก
-      setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
+    if (selectAll) {
+      // ถ้ากด Select All ให้ยกเลิกการเลือกทั้งหมด
+      setSelectAll(false);
+      setSelectedRows([id]);
     } else {
-      // ถ้า ID ยังไม่อยู่ใน selectedRows ให้เพิ่มเข้าไป
-      setSelectedRows((prev) => [...prev, id]);
+      // ถ้ายังไม่ได้กด Select All ให้ทำการเลือกหรือยกเลิกตามปกติ
+      if (selectedRows.includes(id)) {
+        setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
+      } else {
+        setSelectedRows((prev) => [...prev, id]);
+      }
     }
   };
 
@@ -494,7 +510,14 @@ function IdProgrammer() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead sx={{ backgroundColor: "#A7C9FA", align: "left" }}>
               <TableRow>
-                <TableCell>Select</TableCell>
+                <TableCell>
+                  Select{" "}<br></br>
+                  <Checkbox
+                    {...label}
+                    onChange={handleSelectAll}
+                    checked={selectAll}
+                  />
+                </TableCell>
                 <TableCell>Id Code</TableCell>
                 <TableCell>Firstname</TableCell>
                 <TableCell>Lestname</TableCell>

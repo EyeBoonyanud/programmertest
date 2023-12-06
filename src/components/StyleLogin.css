@@ -52,3 +52,32 @@
   border-style: solid;
   border-color: black;
 }
+.bordertabletwo{
+  border-width: 0 1px 0 0 ;
+  border-style: solid;
+  border-color: black;
+  font-size: 12px;
+}
+.bordertabletwo td {
+  text-align:center;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+  border-color: black;
+  
+}
+
+.bordertabletwo th {
+  border-width: 0px 0 0 1px;
+  border-style: solid;
+  border-color: black;
+}
+.bordertablethree {
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+  border-color: black;
+}
+.bordertablethree td{
+  border-width:1px 0 0 1px;
+  border-style: solid;
+  border-color: black;
+}
