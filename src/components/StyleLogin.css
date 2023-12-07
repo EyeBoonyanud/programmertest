@@ -70,6 +70,7 @@
   border-width: 0px 0 0 1px;
   border-style: solid;
   border-color: black;
+
 }
 .bordertablethree {
   border-width: 0 1px 1px 0;
@@ -80,4 +81,8 @@
   border-width:1px 0 0 1px;
   border-style: solid;
   border-color: black;
+  page-break-inside: always;
+}
+.redText {
+  color: red;
 }
