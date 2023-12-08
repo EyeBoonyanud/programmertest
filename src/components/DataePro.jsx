@@ -22,6 +22,9 @@ import * as XLSX from "xlsx";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useNavigate } from "react-router-dom";
 import PDFdata from "./PDFdata";
+import TablePagination from '@mui/material/TablePagination';
+
+
 
 function IdProgrammer() {
   const [dataRoll, setDataRoll] = useState([]);
@@ -50,6 +53,7 @@ function IdProgrammer() {
   const handleDept = (event) => {
     setSelectedDepartment(event.target.value);
   };
+ 
 
   useEffect(() => {
     async function fetchData() {
@@ -289,6 +293,7 @@ function IdProgrammer() {
 
   return (
     <div>
+    
       <Header />
       <div
         style={{
@@ -577,12 +582,17 @@ function IdProgrammer() {
                     </Tooltip>
                   </TableCell>
                 </TableRow>
+                
               ))}
+              
             </TableBody>
+            
           </Table>
         </TableContainer>
       </div>
+   
     </div>
+    
   );
 }
 

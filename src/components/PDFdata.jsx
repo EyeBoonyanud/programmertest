@@ -6,24 +6,57 @@ import Button from "@mui/material/Button";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useLocation } from "react-router-dom";
 import { Tab } from "bootstrap";
-
+import axios from 'axios'
 
 function PDFdata() {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const tableRef = useRef([]);
   const location = useLocation();
   const selectedData = location.state?.selectedData || [];
+  const [selectedDataSubset, setSelectedDataSubset] = useState([]);
+  const [Loopdata , setLoopdata] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const DataResponse = await axios.get(
+          "http://localhost:3000/getDataPro"
+        );
+        const TableData = DataResponse.data;
+        setLoopdata(TableData);
+        console.log("dataloop", TableData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+
   let x = [];
-  let y =[];
+  let y = [];
   x = selectedData;
-  y = selectedData;
-  
-  const numRows1 = 7;
+  y = Loopdata;
+  console.log("X : dataloop : ",x)
+  useEffect(() => {
+    // เมื่อ selectedData เปลี่ยนแปลง, ดึงข้อมูลตั้งแต่ตำแหน่งที่ 21 ถึงตัวสุดท้าย
+    const subset = selectedData.slice(21); // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
+    setSelectedDataSubset(subset);
+  }, [selectedData]);
+  console.log("Y ", selectedDataSubset);
+  const numRows1 = 14;
   const numberOfCellsPerRow1 = 9;
   const numRows = 20;
   const numberOfCellsPerRow = 9;
-  const numRows2 = 20;
+  const numRows2 = 30;
   const numberOfCellsPerRow2 = 9;
+
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
 
   const trCount = x.length;
@@ -46,11 +79,15 @@ function PDFdata() {
   // }, []);
 
   const TableLoop1 = () => (
+
+
+
+    
     <>
       {selectedData.map((item, index) => (
         <div
           className="totaltable"
-          style={{ padding: "30px"}}
+          style={{ padding: "30px" }}
           key={item[0]}
           ref={(el) => (tableRef.current[index] = el)}
         >
@@ -74,14 +111,14 @@ function PDFdata() {
             <tr
               style={{
                 fontSize: "12px",
-                height: "60px",
+                height: "20px",
               }}
             >
               <td colSpan="2">&nbsp; 1) Requester</td>
               <td colSpan="4" className="borcol2">
                 <tr
                   style={{
-                    fontSize: "14px",
+                    fontSize: "12px",
                     height: "30px",
                   }}
                 >
@@ -107,7 +144,7 @@ function PDFdata() {
             <tr
               style={{
                 fontSize: "12px",
-                height: "70px",
+                height: "10px",
               }}
             >
               <td colSpan="2">&nbsp; 2) Type</td>
@@ -182,7 +219,7 @@ function PDFdata() {
               <th>Fixed Assets Number</th>
               <th>Comp.</th>
               <th>Cost Center</th>
-              <th >Fixed Assets Name</th>
+              <th>Fixed Assets Name</th>
               <th>BOI Project</th>
               <th>Qty</th>
               <th>Invoice No.</th>
@@ -213,7 +250,7 @@ function PDFdata() {
           </table>
 
           <table className="bordertablethree" style={{ width: "100%" }}>
-            <tr style={{ height: "70px" }}>
+            <tr style={{ height: "10px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 4) Plan
               </td>
@@ -230,7 +267,7 @@ function PDFdata() {
             <tr
               style={{
                 fontSize: "12px",
-                height: "50px",
+                height: "25px",
               }}
             >
               <td colSpan="2">&nbsp; 5) Service Dept.</td>
@@ -244,7 +281,7 @@ function PDFdata() {
                 </t>
               </td>
             </tr>
-            <tr style={{ height: "80px" }}>
+            <tr style={{ height: "50px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 6) Approval
               </td>
@@ -257,7 +294,7 @@ function PDFdata() {
                 colSpan="2"
                 style={{
                   // border: "1px solid black",
-                  width: "200px",
+                 
                   fontSize: "12px",
                 }}
               >
@@ -277,45 +314,52 @@ function PDFdata() {
                 &nbsp; Date :
               </td>
             </tr>
-            <tr style={{ height: "80px" }}>
+            <tr style={{ height: "10px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 7) Action Status <br />
                 &nbsp; (Completed Date)
               </td>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; Old Owner <br />
-                <br />
+                
                 &nbsp; Completed Date :
               </td>
               <td
                 colSpan="2"
                 style={{
                   // border: "1px solid black",
-                  width: "200px",
+               
                   fontSize: "12px",
                 }}
               >
                 &nbsp; New Owner
                 <br />
-                <br />
+              
                 &nbsp; Completed Date :
               </td>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; Sales / Scrap
                 <br />
-                <br />
+             
                 &nbsp; Completed Date
               </td>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; Service Dept
                 <br />
-                <br />
+               
                 &nbsp; Completed Date
               </td>
             </tr>
           </table>
           <br></br>
+          <div style={{textAlign:'center'}}>
+          Page {index + 1}/{selectedData.length}
         </div>
+
+
+
+        </div>
+        
       ))}
     </>
   );
@@ -323,7 +367,7 @@ function PDFdata() {
   const TableLoop2 = () => (
     <>
       <h1>newTable</h1>
-      
+
       {selectedData.map((item, index) => (
         <div
           className="totaltable "
@@ -459,10 +503,10 @@ function PDFdata() {
                 textAlign: "center",
               }}
             >
-           <th >Fixed Assets Number</th>
+              <th>Fixed Assets Number</th>
               <th>Comp.</th>
               <th>Cost Center</th>
-              <th >Fixed Assets Name</th>
+              <th>Fixed Assets Name</th>
               <th>BOI Project</th>
               <th>Qty</th>
               <th>Invoice No.</th>
@@ -494,7 +538,11 @@ function PDFdata() {
 
           <table
             className="bordertablethree"
-            style={{ width: "100%", marginTop: "30px" , pageBreakAfter: "always" }}
+            style={{
+              width: "100%",
+              marginTop: "30px",
+              pageBreakAfter: "always",
+            }}
           >
             <tr style={{ height: "70px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
@@ -605,7 +653,7 @@ function PDFdata() {
   const TableLoop3 = () => (
     <>
       <h1>มากกว่า 20</h1>
-      
+
       {selectedData.map((item, index) => (
         <div
           className="totaltable "
@@ -741,10 +789,10 @@ function PDFdata() {
                 textAlign: "center",
               }}
             >
-           <th>Fixed Assets Number</th>
+              <th>Fixed Assets Number</th>
               <th>Comp.</th>
               <th>Cost Center</th>
-              <th >Fixed Assets Name</th>
+              <th>Fixed Assets Name</th>
               <th>BOI Project</th>
               <th>Qty</th>
               <th>Invoice No.</th>
@@ -754,23 +802,29 @@ function PDFdata() {
             </tr>
             {Array.from({ length: numRows2 }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
-                {x[rowIndex]
-                  ? Object.values(x[rowIndex]).map((cell, cellIndex) => {
-                    if (cellIndex < numberOfCellsPerRow2) {
-                      return <td key={cellIndex}>{cell}</td>;
-                    } else {
-                 
-                      y.push(cell);
-                      return null; 
-                    }
-                  })
+                {y[rowIndex]
+                  ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
+                      <td key={cellIndex}>{cell}</td>
+                    ))
                   : Array.from(
                       { length: numberOfCellsPerRow2 },
                       (_, cellIndex) => <td key={cellIndex}></td>
                     )}
               </tr>
             ))}
-           
+            {selectedDataSubset.slice(0, numRows1).map((rowData, rowIndex) => (
+              <tr key={rowIndex} style={{ height: "25px" }}>
+                {rowData
+                  ? Object.values(rowData)
+                      .slice(0, numberOfCellsPerRow1)
+                      .map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)
+                  : Array.from(
+                      { length: numberOfCellsPerRow1 },
+                      (_, cellIndex) => <td key={cellIndex}></td>
+                    )}
+              </tr>
+            ))}
+
             <tr
               style={{
                 height: "25px",
@@ -780,13 +834,16 @@ function PDFdata() {
               }}
             ></tr>
           </table>
-        
 
           <table
             className="bordertablethree"
-            style={{ width: "100%", marginTop: "30px" , pageBreakAfter: "always" }}
+            style={{
+              width: "100%",
+              marginTop: "30px",
+              pageBreakAfter: "always",
+            }}
           >
-            <tr style={{ height: "70px" }}>
+            <tr  style={{ height: "10px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 4) Plan
               </td>
@@ -892,10 +949,13 @@ function PDFdata() {
       ))}
     </>
   );
- console.log("Loop 3",y);
+
 
   const downloadAsPDF = () => {
     const container = document.createElement("totaltable");
+
+
+
 
     tableRef.current.forEach((item, index) => {
       const clone = item.cloneNode(true);
@@ -904,7 +964,7 @@ function PDFdata() {
         index < tableRef.current.length - 1 ? "12px" : "0";
       clone.style.marginBottom =
         index < tableRef.current.length - 1 ? "12px" : "0";
-        clone.style.pageBreakInside = "avoid";
+      clone.style.pageBreakInside = "av";
     });
 
     const options = {
@@ -912,14 +972,10 @@ function PDFdata() {
       filename: "exported-file.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "landscape"   },
+      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
     };
-   
 
     console.log("print success");
-   
-    
-
 
     html2pdf(container, options);
   };
@@ -1213,8 +1269,14 @@ function PDFdata() {
           </div>
         ))} */}
 
-{trCount < 8 ? <TableLoop1 /> : (trCount < 20 ? <TableLoop2 /> : <TableLoop3 />)}
-
+        {trCount < 15? (
+          <TableLoop1 />
+        ) : trCount < 20 ? (
+          <TableLoop2 />
+        ) : (
+          <TableLoop3 />
+        )}
+        
       </div>
     </>
   );
