@@ -236,26 +236,26 @@ console.log("MMM",response)
           <table className="bordertabletwo" style={{ width: "100%" }}>
             <tr
               style={{
-                fontSize: "12px",
+                fontSize: "10px",
                 textAlign: "center",
               }}
             >
-              <th>Fixed Assets Number</th>
-              <th>Comp.</th>
-              <th>Cost Center</th>
-              <th>Fixed Assets Name</th>
-              <th>BOI Project</th>
-              <th>Qty</th>
-              <th>Invoice No.</th>
-              <th>Acquisition Cost (Baht)</th>
-              <th>Book Value (Baht)</th>
-              <th>New Cost Center</th>
+             <th style={{width:'60px'}}>Fixed Assets Number</th>
+              <th style={{width:'60px'}}>Comp.</th>
+              <th style={{width:'60px'}}>Cost Center</th>
+              <th style={{width:'350px'}} >Fixed Assets Name</th>
+              <th style={{width:'60px'}}>BOI Project</th>
+              <th style={{width:'60px'}} >Qty</th>
+              <th style={{width:'60px'}}>Invoice No.</th>
+              <th style={{width:'60px'}}>Acquisition Cost (Baht)</th>
+              <th style={{width:'60px'}}>Book Value (Baht)</th>
+              <th style={{width:'60px'}}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows1 }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td key={cellIndex}>{cell}</td>
+                      <td style={{fontSize: "10px",}} key={cellIndex}>{cell}</td>
                     ))
                   : Array.from(
                       { length: numberOfCellsPerRow1 },
@@ -420,7 +420,7 @@ console.log("MMM",response)
               <td colSpan="4" className="borcol2">
                 <tr
                   style={{
-                    fontSize: "14px",
+                    fontSize: "12px",
                     height: "30px",
                   }}
                 >
@@ -521,22 +521,22 @@ console.log("MMM",response)
                 textAlign: "center",
               }}
             >
-              <th>Fixed Assets Number</th>
-              <th>Comp.</th>
-              <th>Cost Center</th>
-              <th>Fixed Assets Name</th>
-              <th>BOI Project</th>
-              <th>Qty</th>
-              <th>Invoice No.</th>
-              <th>Acquisition Cost (Baht)</th>
-              <th>Book Value (Baht)</th>
-              <th>New Cost Center</th>
+             <th style={{width:'60px'}}>Fixed Assets Number</th>
+              <th style={{width:'60px'}}>Comp.</th>
+              <th style={{width:'60px'}}>Cost Center</th>
+              <th style={{width:'350px'}} >Fixed Assets Name</th>
+              <th style={{width:'60px'}}>BOI Project</th>
+              <th style={{width:'60px'}} >Qty</th>
+              <th style={{width:'60px'}}>Invoice No.</th>
+              <th style={{width:'60px'}}>Acquisition Cost (Baht)</th>
+              <th style={{width:'60px'}}>Book Value (Baht)</th>
+              <th style={{width:'60px'}}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td key={cellIndex}>{cell}</td>
+                      <td style={{fontSize: "10px",}} key={cellIndex}>{cell}</td>
                     ))
                   : Array.from(
                       { length: numberOfCellsPerRow },
@@ -706,7 +706,7 @@ console.log("MMM",response)
               <td colSpan="4" className="borcol2">
                 <tr
                   style={{
-                    fontSize: "14px",
+                    fontSize: "12px",
                     height: "30px",
                   }}
                 >
@@ -803,26 +803,26 @@ console.log("MMM",response)
           >
             <tr
               style={{
-                fontSize: "12px",
+                fontSize: "10px",
                 textAlign: "center",
               }}
             >
-              <th>Fixed Assets Number</th>
-              <th>Comp.</th>
-              <th>Cost Center</th>
-              <th>Fixed Assets Name</th>
-              <th>BOI Project</th>
-              <th>Qty</th>
-              <th>Invoice No.</th>
-              <th>Acquisition Cost (Baht)</th>
-              <th>Book Value (Baht)</th>
-              <th>New Cost Center</th>
+              <th style={{width:'60px'}}>Fixed Assets Number</th>
+              <th style={{width:'60px'}}>Comp.</th>
+              <th style={{width:'60px'}}>Cost Center</th>
+              <th style={{width:'350px'}} >Fixed Assets Name</th>
+              <th style={{width:'60px'}}>BOI Project</th>
+              <th style={{width:'60px'}} >Qty</th>
+              <th style={{width:'60px'}}>Invoice No.</th>
+              <th style={{width:'60px'}}>Acquisition Cost (Baht)</th>
+              <th style={{width:'60px'}}>Book Value (Baht)</th>
+              <th style={{width:'60px'}}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows2 }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td key={cellIndex}>{cell}</td>
+                      <td style={{fontSize: "10px",}} key={cellIndex}>{cell}</td>
                     ))
                   : Array.from(
                       { length: numberOfCellsPerRow2 },
