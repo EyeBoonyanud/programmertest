@@ -6,16 +6,45 @@ import Button from "@mui/material/Button";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useLocation } from "react-router-dom";
 import { Tab } from "bootstrap";
-import axios from 'axios'
+import axios from "axios";
 
 function PDFdata() {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const tableRef = useRef([]);
   const location = useLocation();
   const selectedData = location.state?.selectedData || [];
+  const [DataId,setDataId] = [selectedData[0][0]]; // เก็บArray ตัวที่ 1
+  const [LoopDeatils, setLoopDetails] = useState([]);
+  console.log("ข้อมูลที่ได้รับ",selectedData);
+ 
   const [selectedDataSubset, setSelectedDataSubset] = useState([]);
-  const [Loopdata , setLoopdata] = useState([]);
+  const [Loopdata, setLoopdata] = useState([]);
 
+
+ 
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // ทำ POST request โดยส่ง DataId ไปด้วย
+      const response = await axios.post(
+        `http://localhost:3000/LoopDatils?id=${DataId}`
+        
+      );
+console.log("MMM",response)
+      // ดึงข้อมูลที่ Server ส่งกลับมา
+      const tableData = response.data;
+
+      // กำหนดค่าให้กับ state
+      setLoopDetails(tableData);
+
+      console.log("dataloop", setLoopDetails);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  fetchData();
+}, [DataId]);
   useEffect(() => {
     async function fetchData() {
       try {
@@ -32,12 +61,12 @@ function PDFdata() {
     fetchData();
   }, []);
 
-
   let x = [];
   let y = [];
   x = selectedData;
-  y = Loopdata;
-  console.log("X : dataloop : ",x)
+  y = LoopDeatils;
+  console.log("Y : dataloop : ", y);
+  console.log("X : dataloop : ", x);
   useEffect(() => {
     // เมื่อ selectedData เปลี่ยนแปลง, ดึงข้อมูลตั้งแต่ตำแหน่งที่ 21 ถึงตัวสุดท้าย
     const subset = selectedData.slice(21); // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
@@ -45,21 +74,19 @@ function PDFdata() {
   }, [selectedData]);
   console.log("Y ", selectedDataSubset);
   const numRows1 = 14;
-  const numberOfCellsPerRow1 = 9;
-  const numRows = 20;
-  const numberOfCellsPerRow = 9;
+  const numberOfCellsPerRow1 = 10;
+  const numRows = 21;
+  const numberOfCellsPerRow = 10;
   const numRows2 = 30;
-  const numberOfCellsPerRow2 = 9;
+  const numberOfCellsPerRow2 = 10;
 
+  // const prevPage = () => {
+  //   if (currentPage > 1) {
+  //     setCurrentPage(currentPage - 1);
+  //   }
+  // };
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-
-  const trCount = x.length;
+  const trCount = y.length;
   // console.log("gggg", x);
   // console.log("ข้อมูล", selectedData);
 
@@ -79,15 +106,11 @@ function PDFdata() {
   // }, []);
 
   const TableLoop1 = () => (
-
-
-
-    
     <>
       {selectedData.map((item, index) => (
         <div
           className="totaltable"
-          style={{ padding: "30px" }}
+          style={{ padding: "30px", pageBreakBefore: "always" }}
           key={item[0]}
           ref={(el) => (tableRef.current[index] = el)}
         >
@@ -95,6 +118,7 @@ function PDFdata() {
             className="bordertable"
             style={{
               width: "100%",
+              pageBreakInside: "avoid",
             }}
           >
             <tr
@@ -225,12 +249,12 @@ function PDFdata() {
               <th>Invoice No.</th>
               <th>Acquisition Cost (Baht)</th>
               <th>Book Value (Baht)</th>
-              {/* <th>New Cost Center</th> */}
+              <th>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows1 }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
-                {x[rowIndex]
-                  ? Object.values(x[rowIndex]).map((cell, cellIndex) => (
+                {y[rowIndex]
+                  ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
                       <td key={cellIndex}>{cell}</td>
                     ))
                   : Array.from(
@@ -239,6 +263,8 @@ function PDFdata() {
                     )}
               </tr>
             ))}
+
+
             <tr
               style={{
                 height: "25px",
@@ -294,7 +320,7 @@ function PDFdata() {
                 colSpan="2"
                 style={{
                   // border: "1px solid black",
-                 
+
                   fontSize: "12px",
                 }}
               >
@@ -321,45 +347,37 @@ function PDFdata() {
               </td>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; Old Owner <br />
-                
                 &nbsp; Completed Date :
               </td>
               <td
                 colSpan="2"
                 style={{
                   // border: "1px solid black",
-               
+
                   fontSize: "12px",
                 }}
               >
                 &nbsp; New Owner
                 <br />
-              
                 &nbsp; Completed Date :
               </td>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; Sales / Scrap
                 <br />
-             
                 &nbsp; Completed Date
               </td>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; Service Dept
                 <br />
-               
                 &nbsp; Completed Date
               </td>
             </tr>
           </table>
           <br></br>
-          <div style={{textAlign:'center'}}>
-          Page {index + 1}/{selectedData.length}
+          <div style={{ textAlign: "center" }}>
+            Page {index + 1}/{selectedData.length}
+          </div>
         </div>
-
-
-
-        </div>
-        
       ))}
     </>
   );
@@ -512,12 +530,12 @@ function PDFdata() {
               <th>Invoice No.</th>
               <th>Acquisition Cost (Baht)</th>
               <th>Book Value (Baht)</th>
-              {/* <th>New Cost Center</th> */}
+              <th>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
-                {x[rowIndex]
-                  ? Object.values(x[rowIndex]).map((cell, cellIndex) => (
+                {y[rowIndex]
+                  ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
                       <td key={cellIndex}>{cell}</td>
                     ))
                   : Array.from(
@@ -798,7 +816,7 @@ function PDFdata() {
               <th>Invoice No.</th>
               <th>Acquisition Cost (Baht)</th>
               <th>Book Value (Baht)</th>
-              {/* <th>New Cost Center</th> */}
+              <th>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows2 }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
@@ -812,18 +830,7 @@ function PDFdata() {
                     )}
               </tr>
             ))}
-            {selectedDataSubset.slice(0, numRows1).map((rowData, rowIndex) => (
-              <tr key={rowIndex} style={{ height: "25px" }}>
-                {rowData
-                  ? Object.values(rowData)
-                      .slice(0, numberOfCellsPerRow1)
-                      .map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)
-                  : Array.from(
-                      { length: numberOfCellsPerRow1 },
-                      (_, cellIndex) => <td key={cellIndex}></td>
-                    )}
-              </tr>
-            ))}
+          
 
             <tr
               style={{
@@ -843,7 +850,7 @@ function PDFdata() {
               pageBreakAfter: "always",
             }}
           >
-            <tr  style={{ height: "10px" }}>
+            <tr style={{ height: "10px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 4) Plan
               </td>
@@ -950,12 +957,8 @@ function PDFdata() {
     </>
   );
 
-
   const downloadAsPDF = () => {
     const container = document.createElement("totaltable");
-
-
-
 
     tableRef.current.forEach((item, index) => {
       const clone = item.cloneNode(true);
@@ -964,11 +967,11 @@ function PDFdata() {
         index < tableRef.current.length - 1 ? "12px" : "0";
       clone.style.marginBottom =
         index < tableRef.current.length - 1 ? "12px" : "0";
-      clone.style.pageBreakInside = "av";
+      clone.style.pageBreakInside = "avoid";
     });
 
     const options = {
-      // margin: 10 ,
+      margin: 0,
       filename: "exported-file.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
@@ -1269,14 +1272,13 @@ function PDFdata() {
           </div>
         ))} */}
 
-        {trCount < 15? (
+        {trCount < 15 ? (
           <TableLoop1 />
-        ) : trCount < 20 ? (
+        ) : trCount < 22 ? (
           <TableLoop2 />
         ) : (
           <TableLoop3 />
         )}
-        
       </div>
     </>
   );

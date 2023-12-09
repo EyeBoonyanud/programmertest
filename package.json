@@ -17,6 +17,7 @@
     "@mui/material": "^5.14.15",
     "@mui/styled-engine-sc": "^6.0.0-alpha.3",
     "@popperjs/core": "^2.11.8",
+    "@react-pdf/renderer": "^3.1.14",
     "antd": "^5.10.3",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.0",

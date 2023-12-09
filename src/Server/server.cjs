@@ -641,6 +641,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
 app.post('/sendEmail', async (req, res) => {
 
  
@@ -693,6 +694,46 @@ app.get("/getSendEmail", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
+
+app.post("/LoopDatils", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const strID = req.query.id;
+
+   
+    
+    // Create an update query
+const loopdata = await connection.execute(`
+  SELECT F_FIXED ,
+  LOCATION ,
+  COST_CENTER ,
+  FIXED_ASS_NAME , 
+  PROJECT , QTY ,
+  INVOICE_NO ,
+  BASE_ASS_COST ,
+  BOOK_VAL ,
+  NEW_COST_CENTER 
+  FROM TRAIN_BOONYANUD WHERE F_CODE = :ID
+`, { ID: strID });
+
+
+
+
+
+    
+
+    
+    connection.release();
+  
+    const rows = loopdata.rows;
+    console.log(rows)
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching Material_Trace:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
