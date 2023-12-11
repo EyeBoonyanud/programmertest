@@ -107,3 +107,29 @@
   border-color: black;
 
 }
+.Page tr{
+  border-width: 0;
+  border-style: solid;
+  border-color: black;
+
+}
+.bordertablefive{
+  border-width: 0 1px 0 0 ;
+  border-style: solid;
+  border-color: black;
+  font-size: 12px;
+}
+.bordertablefive td {
+  text-align:center;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+  border-color: black;
+  
+}
+
+.bordertablefive th {
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+  border-color: black;
+
+}

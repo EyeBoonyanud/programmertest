@@ -714,6 +714,7 @@ const loopdata = await connection.execute(`
   BOOK_VAL ,
   NEW_COST_CENTER 
   FROM TRAIN_BOONYANUD WHERE F_CODE = :ID
+  ORDER BY F_FIXED ASC
 `, { ID: strID });
 
 
