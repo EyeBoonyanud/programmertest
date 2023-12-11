@@ -13,71 +13,66 @@ function PDFdata() {
   const tableRef = useRef([]);
   const location = useLocation();
   const selectedData = location.state?.selectedData || [];
-  const [DataId,setDataId] = [selectedData[0][0]]; // เก็บArray ตัวที่ 1
+  const [DataId, setDataId] = [selectedData[0][0]]; // เก็บArray ตัวที่ 1
   const [LoopDeatils, setLoopDetails] = useState([]);
-  console.log("ข้อมูลที่ได้รับ",selectedData);
- 
-  const [selectedDataSubset, setSelectedDataSubset] = useState([]);
-  const [Loopdata, setLoopdata] = useState([]);
+  // const [datasecond ,setdatasecond]= useState([]);
+  console.log("ข้อมูลที่ได้รับ", selectedData);
+
+  // const [selectedDataSubset, setSelectedDataSubset] = useState([]);
 
 
- 
- useEffect(() => {
-  const fetchData = async () => {
-    try {
-      // ทำ POST request โดยส่ง DataId ไปด้วย
-      const response = await axios.post(
-        `http://localhost:3000/LoopDatils?id=${DataId}`
-        
-      );
-console.log("MMM",response)
-      // ดึงข้อมูลที่ Server ส่งกลับมา
-      const tableData = response.data;
-
-      // กำหนดค่าให้กับ state
-      setLoopDetails(tableData);
-
-      console.log("dataloop", setLoopDetails);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  fetchData();
-}, [DataId]);
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
-        const DataResponse = await axios.get(
-          "http://localhost:3000/getDataPro"
+        // ทำ POST request โดยส่ง DataId ไปด้วย
+        const response = await axios.post(
+          `http://localhost:3000/LoopDatils?id=${DataId}`
         );
-        const TableData = DataResponse.data;
-        setLoopdata(TableData);
-        console.log("dataloop", TableData);
+        console.log("MMM", response);
+        // ดึงข้อมูลที่ Server ส่งกลับมา
+        const tableData = response.data;
+
+        // กำหนดค่าให้กับ state
+        setLoopDetails(tableData);
+
+        console.log("dataloop", setLoopDetails);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error:", error);
       }
-    }
+    };
+
     fetchData();
-  }, []);
+  }, [DataId]);
 
   let x = [];
-  let y = [];
+  let y = LoopDeatils;
+  let z = [];
+
   x = selectedData;
   y = LoopDeatils;
+  z = LoopDeatils;
   console.log("Y : dataloop : ", y);
   console.log("X : dataloop : ", x);
-  useEffect(() => {
-    // เมื่อ selectedData เปลี่ยนแปลง, ดึงข้อมูลตั้งแต่ตำแหน่งที่ 21 ถึงตัวสุดท้าย
-    const subset = selectedData.slice(21); // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
-    setSelectedDataSubset(subset);
-  }, [selectedData]);
-  console.log("Y ", selectedDataSubset);
+  console.log("X : dataloop :",z);
+  const startingIndex = 22; // ตำแหน่งที่เริ่มต้นที่ต้องการดึงข้อมูล
+  const dataToShow = z.slice(startingIndex - 1); // ดึงข้อมูลที่ต้องการแสดง
+  
+  
+  
+
+  // useEffect(() => {
+  //   // เมื่อ selectedData เปลี่ยนแปลง, ดึงข้อมูลตั้งแต่ตำแหน่งที่ 21 ถึงตัวสุดท้าย
+  //   const subset = selectedData.slice(21); // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
+  //   setSelectedDataSubset(subset);
+  // }, [selectedData]);
+  // console.log("Y ", selectedDataSubset);
+  
+  
   const numRows1 = 14;
   const numberOfCellsPerRow1 = 10;
   const numRows = 21;
   const numberOfCellsPerRow = 10;
-  const numRows2 = 30;
+  const numRows2 = 18;
   const numberOfCellsPerRow2 = 10;
 
   // const prevPage = () => {
@@ -87,23 +82,6 @@ console.log("MMM",response)
   // };
 
   const trCount = y.length;
-  // console.log("gggg", x);
-  // console.log("ข้อมูล", selectedData);
-
-  // useEffect(() => {
-  //   // ให้มี page break ถ้ามีมากกว่า 8 rows
-  //   const tableTwo = document.querySelector(".bordertabletwo");
-  //   const tableThree = document.querySelector(".bordertablethree");
-  //   // const trCount = tableTwo.querySelectorAll('tr').length;
-  //   const trCount = x.length;
-
-  //   if (trCount > 8 && trCount < 17) {
-  //     console.log("entry");
-  //     tableTwo.style.pageBreakAfter = "always";
-  //   } else {
-  //     console.log("no entry");
-  //   }
-  // }, []);
 
   const TableLoop1 = () => (
     <>
@@ -240,22 +218,24 @@ console.log("MMM",response)
                 textAlign: "center",
               }}
             >
-             <th style={{width:'60px'}}>Fixed Assets Number</th>
-              <th style={{width:'60px'}}>Comp.</th>
-              <th style={{width:'60px'}}>Cost Center</th>
-              <th style={{width:'350px'}} >Fixed Assets Name</th>
-              <th style={{width:'60px'}}>BOI Project</th>
-              <th style={{width:'60px'}} >Qty</th>
-              <th style={{width:'60px'}}>Invoice No.</th>
-              <th style={{width:'60px'}}>Acquisition Cost (Baht)</th>
-              <th style={{width:'60px'}}>Book Value (Baht)</th>
-              <th style={{width:'60px'}}>New Cost Center</th>
+              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+              <th style={{ width: "60px" }}>Comp.</th>
+              <th style={{ width: "60px" }}>Cost Center</th>
+              <th style={{ width: "350px" }}>Fixed Assets Name</th>
+              <th style={{ width: "60px" }}>BOI Project</th>
+              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "60px" }}>Invoice No.</th>
+              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "60px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" }}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows1 }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td style={{fontSize: "10px",}} key={cellIndex}>{cell}</td>
+                      <td style={{ fontSize: "10px" }} key={cellIndex}>
+                        {cell}
+                      </td>
                     ))
                   : Array.from(
                       { length: numberOfCellsPerRow1 },
@@ -263,7 +243,6 @@ console.log("MMM",response)
                     )}
               </tr>
             ))}
-
 
             <tr
               style={{
@@ -413,7 +392,7 @@ console.log("MMM",response)
             <tr
               style={{
                 fontSize: "12px",
-                height: "60px",
+                height: "20px",
               }}
             >
               <td colSpan="2">&nbsp; 1) Requester</td>
@@ -521,22 +500,24 @@ console.log("MMM",response)
                 textAlign: "center",
               }}
             >
-             <th style={{width:'60px'}}>Fixed Assets Number</th>
-              <th style={{width:'60px'}}>Comp.</th>
-              <th style={{width:'60px'}}>Cost Center</th>
-              <th style={{width:'350px'}} >Fixed Assets Name</th>
-              <th style={{width:'60px'}}>BOI Project</th>
-              <th style={{width:'60px'}} >Qty</th>
-              <th style={{width:'60px'}}>Invoice No.</th>
-              <th style={{width:'60px'}}>Acquisition Cost (Baht)</th>
-              <th style={{width:'60px'}}>Book Value (Baht)</th>
-              <th style={{width:'60px'}}>New Cost Center</th>
+              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+              <th style={{ width: "60px" }}>Comp.</th>
+              <th style={{ width: "60px" }}>Cost Center</th>
+              <th style={{ width: "350px" }}>Fixed Assets Name</th>
+              <th style={{ width: "60px" }}>BOI Project</th>
+              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "60px" }}>Invoice No.</th>
+              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "60px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" }}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows }, (_, rowIndex) => (
               <tr key={rowIndex} style={{ height: "25px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td style={{fontSize: "10px",}} key={cellIndex}>{cell}</td>
+                      <td style={{ fontSize: "10px" }} key={cellIndex}>
+                        {cell}
+                      </td>
                     ))
                   : Array.from(
                       { length: numberOfCellsPerRow },
@@ -668,6 +649,7 @@ console.log("MMM",response)
       ))}
     </>
   );
+
   const TableLoop3 = () => (
     <>
       <h1>มากกว่า 20</h1>
@@ -699,7 +681,7 @@ console.log("MMM",response)
             <tr
               style={{
                 fontSize: "12px",
-                height: "60px",
+                height: "20px",
               }}
             >
               <td colSpan="2">&nbsp; 1) Requester</td>
@@ -807,30 +789,44 @@ console.log("MMM",response)
                 textAlign: "center",
               }}
             >
-              <th style={{width:'60px'}}>Fixed Assets Number</th>
-              <th style={{width:'60px'}}>Comp.</th>
-              <th style={{width:'60px'}}>Cost Center</th>
-              <th style={{width:'350px'}} >Fixed Assets Name</th>
-              <th style={{width:'60px'}}>BOI Project</th>
-              <th style={{width:'60px'}} >Qty</th>
-              <th style={{width:'60px'}}>Invoice No.</th>
-              <th style={{width:'60px'}}>Acquisition Cost (Baht)</th>
-              <th style={{width:'60px'}}>Book Value (Baht)</th>
-              <th style={{width:'60px'}}>New Cost Center</th>
+              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+              <th style={{ width: "60px" }}>Comp.</th>
+              <th style={{ width: "60px" }}>Cost Center</th>
+              <th style={{ width: "350px" }}>Fixed Assets Name</th>
+              <th style={{ width: "60px" }}>BOI Project</th>
+              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "60px" }}>Invoice No.</th>
+              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "60px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" }}>New Cost Center</th>
             </tr>
-            {Array.from({ length: numRows2 }, (_, rowIndex) => (
-              <tr key={rowIndex} style={{ height: "25px" }}>
-                {y[rowIndex]
-                  ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td style={{fontSize: "10px",}} key={cellIndex}>{cell}</td>
-                    ))
-                  : Array.from(
-                      { length: numberOfCellsPerRow2 },
-                      (_, cellIndex) => <td key={cellIndex}></td>
-                    )}
-              </tr>
-            ))}
-          
+           
+
+{Array.from({ length: numRows }, (_, rowIndex) => (
+  <tr key={rowIndex} style={{ height: "25px", fontSize: "10px" }}>
+    {y[rowIndex]
+      ? Object.values(y[rowIndex]).map((cell, cellIndex) => {
+          if (cellIndex < numberOfCellsPerRow) {
+            return <td key={cellIndex}>{cell}</td>;
+          } else {
+            // เพิ่มเงื่อนไขเพื่อตรวจสอบ index และเก็บไว้ใน z ถ้า index มากกว่า 21
+            if (cellIndex > 21) {
+              z.push(cell);
+            }
+            return null; // หรือคุณสามารถ return <td key={cellIndex}></td> หากไม่ต้องการแสดงผล
+          }
+        })
+      : Array.from(
+          { length: numberOfCellsPerRow},
+          (_, cellIndex) => <td key={cellIndex}></td>
+        )}
+  </tr>
+))}
+
+
+
+ 
+    
 
             <tr
               style={{
@@ -843,11 +839,64 @@ console.log("MMM",response)
           </table>
 
           <table
+            className="bordertablefour"
+            style={{ width: "100%"
+          , marginTop:"30px"}}
+          >
+            <tr
+              style={{
+                fontSize: "10px",
+                textAlign: "center",
+              }}
+            >
+              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+              <th style={{ width: "60px" }}>Comp.</th>
+              <th style={{ width: "60px" }}>Cost Center</th>
+              <th style={{ width: "350px" }}>Fixed Assets Name</th>
+              <th style={{ width: "60px" }}>BOI Project</th>
+              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "60px" }}>Invoice No.</th>
+              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "60px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" }}>New Cost Center</th>
+            </tr>
+            {Array.from({ length: numRows2 }, (_, rowIndex) => {
+    const rowData = dataToShow[rowIndex] || null;
+  
+    return (
+      <tr key={rowIndex} style={{ height: "25px" }}>
+        {rowData
+          ? rowData.map((cell, cellIndex) => (
+              <td style={{ fontSize: "10px" }} key={cellIndex}>
+                {cell}
+              </td>
+            ))
+          : Array.from({ length: numberOfCellsPerRow2 }, (_, cellIndex) => (
+              <td key={cellIndex}></td>
+            ))}
+      </tr>
+    );
+  })}
+    <tr
+              style={{
+                height: "25px",
+                borderWidth: "1px 0 0px 1px",
+                borderStyle: "solid",
+                borderColor: "black",
+              }}
+            ></tr>
+
+
+
+
+            
+</table>
+          <table
             className="bordertablethree"
             style={{
               width: "100%",
-              marginTop: "30px",
-              pageBreakAfter: "always",
+             
+           
             }}
           >
             <tr style={{ height: "10px" }}>
@@ -867,7 +916,7 @@ console.log("MMM",response)
             <tr
               style={{
                 fontSize: "12px",
-                height: "50px",
+                height: "20px",
               }}
             >
               <td colSpan="2">&nbsp; 5) Service Dept.</td>
@@ -881,7 +930,7 @@ console.log("MMM",response)
                 </t>
               </td>
             </tr>
-            <tr style={{ height: "80px" }}>
+            <tr style={{ height: "10px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 6) Approval
               </td>
@@ -914,7 +963,7 @@ console.log("MMM",response)
                 &nbsp; Date :
               </td>
             </tr>
-            <tr style={{ height: "80px" }}>
+            <tr style={{ height: "10px" }}>
               <td colSpan="2" style={{ fontSize: "12px" }}>
                 &nbsp; 7) Action Status <br />
                 &nbsp; (Completed Date)
