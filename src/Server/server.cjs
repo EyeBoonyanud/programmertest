@@ -736,6 +736,34 @@ const loopdata = await connection.execute(`
 });
 
 
+
+app.post("/SumCost", async (req, res) => {
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const strID = req.query.id;
+
+    // Create an update query
+const loopdata = await connection.execute(`
+  SELECT 
+  BASE_ASS_COST 
+  BOOK_VAL ,
+  FROM TRAIN_BOONYANUD WHERE F_CODE = :ID
+  ORDER BY F_FIXED ASC
+`, { ID: strID });
+
+    connection.release();
+  
+    const rows = loopdata.rows;
+    console.log(rows)
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching Material_Trace:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

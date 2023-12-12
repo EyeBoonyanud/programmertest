@@ -20,6 +20,7 @@ function PDFdata() {
 
   const [selectedDataSubset, setSelectedDataSubset] = useState([]);
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,19 +59,14 @@ function PDFdata() {
   const startingIndex = 19; // ตำแหน่งที่เริ่มต้นที่ต้องการดึงข้อมูล
   const dataToShow = z.slice(startingIndex - 1); // ดึงข้อมูลที่ต้องการแสดง
   const shownDataCount = 44;
-  const dataW = w.slice(shownDataCount - 1); 
- 
+  const dataW = w.slice(shownDataCount - 1);
+
   useEffect(() => {
     // เมื่อ selectedData เปลี่ยนแปลง, ดึงข้อมูลตั้งแต่ตำแหน่งที่ 21 ถึงตัวสุดท้าย
     const subset = w.slice(43);
-    console.log("subset",subset) // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
+    console.log("subset", subset); // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
     setSelectedDataSubset(subset);
   }, [LoopDeatils]);
-
-
-
-
-
 
   const numRows1 = 13;
   const numberOfCellsPerRow1 = 10;
@@ -80,8 +76,6 @@ function PDFdata() {
   const numberOfCellsPerRow2 = 10;
   const numRows3 = 25;
   const numberOfCellsPerRow3 = 10;
-
-
 
   const trCount = y.length;
 
@@ -225,10 +219,10 @@ function PDFdata() {
               <th style={{ width: "60px" }}>Cost Center</th>
               <th style={{ width: "350px" }}>Fixed Assets Name</th>
               <th style={{ width: "60px" }}>BOI Project</th>
-              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "40px" }}>Qty</th>
               <th style={{ width: "60px" }}>Invoice No.</th>
-              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
-              <th style={{ width: "60px" }}>Book Value (Baht)</th>
+              <th style={{ width: "80px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "80px" }}>Book Value (Baht)</th>
               <th style={{ width: "60px" }}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows1 }, (_, rowIndex) => (
@@ -246,14 +240,27 @@ function PDFdata() {
               </tr>
             ))}
 
-            <tr
-              style={{
-                height: "25px",
+            <tr 
+            className="Total"
+              style={{ 
+               
+                height: "10px",
                 borderWidth: "1px 0 0 1px",
                 borderStyle: "solid",
                 borderColor: "black",
               }}
-            ></tr>
+            >
+                 <td ></td>
+              <td ></td>
+              <td ></td>
+              <td></td>
+              <td ></td>
+              <td ></td>
+              <td ></td>
+              <td >{item[0]} </td>
+              <td >{item[0]} </td>
+              <td ></td>
+            </tr>
             <div></div>
           </table>
 
@@ -1225,79 +1232,95 @@ function PDFdata() {
             className="bordertablefive"
             style={{ width: "100%", marginTop: "30px" }}
           >
-            <tr
-              style={{
-                fontSize: "10px",
-                textAlign: "center",
-              }}
+            {Array.from(
+              { length: Math.ceil(dataToShow.length / 25) },
+              (_, groupIndex) => {
+                const groupStart = groupIndex * 25;
+                const groupEnd = groupStart + 25;
+                const groupData = dataToShow.slice(groupStart, groupEnd);
+
+console.log("EEEEEEEE",groupData)
+
+
+                return (
+                  <React.Fragment key={groupIndex}>
+                    <tr
+                      style={{
+                        fontSize: "10px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <th style={{ width: "60px" }}>Fixed Assets Number</th>
+                      <th style={{ width: "60px" }}>Comp.</th>
+                      <th style={{ width: "60px" }}>Cost Center</th>
+                      <th style={{ width: "350px" }}>Fixed Assets Name</th>
+                      <th style={{ width: "60px" }}>BOI Project</th>
+                      <th style={{ width: "60px" }}>Qty</th>
+                      <th style={{ width: "60px" }}>Invoice No.</th>
+                      <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
+                      <th style={{ width: "60px" }}>Book Value (Baht)</th>
+                      <th style={{ width: "60px" }}>New Cost Center</th>
+                    </tr>
+
+
+
+
+
+{groupData.map((row, rowIndex) => (
+  <tr key={groupStart + rowIndex} style={{ height: "25px" }}>
+    {row
+      ? row.map((cell, cellIndex) => (
+          <td style={{ fontSize: "10px" }} key={cellIndex}>
+            {cell}
+          </td>
+        ))
+      : Array.from({ length: numberOfCellsPerRow3 }, (_, cellIndex) => {
+          const dataIndex = shownDataCount + cellIndex;
+          const cell = z[dataIndex];
+
+          if (cell !== undefined) {
+            w.push(cell);
+            return null;
+          }
+
+          return <td key={cellIndex}></td>;
+        })}
+  </tr>
+))}
+                    {Array.from({ length: 25 - groupData.length }).map((_, blankRowIndex) => (
+  <tr key={`blank_${blankRowIndex}`} style={{ height: "25px" }}>
+    {/* สร้าง cell ว่างเท่ากับจำนวน cell ที่ควรมีในแต่ละ row */}
+    {Array.from({ length: numberOfCellsPerRow3 }).map((_, cellIndex) => (
+      <td key={`blank_cell_${cellIndex}`}></td>
+    ))}
+  </tr>
+))}
+                    <tr
+                      style={{
+                        height: "25px",
+                        borderWidth: "1px 1px 1px 1px",
+                        borderStyle: "solid",
+                        borderColor: "black",
+                        pageBreakAfter: "always",
+                      }}
+                    ></tr>
+                     
+            <div
+              style={{ display: "flex", fontSize: "12px", marginTop: "5px" }}
             >
-              <th style={{ width: "60px" }}>Fixed Assets Number</th>
-              <th style={{ width: "60px" }}>Comp.</th>
-              <th style={{ width: "60px" }}>Cost Center</th>
-              <th style={{ width: "350px" }}>Fixed Assets Name</th>
-              <th style={{ width: "60px" }}>BOI Project</th>
-              <th style={{ width: "60px" }}>Qty</th>
-              <th style={{ width: "60px" }}>Invoice No.</th>
-              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
-              <th style={{ width: "60px" }}>Book Value (Baht)</th>
-              <th style={{ width: "60px" }}>New Cost Center</th>
-            </tr>
-            {Array.from({ length: numRows3 }, (_, rowIndex) => {
-  const rowData = dataToShow[rowIndex] || null;
-
-  return (
-    <tr key={rowIndex} style={{ height: "25px" }}>
-      {rowData
-        ? rowData.map((cell, cellIndex) => {
-            if (cellIndex < shownDataCount) {
-              return (
-                <td style={{ fontSize: "10px" }} key={cellIndex}>
-                  {cell}
-                </td>
-              );
-            } else {
-              w.push(cell);
-              return null;
-            }
-          })
-        : Array.from(
-            { length: numberOfCellsPerRow3 },
-            (_, cellIndex) => {
-              const dataIndex = shownDataCount + cellIndex;
-              const cell = z[dataIndex];
-
-              if (cell !== undefined) {
-                w.push(cell);
-                return null;
+              <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
+              <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
+            </div>
+            <div style={{ textAlign: "center", fontSize: "12px" }}>
+              Page {index + 1}/{selectedData.length}
+            </div>
+          
+                  </React.Fragment>
+                );
               }
-
-              return <td key={cellIndex}></td>;
-            }
-          )}
-    </tr>
-  );
-})}
-            <tr
-              style={{
-                height: "25px",
-                borderWidth: "1px 0 1px 1px",
-                borderStyle: "solid",
-                borderColor: "black",
-              }}
-            ></tr>
-
-          </table >
-          <div style={{pageBreakAfter: "always"}}>
-          <div style={{ display: "flex", fontSize: "12px", marginTop: "5px" }}>
-            <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
-            <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
-          </div>
-          <div style={{ textAlign: "center", fontSize: "12px" }}>
-            Page {index + 1}/{selectedData.length}
-          </div>
-</div>
-
-
+            )}
+          </table>
+        
 
           <table
             className="bordertablefour"
@@ -1356,7 +1379,7 @@ function PDFdata() {
     </tr>
   );
 })} */}
-{selectedDataSubset.map((row, rowIndex) => (
+            {/* {selectedDataSubset.map((row, rowIndex) => (
   <tr key={rowIndex} style={{ height: "25px" }}>
     {row
       ? Object.values(row).map((cell, cellIndex) => (
@@ -1369,8 +1392,7 @@ function PDFdata() {
           (_, cellIndex) => <td key={cellIndex}></td>
         )}
   </tr>
-))}
-
+))} */}
 
             <tr
               style={{
@@ -1386,7 +1408,6 @@ function PDFdata() {
             className="bordertablethree"
             style={{
               width: "100%",
-              
             }}
           >
             <tr style={{ height: "10px" }}>
@@ -1502,9 +1523,6 @@ function PDFdata() {
       ))}
     </>
   );
-
-
-
 
   const downloadAsPDF = () => {
     const container = document.createElement("totaltable");

@@ -1,0 +1,50 @@
+menumaster@0.0.0 D:\react\Traceability
+├── @ant-design/icons@5.2.6
+├── @emotion/styled@11.11.0
+├── @mui/icons-material@5.14.9
+├── @mui/material@5.14.10
+├── @mui/x-data-grid-generator@6.14.0
+├── @types/react-dom@18.2.7
+├── @types/react@18.2.21
+├── @vitejs/plugin-react-swc@3.3.2
+├── antd@5.8.6
+├── apexcharts@3.42.0
+├── axios@1.5.0
+├── bootstrap@5.3.2
+├── buffer-from@1.1.2 extraneous
+├── colors@0.6.2 extraneous
+├── commander@11.1.0 extraneous
+├── concat-stream@2.0.0 extraneous
+├── cors@2.8.5
+├── eslint-plugin-react-hooks@4.6.0
+├── eslint-plugin-react-refresh@0.4.3
+├── eslint-plugin-react@7.33.2
+├── eslint@8.48.0
+├── express@4.18.2
+├── install@0.13.0
+├── invariant@2.2.4 extraneous
+├── moment@2.29.4
+├── npm@10.1.0
+├── oracledb@6.1.0
+├── pg-hstore@2.3.4
+├── pg@8.11.3
+├── react-apexcharts@1.4.1
+├── react-csv-downloader@2.9.1
+├── react-csv@2.2.2
+├── react-dom@18.2.0
+├── react-fast-compare@3.2.2 extraneous
+├── react-helmet-async@1.3.0 extraneous
+├── react-modal@3.16.1
+├── react-router-dom@6.16.0
+├── react@18.2.0
+├── sax@1.3.0 extraneous
+├── sequelize@6.32.1
+├── shallowequal@1.1.0 extraneous
+├── sweetalert2@11.6.13 invalid: "^11.7.28" from the root project
+├── typedarray@0.0.6 extraneous
+├── vite@4.4.9 invalid: "^4.4.11" from the root project
+├── voc@1.2.0 extraneous
+├── xlsx-populate@1.21.0 extraneous
+├── xlsx-style@0.8.13 extraneous
+└──
+xlsx@0.18.5
