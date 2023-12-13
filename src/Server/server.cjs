@@ -624,6 +624,14 @@ app.get("/getDepartments", async (req, res) => {
   
 app.use(express.json());
  
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'paiboon.wongthongdee@gmail.com',
+    pass: 'gnrh cfpo xzop dsyg',
+  },
+});
+
 // const transporter = nodemailer.createTransport({
 //   service: 'gmail',
 //   auth: {
@@ -631,15 +639,6 @@ app.use(express.json());
 //     pass: 'gnrh cfpo xzop dsyg',
 //   },
 // });
-const transporter = nodemailer.createTransport({
-  host: '10.17.220.200', // Replace with your SMTP server's IP address
-  port: 25, // Replace with your SMTP server's port
-  secure: false, // Set to true if using SSL/TLS
-  auth: {
-    user: 'paiboon.wongthongdee@gmail.com',
-    pass: 'gnrh cfpo xzop dsyg',
-  },
-});
 
 
 app.post('/sendEmail', async (req, res) => {
@@ -669,6 +668,32 @@ app.post('/sendEmail', async (req, res) => {
   }
 });
  
+
+// app.post("/sendEmail", async (req, res) => {
+//   try {
+//     const pdfBuffer = Buffer.from(req.body.pdfBuffer, "base64");
+//     console.log("DATA",pdfBuffer)
+//     const mailOptions = {
+//       from: "paiboon.wongthongdee@gmail.com",
+//       to: req.body.toEmail,
+      
+//       attachments: [
+//         {
+//           filename: "TestPdf.pdf",
+//           content: pdfBuffer,
+//         },
+//       ],
+//     };
+
+//     console.log("Email Sended");
+//     await transporter.sendMail(mailOptions);
+//     res.status(200).json({ message: "Email sent successfully" });
+//   } catch (error) {
+//     console.error("Error sending email:", error);
+//     res.status(500).json({ error: "An error occurred while sending email" });
+//   }
+// });
+
 app.get("/getSendEmail", async (req, res) => {
   try {
     const strIDMail = req.query.InputEMAIL;
@@ -745,10 +770,9 @@ app.post("/SumCost", async (req, res) => {
     // Create an update query
 const loopdata = await connection.execute(`
   SELECT 
-  BASE_ASS_COST 
-  BOOK_VAL ,
+  SUM(BASE_ASS_COST) SUMASS_COST,
+  SUM(BOOK_VAL) AS SUMBOOK
   FROM TRAIN_BOONYANUD WHERE F_CODE = :ID
-  ORDER BY F_FIXED ASC
 `, { ID: strID });
 
     connection.release();

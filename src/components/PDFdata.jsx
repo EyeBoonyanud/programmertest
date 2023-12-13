@@ -15,12 +15,11 @@ function PDFdata() {
   const selectedData = location.state?.selectedData || [];
   const [DataId, setDataId] = [selectedData[0][0]]; // เก็บArray ตัวที่ 1
   const [LoopDeatils, setLoopDetails] = useState([]);
-  // const [datasecond ,setdatasecond]= useState([]);
+  const [Count, setCount] = useState([]);
   console.log("ข้อมูลที่ได้รับ", selectedData);
 
   const [selectedDataSubset, setSelectedDataSubset] = useState([]);
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -44,18 +43,44 @@ function PDFdata() {
     fetchData();
   }, [DataId]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // ทำ POST request โดยส่ง DataId ไปด้วย
+        const response = await axios.post(
+          `http://localhost:3000/SumCost?id=${DataId}`
+        );
+        console.log("MMM", response);
+        // ดึงข้อมูลที่ Server ส่งกลับมา
+        const tableData = response.data;
+
+        // กำหนดค่าให้กับ state
+        setCount(tableData);
+
+        console.log("dataloop", setCount);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, [DataId]);
+
   let x = [];
   let y = LoopDeatils;
   let z = [];
   let w = [];
+  let count = Count;
 
   x = selectedData;
   y = LoopDeatils;
   z = LoopDeatils;
   w = LoopDeatils;
+  count = Count;
   console.log("Y : dataloop : ", y);
   console.log("X : dataloop : ", x);
   console.log("X : dataloop :", z);
+  console.log("count : dataloop :", count);
   const startingIndex = 19; // ตำแหน่งที่เริ่มต้นที่ต้องการดึงข้อมูล
   const dataToShow = z.slice(startingIndex - 1); // ดึงข้อมูลที่ต้องการแสดง
   const shownDataCount = 44;
@@ -78,6 +103,34 @@ function PDFdata() {
   const numberOfCellsPerRow3 = 10;
 
   const trCount = y.length;
+ 
+  const downloadAsPDF = async  () => {
+    const container = document.createElement("div");
+
+    tableRef.current.forEach((item, index) => {
+      const clone = item.cloneNode(true);
+      container.appendChild(clone);
+      clone.style.marginTop =
+        index < tableRef.current.length - 1 ? "12px" : "0";
+      clone.style.marginBottom =
+        index < tableRef.current.length - 1 ? "12px" : "0";
+      clone.style.pageBreakInside = "avoid";
+ 
+    });
+
+    const options = {
+      margin: 0,
+      filename: "exported-file.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+    };
+    
+
+    console.log("print success");
+
+    html2pdf(container, options);
+  };
 
   const TableLoop1 = () => (
     <>
@@ -239,28 +292,29 @@ function PDFdata() {
                     )}
               </tr>
             ))}
-
-            <tr 
-            className="Total"
-              style={{ 
-               
-                height: "10px",
-                borderWidth: "1px 0 0 1px",
-                borderStyle: "solid",
-                borderColor: "black",
-              }}
-            >
-                 <td ></td>
-              <td ></td>
-              <td ></td>
-              <td></td>
-              <td ></td>
-              <td ></td>
-              <td ></td>
-              <td >{item[0]} </td>
-              <td >{item[0]} </td>
-              <td ></td>
-            </tr>
+            {count.map((item, index) => (
+              <tr
+                key={index}
+                className="Total"
+                style={{
+                  height: "10px",
+                  borderWidth: "1px 0 0 1px",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                }}
+              >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{item[0]} </td>
+                <td>{item[1]} </td>
+                <td></td>
+              </tr>
+            ))}
             <div></div>
           </table>
 
@@ -368,7 +422,7 @@ function PDFdata() {
             <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            Page {index + 1}/{selectedData.length}
+           
           </div>
         </div>
       ))}
@@ -536,14 +590,29 @@ function PDFdata() {
                     )}
               </tr>
             ))}
-            <tr
-              style={{
-                height: "25px",
-                borderWidth: "1px 0 1px 1px",
-                borderStyle: "solid",
-                borderColor: "black",
-              }}
-            ></tr>
+            {count.map((item, index) => (
+              <tr
+                key={index}
+                className="Total"
+                style={{
+                  height: "10px",
+                  borderWidth: "1px 0  1px",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                }}
+              >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{item[0]} </td>
+                <td>{item[1]} </td>
+                <td></td>
+              </tr>
+            ))}
           </table>
           <div style={{ display: "flex", fontSize: "12px", marginTop: "5px" }}>
             <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
@@ -672,7 +741,7 @@ function PDFdata() {
             <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
           </div>
           <div style={{ textAlign: "center", fontSize: "12px" }}>
-            Page {index + 1}/{selectedData.length}
+          
           </div>
         </div>
       ))}
@@ -1239,8 +1308,7 @@ function PDFdata() {
                 const groupEnd = groupStart + 25;
                 const groupData = dataToShow.slice(groupStart, groupEnd);
 
-console.log("EEEEEEEE",groupData)
-
+                console.log("EEEEEEEE", groupData);
 
                 return (
                   <React.Fragment key={groupIndex}>
@@ -1262,39 +1330,48 @@ console.log("EEEEEEEE",groupData)
                       <th style={{ width: "60px" }}>New Cost Center</th>
                     </tr>
 
+                    {groupData.map((row, rowIndex) => (
+                      <tr
+                        key={groupStart + rowIndex}
+                        style={{ height: "25px" }}
+                      >
+                        {row
+                          ? row.map((cell, cellIndex) => (
+                              <td style={{ fontSize: "10px" }} key={cellIndex}>
+                                {cell}
+                              </td>
+                            ))
+                          : Array.from(
+                              { length: numberOfCellsPerRow3 },
+                              (_, cellIndex) => {
+                                const dataIndex = shownDataCount + cellIndex;
+                                const cell = z[dataIndex];
 
+                                if (cell !== undefined) {
+                                  w.push(cell);
+                                  return null;
+                                }
 
-
-
-{groupData.map((row, rowIndex) => (
-  <tr key={groupStart + rowIndex} style={{ height: "25px" }}>
-    {row
-      ? row.map((cell, cellIndex) => (
-          <td style={{ fontSize: "10px" }} key={cellIndex}>
-            {cell}
-          </td>
-        ))
-      : Array.from({ length: numberOfCellsPerRow3 }, (_, cellIndex) => {
-          const dataIndex = shownDataCount + cellIndex;
-          const cell = z[dataIndex];
-
-          if (cell !== undefined) {
-            w.push(cell);
-            return null;
-          }
-
-          return <td key={cellIndex}></td>;
-        })}
-  </tr>
-))}
-                    {Array.from({ length: 25 - groupData.length }).map((_, blankRowIndex) => (
-  <tr key={`blank_${blankRowIndex}`} style={{ height: "25px" }}>
-    {/* สร้าง cell ว่างเท่ากับจำนวน cell ที่ควรมีในแต่ละ row */}
-    {Array.from({ length: numberOfCellsPerRow3 }).map((_, cellIndex) => (
-      <td key={`blank_cell_${cellIndex}`}></td>
-    ))}
-  </tr>
-))}
+                                return <td key={cellIndex}></td>;
+                              }
+                            )}
+                      </tr>
+                    ))}
+                    {Array.from({ length: 25 - groupData.length }).map(
+                      (_, blankRowIndex) => (
+                        <tr
+                          key={`blank_${blankRowIndex}`}
+                          style={{ height: "25px" }}
+                        >
+                          {/* สร้าง cell ว่างเท่ากับจำนวน cell ที่ควรมีในแต่ละ row */}
+                          {Array.from({ length: numberOfCellsPerRow3 }).map(
+                            (_, cellIndex) => (
+                              <td key={`blank_cell_${cellIndex}`}></td>
+                            )
+                          )}
+                        </tr>
+                      )
+                    )}
                     <tr
                       style={{
                         height: "25px",
@@ -1304,25 +1381,33 @@ console.log("EEEEEEEE",groupData)
                         pageBreakAfter: "always",
                       }}
                     ></tr>
-                     
-            <div
-              style={{ display: "flex", fontSize: "12px", marginTop: "5px" }}
-            >
-              <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
-              <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
-            </div>
-            <div style={{ textAlign: "center", fontSize: "12px" }}>
-              Page {index + 1}/{selectedData.length}
-            </div>
-          
+
+                    {/* <div
+                      style={{
+                        display: "flex",
+                        fontSize: "12px",
+                        marginTop: "5px",
+                      }}
+                    >
+                      <div style={{ flex: 1, textAlign: "left" }}>
+                        {" "}
+                        A1-0001-1111
+                      </div>
+                      <div style={{ flex: 1, textAlign: "right" }}>
+                        {" "}
+                        A1-0001-1111
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "center", fontSize: "12px" }}>
+                      Page {index + 1}/{selectedData.length}
+                    </div> */}
                   </React.Fragment>
                 );
               }
             )}
           </table>
-        
 
-          <table
+          {/* <table
             className="bordertablefour"
             style={{ width: "100%", marginTop: "40px" }}
           >
@@ -1343,7 +1428,7 @@ console.log("EEEEEEEE",groupData)
               <th style={{ width: "60px" }}>Book Value (Baht)</th>
               <th style={{ width: "60px" }}>New Cost Center</th>
             </tr>
-            {/* {Array.from({ length: numRows2 }, (_, rowIndex) => {
+            {Array.from({ length: numRows2 }, (_, rowIndex) => {
   const rowData = dataW[rowIndex] || null;
 
   return (
@@ -1378,8 +1463,8 @@ console.log("EEEEEEEE",groupData)
           )}
     </tr>
   );
-})} */}
-            {/* {selectedDataSubset.map((row, rowIndex) => (
+})} 
+            {selectedDataSubset.map((row, rowIndex) => (
   <tr key={rowIndex} style={{ height: "25px" }}>
     {row
       ? Object.values(row).map((cell, cellIndex) => (
@@ -1392,7 +1477,7 @@ console.log("EEEEEEEE",groupData)
           (_, cellIndex) => <td key={cellIndex}></td>
         )}
   </tr>
-))} */}
+))}
 
             <tr
               style={{
@@ -1402,7 +1487,7 @@ console.log("EEEEEEEE",groupData)
                 borderColor: "black",
               }}
             ></tr>
-          </table>
+          </table> */}
 
           <table
             className="bordertablethree"
@@ -1523,32 +1608,6 @@ console.log("EEEEEEEE",groupData)
       ))}
     </>
   );
-
-  const downloadAsPDF = () => {
-    const container = document.createElement("totaltable");
-
-    tableRef.current.forEach((item, index) => {
-      const clone = item.cloneNode(true);
-      container.appendChild(clone);
-      clone.style.marginTop =
-        index < tableRef.current.length - 1 ? "12px" : "0";
-      clone.style.marginBottom =
-        index < tableRef.current.length - 1 ? "12px" : "0";
-      clone.style.pageBreakInside = "avoid";
-    });
-
-    const options = {
-      margin: 0,
-      filename: "exported-file.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-    };
-
-    console.log("print success");
-
-    html2pdf(container, options);
-  };
 
   return (
     <>
