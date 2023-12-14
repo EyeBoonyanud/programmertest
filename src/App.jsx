@@ -12,7 +12,7 @@ import PdfViewer from "./components/PdfViewer";
 import PdfData from "./components/PDFdata";
 // import TestPDF from "./components/TestPDF";
 import Email from "./components/Email";
-
+import Pdfnew from "./components/pdfnew";
 const pdfUrl = "https://example.com/path/to/your/pdf/document.pdf";
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
@@ -38,7 +38,7 @@ function App({}) {
         <Route path="/PDFData" element={<PdfData />} />
         {/* <Route path="/TestPDF" element={<TestPDF />} /> */}
         <Route path="/Email" element={<Email />} />
-    
+        <Route path="/Pdfnew" element={<Pdfnew />} />
       </Routes>
     </>
   );

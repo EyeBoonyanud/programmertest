@@ -30,6 +30,7 @@
     "jspdf-autotable": "^3.7.1",
     "mdb-ui-kit": "^6.4.2",
     "moment": "^2.29.4",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "pdfjs-dist": "^3.4.120",
     "pg": "^8.11.3",

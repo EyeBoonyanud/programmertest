@@ -54,20 +54,20 @@
 }
 .bordertabletwo{
   border-width: 0 1px 0 0 ;
-  border-style: solid;
+  /* border-style: solid; */
   border-color: black;
   font-size: 12px;
 }
 .bordertabletwo td {
   text-align:center;
-  border-width: 1px 0 0 1px;
+  border-width: 1px 1px 0 1px;
   border-style: solid;
   border-color: black;
   
 }
 
 .bordertabletwo th {
-  border-width: 0px 0 0 1px;
+  border-width: 0px 1px 0 1px;
   border-style: solid;
   border-color: black;
 
@@ -133,7 +133,17 @@
   border-color: black;
 
 }
-.Total td{
+/* .Total td{
   border-width: 0 0 0 0;
  
+} */
+.Line {
+  height: 25px;
+  border-width: 1px 0 0px 0px;
+  border-style: solid;
+  border-color: black;
 }
+.bottom td{
+  border-width: 0 0 0 0;
+}
+

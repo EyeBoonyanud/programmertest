@@ -16,6 +16,8 @@ function PDFdata() {
   const [DataId, setDataId] = [selectedData[0][0]]; // เก็บArray ตัวที่ 1
   const [LoopDeatils, setLoopDetails] = useState([]);
   const [Count, setCount] = useState([]);
+  const [mail, setMail] = useState("");
+  const user = localStorage.getItem("token");
   console.log("ข้อมูลที่ได้รับ", selectedData);
 
   const [selectedDataSubset, setSelectedDataSubset] = useState([]);
@@ -81,7 +83,7 @@ function PDFdata() {
   console.log("X : dataloop : ", x);
   console.log("X : dataloop :", z);
   console.log("count : dataloop :", count);
-  const startingIndex = 19; // ตำแหน่งที่เริ่มต้นที่ต้องการดึงข้อมูล
+  const startingIndex = 21; // ตำแหน่งที่เริ่มต้นที่ต้องการดึงข้อมูล
   const dataToShow = z.slice(startingIndex - 1); // ดึงข้อมูลที่ต้องการแสดง
   const shownDataCount = 44;
   const dataW = w.slice(shownDataCount - 1);
@@ -95,16 +97,29 @@ function PDFdata() {
 
   const numRows1 = 13;
   const numberOfCellsPerRow1 = 10;
-  const numRows = 18;
+  const numRows = 20;
   const numberOfCellsPerRow = 10;
   const numRows2 = 18;
   const numberOfCellsPerRow2 = 10;
-  const numRows3 = 25;
+  const numRows3 = 28;
   const numberOfCellsPerRow3 = 10;
 
   const trCount = y.length;
- 
-  const downloadAsPDF = async  () => {
+  useEffect(() => {
+    const GetDataMail = async () => {
+      const response = await axios.get(
+        `http://localhost:3000/getSendEmail?InputEMAIL=${user}`
+      );
+      if (response.data.length > 0) {
+        console.log("Email", response.data[0][0]);
+        setMail(response.data[0][0]);
+        // console.log("Check", emailMessage);
+      }
+    };
+    GetDataMail();
+  }, [user]);
+
+  const downloadAsPDF = async () => {
     const container = document.createElement("div");
 
     tableRef.current.forEach((item, index) => {
@@ -115,7 +130,6 @@ function PDFdata() {
       clone.style.marginBottom =
         index < tableRef.current.length - 1 ? "12px" : "0";
       clone.style.pageBreakInside = "avoid";
- 
     });
 
     const options = {
@@ -125,11 +139,28 @@ function PDFdata() {
       html2canvas: { scale: 2 },
       jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
     };
-    
 
-    console.log("print success");
+    const pdfBlob = await html2pdf(container, options).output("blob");
+    const formData = new FormData();
+    formData.append("toEmail", mail);
+    formData.append("subject", "PDF Attachment");
+    formData.append("emailMessage", "Here is your PDF file.");
 
-    html2pdf(container, options);
+    formData.append("pdfFile", pdfBlob, "exported-file.pdf");
+
+    try {
+      const response = await fetch("http://localhost:3000/sendEmail", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+      } else {
+        console.error("Failed to send email");
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
   };
 
   const TableLoop1 = () => (
@@ -301,21 +332,37 @@ function PDFdata() {
                   borderWidth: "1px 0 0 1px",
                   borderStyle: "solid",
                   borderColor: "black",
+                  width: "100%",
                 }}
               >
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{item[0]} </td>
-                <td>{item[1]} </td>
+                <td style={{ fontWeight: "bold" }}>Total</td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "350px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}> </td>
+                <td style={{ width: "60px" }}></td>
+                <td
+                  style={{
+                    borderWidth: "0 0px 0 1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[0]}{" "}
+                </td>
+                <td
+                  style={{
+                    borderWidth: "0 1px 0 1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[1]}{" "}
+                </td>
                 <td></td>
               </tr>
             ))}
-            <div></div>
           </table>
 
           <table className="bordertablethree" style={{ width: "100%" }}>
@@ -421,9 +468,7 @@ function PDFdata() {
             <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
             <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
           </div>
-          <div style={{ textAlign: "center" }}>
-           
-          </div>
+          <div style={{ textAlign: "center" }}></div>
         </div>
       ))}
     </>
@@ -596,20 +641,37 @@ function PDFdata() {
                 className="Total"
                 style={{
                   height: "10px",
-                  borderWidth: "1px 0  1px",
+                  borderWidth: "1px 0 1px 1px",
                   borderStyle: "solid",
                   borderColor: "black",
+                  width: "100%",
                 }}
               >
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{item[0]} </td>
-                <td>{item[1]} </td>
+                <td style={{ fontWeight: "bold" }}>Total</td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "350px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}> </td>
+                <td style={{ width: "60px" }}></td>
+                <td
+                  style={{
+              
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[0]}{" "}
+                </td>
+                <td
+                  style={{
+                  
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[1]}{" "}
+                </td>
                 <td></td>
               </tr>
             ))}
@@ -740,8 +802,14 @@ function PDFdata() {
             <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
             <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
           </div>
-          <div style={{ textAlign: "center", fontSize: "12px" }}>
-          
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: "12px",
+              pageBreakAfter: "always",
+            }}
+          >
+            Page {index + 1}/{selectedData.length}
           </div>
         </div>
       ))}
@@ -920,8 +988,7 @@ function PDFdata() {
 
             <tr
               style={{
-                height: "25px",
-                borderWidth: "1px 0 1px 1px",
+                borderWidth: "0px 0px 1px 1px",
                 borderStyle: "solid",
                 borderColor: "black",
               }}
@@ -978,14 +1045,46 @@ function PDFdata() {
                 </tr>
               );
             })}
-            <tr
-              style={{
-                height: "25px",
-                borderWidth: "1px 0 0px 1px",
-                borderStyle: "solid",
-                borderColor: "black",
-              }}
-            ></tr>
+            {count.map((item, index) => (
+              <tr
+                key={index}
+                className="Total"
+                style={{
+                  height: "10px",
+                  borderWidth: "1px 0 0 1px",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  width: "100%",
+                }}
+              >
+                <td style={{ fontWeight: "bold" }}>Total</td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "350px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}> </td>
+                <td style={{ width: "60px" }}></td>
+                <td
+                  style={{
+                    borderWidth: "0 0px 0 1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[0]}{" "}
+                </td>
+                <td
+                  style={{
+                    borderWidth: "0 1px 0 1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[1]}{" "}
+                </td>
+                <td></td>
+              </tr>
+            ))}
           </table>
 
           <table
@@ -1277,35 +1376,44 @@ function PDFdata() {
               </tr>
             ))}
 
-            <tr
-              style={{
-                height: "25px",
-                borderWidth: "1px 0 1px 1px",
-                borderStyle: "solid",
-                borderColor: "black",
-              }}
-            ></tr>
+        
+                  <tr
+                      className="bottom"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      <td colSpan={5} style={{ textAlign: "left",  borderWidth: "1px 0 0px 0px" }}>
+                        A1-011-001
+                      </td>
+
+                      <td colSpan={5} style={{ textAlign: "right" ,  borderWidth: "1px 0 0px 0px"  }}>
+                        A1-011-001
+                      </td>
+                    </tr>
+                    <tr
+                      className="bottom"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      <td
+                        colSpan={10}
+                        style={{ textAlign: "center", fontSize: "12px" }}
+                      >
+                        Page {index + 1}/{selectedData.length}
+                      </td>{" "}
+                    </tr>
+
+                    <tr style={{ pageBreakAfter: "always",}}></tr>
           </table>
-          <div style={{ pageBreakAfter: "always" }}>
-            <div
-              style={{ display: "flex", fontSize: "12px", marginTop: "5px" }}
-            >
-              <div style={{ flex: 1, textAlign: "left" }}> A1-0001-1111</div>
-              <div style={{ flex: 1, textAlign: "right" }}> A1-0001-1111</div>
-            </div>
-            <div style={{ textAlign: "center", fontSize: "12px" }}>
-              Page {index + 1}/{selectedData.length}
-            </div>
-          </div>
-          <table
-            className="bordertablefive"
-            style={{ width: "100%", marginTop: "30px" }}
-          >
+        
+          <table className="bordertablefive" style={{ width: "100%" }}>
             {Array.from(
-              { length: Math.ceil(dataToShow.length / 25) },
+              { length: Math.ceil(dataToShow.length / 27) },
               (_, groupIndex) => {
-                const groupStart = groupIndex * 25;
-                const groupEnd = groupStart + 25;
+                const groupStart = groupIndex * 27;
+                const groupEnd = groupStart + 27;
                 const groupData = dataToShow.slice(groupStart, groupEnd);
 
                 console.log("EEEEEEEE", groupData);
@@ -1372,35 +1480,87 @@ function PDFdata() {
                         </tr>
                       )
                     )}
+                    {groupIndex === Math.ceil(dataToShow.length / 26) - 1 && (
+                      <>
+                        {count.map((item, index) => (
+                          <tr
+                            key={index}
+                            className="Total"
+                            style={{
+                              height: "25px",
+                              borderWidth: "1px 1px 1px 1px",
+                      
+                              pageBreakAfter: "always",
+                              display: "table-row",
+                            }}
+                          >
+                            <td style={{ fontWeight: "bold" }}>Total</td>
+                            <td style={{ width: "60px" }}></td>
+                            <td style={{ width: "60px" }}></td>
+                            <td style={{ width: "350px" }}></td>
+                            <td style={{ width: "60px" }}></td>
+                            <td style={{ width: "60px" }}> </td>
+                            <td style={{ width: "60px" }}></td>
+                            <td
+                              style={{
+                                borderWidth: "0 0px 0 1px",
+                                fontWeight: "bold",
+                                width: "60px",
+                              }}
+                            >
+                              {item[0]}{" "}
+                            </td>
+                            <td
+                              style={{
+                                borderWidth: "0 1px 0 px",
+                                fontWeight: "bold",
+                                width: "60px",
+                              }}
+                            >
+                              {item[1]}{" "}
+                            </td>
+                            <td></td>
+                          </tr>
+                        ))}
+                      </>
+                    )}
+
                     <tr
                       style={{
-                        height: "25px",
-                        borderWidth: "1px 1px 1px 1px",
-                        borderStyle: "solid",
-                        borderColor: "black",
-                        pageBreakAfter: "always",
+                        borderBottom: "1px solid black",
+                       
                       }}
                     ></tr>
 
-                    {/* <div
+                    <tr
+                      className="bottom"
                       style={{
-                        display: "flex",
-                        fontSize: "12px",
-                        marginTop: "5px",
+                        width: "100%",
                       }}
                     >
-                      <div style={{ flex: 1, textAlign: "left" }}>
-                        {" "}
-                        A1-0001-1111
-                      </div>
-                      <div style={{ flex: 1, textAlign: "right" }}>
-                        {" "}
-                        A1-0001-1111
-                      </div>
-                    </div>
-                    <div style={{ textAlign: "center", fontSize: "12px" }}>
-                      Page {index + 1}/{selectedData.length}
-                    </div> */}
+                      <td colSpan={5} style={{ textAlign: "left" }}>
+                        A1-011-001
+                      </td>
+
+                      <td colSpan={5} style={{ textAlign: "right" }}>
+                        A1-011-001
+                      </td>
+                    </tr>
+                    <tr
+                      className="bottom"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      <td
+                        colSpan={10}
+                        style={{ textAlign: "center", fontSize: "12px" }}
+                      >
+                        Page {index + 1}/{selectedData.length}
+                      </td>{" "}
+                    </tr>
+
+                    <tr style={{ pageBreakAfter: "always",}}></tr>
                   </React.Fragment>
                 );
               }

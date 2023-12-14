@@ -641,7 +641,7 @@ const transporter = nodemailer.createTransport({
 // });
 
 
-app.post('/sendEmail', async (req, res) => {
+app.post('/sendEmail1', async (req, res) => {
 
  
   try {
@@ -665,6 +665,33 @@ app.post('/sendEmail', async (req, res) => {
   } catch (error) {
     console.error('Error sending email:', error);
     res.status(500).json({ error: 'An error occurred while sending email' });
+  }
+});
+
+const multer = require("multer");
+const upload = multer();
+ 
+app.post("/sendEmail", upload.single("pdfFile"), async (req, res) => {
+  try {
+    const mailOptions = {
+      from: "paiboon.wongthongdee@gmail.com",
+      to: req.body.toEmail,
+      subject: req.body.subject,
+      text: req.body.emailMessage,
+      attachments: [
+        {
+          filename: "exported-file.pdf",
+          content: req.file.buffer,
+        },
+      ],
+    };
+ 
+    console.log("Email Sended");
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "An error occurred while sending email" });
   }
 });
  
