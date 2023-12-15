@@ -90,7 +90,7 @@ function PDFdata() {
 
   useEffect(() => {
     // เมื่อ selectedData เปลี่ยนแปลง, ดึงข้อมูลตั้งแต่ตำแหน่งที่ 21 ถึงตัวสุดท้าย
-    const subset = w.slice(43);
+    const subset = w.slice(27);
     console.log("subset", subset); // เนื่องจาก JavaScript ใช้การนับเริ่มต้นที่ 0
     setSelectedDataSubset(subset);
   }, [LoopDeatils]);
@@ -186,9 +186,9 @@ function PDFdata() {
                 fontWeight: "bold",
               }}
             >
-              <td colSpan="5">&nbsp; Fixed Assets Movement Slip Number</td>
+              <td className="Head" colSpan="5">&nbsp; Fixed Assets Movement Slip Number</td>
 
-              <td colSpan="5">&nbsp; FAM : {item[0]} </td>
+              <td colSpan="5"  style={{ borderWidth: "1px 0px 0px 0px",paddingLeft:"300px"}}>&nbsp; FAM : {item[0]} </td>
             </tr>
             <tr
               style={{
@@ -292,13 +292,15 @@ function PDFdata() {
           </table>
 
           <table className="bordertabletwo" style={{ width: "100%" }}>
-            <tr
+          <tr
               style={{
-                fontSize: "10px",
+                fontSize: "12px",
                 textAlign: "center",
               }}
             >
-              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+  <th style={{ width: "60px" }}>
+                Fixed Assets Number
+              </th>
               <th style={{ width: "60px" }}>Comp.</th>
               <th style={{ width: "60px" }}>Cost Center</th>
               <th style={{ width: "350px" }}>Fixed Assets Name</th>
@@ -307,10 +309,13 @@ function PDFdata() {
               <th style={{ width: "60px" }}>Invoice No.</th>
               <th style={{ width: "80px" }}>Acquisition Cost (Baht)</th>
               <th style={{ width: "80px" }}>Book Value (Baht)</th>
-              <th style={{ width: "60px" }}>New Cost Center</th>
+              <th style={{ width: "60px" ,borderRight:"1px solid black" }}>New Cost Center</th>
             </tr>
             {Array.from({ length: numRows1 }, (_, rowIndex) => (
-              <tr key={rowIndex} style={{ height: "25px" }}>
+              <tr
+                key={rowIndex}
+                style={{ height: "25px", borderWidth: " 0px 1px 0 0px" }}
+              >
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
                       <td style={{ fontSize: "10px" }} key={cellIndex}>
@@ -329,7 +334,7 @@ function PDFdata() {
                 className="Total"
                 style={{
                   height: "10px",
-                  borderWidth: "1px 0 0 1px",
+                  borderWidth: "1px 1px 0 1px",
                   borderStyle: "solid",
                   borderColor: "black",
                   width: "100%",
@@ -500,7 +505,7 @@ function PDFdata() {
             >
               <td colSpan="5">&nbsp; Fixed Assets Movement Slip Number</td>
 
-              <td colSpan="5">&nbsp; FAM : {item[0]} </td>
+              <td colSpan="5" style={{ borderWidth: "1px 0px 0px 0px",paddingLeft:"300px"}}>&nbsp; FAM : {item[0]} </td>
             </tr>
             <tr
               style={{
@@ -610,22 +615,25 @@ function PDFdata() {
                 textAlign: "center",
               }}
             >
-              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+  <th style={{ width: "60px" }}>
+                Fixed Assets Number
+              </th>
               <th style={{ width: "60px" }}>Comp.</th>
               <th style={{ width: "60px" }}>Cost Center</th>
               <th style={{ width: "350px" }}>Fixed Assets Name</th>
               <th style={{ width: "60px" }}>BOI Project</th>
-              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "40px" }}>Qty</th>
               <th style={{ width: "60px" }}>Invoice No.</th>
-              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
-              <th style={{ width: "60px" }}>Book Value (Baht)</th>
-              <th style={{ width: "60px" }}>New Cost Center</th>
+              <th style={{ width: "80px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "80px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" ,borderRight:"1px solid black" }}>New Cost Center</th>
             </tr>
+            
             {Array.from({ length: numRows }, (_, rowIndex) => (
-              <tr key={rowIndex} style={{ height: "25px" }}>
+              <tr key={rowIndex} style={{ height: "25px", borderWidth: " 0px 1px 0 0px"  }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => (
-                      <td style={{ fontSize: "10px" }} key={cellIndex}>
+                      <td style={{ fontSize: "10px"  }} key={cellIndex}>
                         {cell}
                       </td>
                     ))
@@ -641,7 +649,7 @@ function PDFdata() {
                 className="Total"
                 style={{
                   height: "10px",
-                  borderWidth: "1px 0 1px 1px",
+                  borderWidth: "1px 1px 1px 1px",
                   borderStyle: "solid",
                   borderColor: "black",
                   width: "100%",
@@ -656,17 +664,19 @@ function PDFdata() {
                 <td style={{ width: "60px" }}></td>
                 <td
                   style={{
-              
                     fontWeight: "bold",
+                    borderWidth: "0 0px 0 1px",
                     width: "60px",
+                    
+                  
                   }}
                 >
                   {item[0]}{" "}
                 </td>
                 <td
                   style={{
-                  
                     fontWeight: "bold",
+                    borderWidth: "0 1px 0 1px",
                     width: "60px",
                   }}
                 >
@@ -831,7 +841,7 @@ function PDFdata() {
             className="bordertable"
             style={{
               width: "100%",
-              marginTop: "30px",
+              marginTop: "20px",
             }}
           >
             <tr
@@ -843,7 +853,7 @@ function PDFdata() {
             >
               <td colSpan="5">&nbsp; Fixed Assets Movement Slip Number</td>
 
-              <td colSpan="5">&nbsp; FAM : {item[0]} </td>
+              <td colSpan="5" style={{ borderWidth: "1px 0px 0px 0px",paddingLeft:"300px"}}>&nbsp; FAM : {item[0]} </td>
             </tr>
             <tr
               style={{
@@ -947,26 +957,29 @@ function PDFdata() {
           </table>
 
           <table className="bordertabletwo" style={{ width: "100%" }}>
-            <tr
+          <tr
               style={{
-                fontSize: "10px",
+                fontSize: "12px",
                 textAlign: "center",
               }}
             >
-              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+  <th style={{ width: "60px" }}>
+                Fixed Assets Number
+              </th>
               <th style={{ width: "60px" }}>Comp.</th>
               <th style={{ width: "60px" }}>Cost Center</th>
               <th style={{ width: "350px" }}>Fixed Assets Name</th>
               <th style={{ width: "60px" }}>BOI Project</th>
-              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "40px" }}>Qty</th>
               <th style={{ width: "60px" }}>Invoice No.</th>
-              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
-              <th style={{ width: "60px" }}>Book Value (Baht)</th>
-              <th style={{ width: "60px" }}>New Cost Center</th>
+              <th style={{ width: "80px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "80px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" ,borderRight:"1px solid black" }}>New Cost Center</th>
             </tr>
 
+
             {Array.from({ length: numRows }, (_, rowIndex) => (
-              <tr key={rowIndex} style={{ height: "25px", fontSize: "10px" }}>
+              <tr key={rowIndex} style={{ height: "25px",  borderWidth: " 0px 1px 0 0px", fontSize: "10px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => {
                       if (cellIndex < numberOfCellsPerRow) {
@@ -1045,13 +1058,13 @@ function PDFdata() {
                 </tr>
               );
             })}
-            {count.map((item, index) => (
+           {count.map((item, index) => (
               <tr
                 key={index}
                 className="Total"
                 style={{
                   height: "10px",
-                  borderWidth: "1px 0 0 1px",
+                  borderWidth: "1px 1px 0 1px",
                   borderStyle: "solid",
                   borderColor: "black",
                   width: "100%",
@@ -1208,7 +1221,7 @@ function PDFdata() {
 
   const TableLoop4 = () => (
     <>
-      <h1>20 ไม่เกิน 36</h1>
+      <h1>เกิน 20</h1>
 
       {selectedData.map((item, index) => (
         <div
@@ -1221,7 +1234,7 @@ function PDFdata() {
             className="bordertable"
             style={{
               width: "100%",
-              marginTop: "30px",
+              marginTop: "20px",
             }}
           >
             <tr
@@ -1233,7 +1246,7 @@ function PDFdata() {
             >
               <td colSpan="5">&nbsp; Fixed Assets Movement Slip Number</td>
 
-              <td colSpan="5">&nbsp; FAM : {item[0]} </td>
+              <td colSpan="5" style={{ borderWidth: "1px 0px 0px 0px",paddingLeft:"300px"}}>&nbsp; FAM : {item[0]} </td>
             </tr>
             <tr
               style={{
@@ -1337,26 +1350,28 @@ function PDFdata() {
           </table>
 
           <table className="bordertabletwo" style={{ width: "100%" }}>
-            <tr
+          <tr
               style={{
-                fontSize: "10px",
+                fontSize: "12px",
                 textAlign: "center",
               }}
             >
-              <th style={{ width: "60px" }}>Fixed Assets Number</th>
+  <th style={{ width: "60px" }}>
+                Fixed Assets Number
+              </th>
               <th style={{ width: "60px" }}>Comp.</th>
               <th style={{ width: "60px" }}>Cost Center</th>
               <th style={{ width: "350px" }}>Fixed Assets Name</th>
               <th style={{ width: "60px" }}>BOI Project</th>
-              <th style={{ width: "60px" }}>Qty</th>
+              <th style={{ width: "40px" }}>Qty</th>
               <th style={{ width: "60px" }}>Invoice No.</th>
-              <th style={{ width: "60px" }}>Acquisition Cost (Baht)</th>
-              <th style={{ width: "60px" }}>Book Value (Baht)</th>
-              <th style={{ width: "60px" }}>New Cost Center</th>
+              <th style={{ width: "80px" }}>Acquisition Cost (Baht)</th>
+              <th style={{ width: "80px" }}>Book Value (Baht)</th>
+              <th style={{ width: "60px" ,borderRight:"1px solid black" }}>New Cost Center</th>
             </tr>
 
             {Array.from({ length: numRows }, (_, rowIndex) => (
-              <tr key={rowIndex} style={{ height: "25px", fontSize: "10px" }}>
+              <tr key={rowIndex} style={{ height: "25px", fontSize: "10px" , borderWidth: " 0px 1px 0 0px" }}>
                 {y[rowIndex]
                   ? Object.values(y[rowIndex]).map((cell, cellIndex) => {
                       if (cellIndex < numberOfCellsPerRow) {
@@ -1376,38 +1391,43 @@ function PDFdata() {
               </tr>
             ))}
 
-        
-                  <tr
-                      className="bottom"
-                      style={{
-                        width: "100%",
-                      }}
-                    >
-                      <td colSpan={5} style={{ textAlign: "left",  borderWidth: "1px 0 0px 0px" }}>
-                        A1-011-001
-                      </td>
+            <tr
+              className="bottom"
+              style={{
+                width: "100%",
+              }}
+            >
+              <td
+                colSpan={5}
+                style={{ textAlign: "left", borderWidth: "1px 0 0px 0px" }}
+              >
+                A1-011-001
+              </td>
 
-                      <td colSpan={5} style={{ textAlign: "right" ,  borderWidth: "1px 0 0px 0px"  }}>
-                        A1-011-001
-                      </td>
-                    </tr>
-                    <tr
-                      className="bottom"
-                      style={{
-                        width: "100%",
-                      }}
-                    >
-                      <td
-                        colSpan={10}
-                        style={{ textAlign: "center", fontSize: "12px" }}
-                      >
-                        Page {index + 1}/{selectedData.length}
-                      </td>{" "}
-                    </tr>
+              <td
+                colSpan={5}
+                style={{ textAlign: "right", borderWidth: "1px 0 0px 0px" }}
+              >
+                A1-011-001
+              </td>
+            </tr>
+            <tr
+              className="bottom"
+              style={{
+                width: "100%",
+              }}
+            >
+              <td
+                colSpan={10}
+                style={{ textAlign: "center", fontSize: "12px" }}
+              >
+                Page {index + 1}/{selectedData.length}
+              </td>{" "}
+            </tr>
 
-                    <tr style={{ pageBreakAfter: "always",}}></tr>
+            <tr style={{ pageBreakAfter: "always" }}></tr>
           </table>
-        
+
           <table className="bordertablefive" style={{ width: "100%" }}>
             {Array.from(
               { length: Math.ceil(dataToShow.length / 27) },
@@ -1483,44 +1503,44 @@ function PDFdata() {
                     {groupIndex === Math.ceil(dataToShow.length / 26) - 1 && (
                       <>
                         {count.map((item, index) => (
-                          <tr
-                            key={index}
-                            className="Total"
-                            style={{
-                              height: "25px",
-                              borderWidth: "1px 1px 1px 1px",
-                      
-                              pageBreakAfter: "always",
-                              display: "table-row",
-                            }}
-                          >
-                            <td style={{ fontWeight: "bold" }}>Total</td>
-                            <td style={{ width: "60px" }}></td>
-                            <td style={{ width: "60px" }}></td>
-                            <td style={{ width: "350px" }}></td>
-                            <td style={{ width: "60px" }}></td>
-                            <td style={{ width: "60px" }}> </td>
-                            <td style={{ width: "60px" }}></td>
-                            <td
-                              style={{
-                                borderWidth: "0 0px 0 1px",
-                                fontWeight: "bold",
-                                width: "60px",
-                              }}
-                            >
-                              {item[0]}{" "}
-                            </td>
-                            <td
-                              style={{
-                                borderWidth: "0 1px 0 px",
-                                fontWeight: "bold",
-                                width: "60px",
-                              }}
-                            >
-                              {item[1]}{" "}
-                            </td>
-                            <td></td>
-                          </tr>
+              <tr
+                key={index}
+                className="Total"
+                style={{
+                  height: "10px",
+                  borderWidth: "1px 1px 0 1px",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  width: "100%",
+                }}
+              >
+                <td style={{ fontWeight: "bold" }}>Total</td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "350px" }}></td>
+                <td style={{ width: "60px" }}></td>
+                <td style={{ width: "60px" }}> </td>
+                <td style={{ width: "60px" }}></td>
+                <td
+                  style={{
+                    borderWidth: "0 0px 0 1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[0]}{" "}
+                </td>
+                <td
+                  style={{
+                    borderWidth: "0 1px 0 1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                  }}
+                >
+                  {item[1]}{" "}
+                </td>
+                <td></td>
+              </tr>
                         ))}
                       </>
                     )}
@@ -1528,7 +1548,6 @@ function PDFdata() {
                     <tr
                       style={{
                         borderBottom: "1px solid black",
-                       
                       }}
                     ></tr>
 
@@ -1560,7 +1579,7 @@ function PDFdata() {
                       </td>{" "}
                     </tr>
 
-                    <tr style={{ pageBreakAfter: "always",}}></tr>
+                    <tr style={{ pageBreakAfter: "always" }}></tr>
                   </React.Fragment>
                 );
               }

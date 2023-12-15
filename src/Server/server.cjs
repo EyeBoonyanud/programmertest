@@ -8,7 +8,9 @@ const app = express();
 const fs = require('fs');
 const port = 3000;
 
-
+const multer = require("multer");
+const upload = multer();
+app.use(express.json());
 
 oracledb.initOracleClient({
   tnsAdmin: "D:\\app\\Administrator\\product\\11.2.0\\client_1\\network\\admin",
@@ -622,7 +624,7 @@ app.get("/getDepartments", async (req, res) => {
 });
 
   
-app.use(express.json());
+
  
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -668,8 +670,7 @@ app.post('/sendEmail1', async (req, res) => {
   }
 });
 
-const multer = require("multer");
-const upload = multer();
+
  
 app.post("/sendEmail", upload.single("pdfFile"), async (req, res) => {
   try {
@@ -812,6 +813,38 @@ const loopdata = await connection.execute(`
     res.status(500).json({ error: "An error occurred" });
   }
 });
+
+
+
+app.get("/getDetails", async (req, res) => { 
+  try {
+    const connection = await oracledb.getConnection(DBfpc_fpc_pctt);
+    const strVendorLot = req.query.VendorLot
+      ? req.query.VendorLot.trim().toUpperCase()
+      : "";
+    const result = await connection.execute(`
+    SELECT F_FIXED ,
+    LOCATION ,
+    COST_CENTER ,
+    FIXED_ASS_NAME , 
+    PROJECT , QTY ,
+    INVOICE_NO ,
+    BASE_ASS_COST ,
+    BOOK_VAL ,
+    NEW_COST_CENTER 
+    FROM TRAIN_BOONYANUD `);
+
+    connection.release();
+
+    const rows = result.rows;
+    res.json(rows);
+    
+  } catch (error) {
+    console.error("Error fetching Material_Trace:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
 
 
 

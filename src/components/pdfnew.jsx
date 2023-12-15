@@ -1,88 +1,67 @@
-import React from "react";
-import jsPDF from "jspdf";
+import React, { useState } from 'react';
 
-class PdfGenerator extends React.Component {
-  generatePdf = () => {
-    const pdf = new jsPDF();
+const MyComponent = () => {
 
-    // Define data for the table
-    const tableData = [
-      [
-        "4) Plan",
-        "Remove",
-        "Date: ………./………/……….",
-        "Set up / Scrap",
-        "Date ………../……../……….",
-      ],
-      [
-        "5) Service Dept.",
-        "Receipt by ……………………………. Dept. ……………………….………. Receipt date :……./……./……..",
-      ],
-      [
-        "6) Approval",
-        "Manager Signature : Date :",
-        "BOI Signature : Date :",
-        "FM up Signature : Date :",
-        "ACC Signature : Date :",
-      ],
-      [
-        "7) Action Status (Completed Date)",
-        "Old Owner Completed Date :",
-        "New Owner Completed Date :",
-        "Sales / Scrap Completed Date",
-        "Service Dept Completed Date",
-      ],
-    ];
 
-    // Set cell width and height
-    const cellWidth = 40;
-    const cellHeight = 10;
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const rollNoResponse = await axios.get(
+          "http://localhost:3000/getDetails"
+        );
+        const dataRollResponse = rollNoResponse.data;
+        setDataRoll(dataRollResponse);
+        setData(dataRollResponse);
+        console.log("Roll Server list:", dataRollResponse);
 
-    // Set initial position for the table
-    let xPos = 10;
-    let yPos = 10;
-
-    // Loop through each row and column to add content to PDF
-    for (let i = 0; i < tableData.length; i++) {
-      const row = tableData[i];
-
-      for (let j = 0; j < row.length; j++) {
-        const cell = row[j];
-
-        // Draw the cell
-        pdf.rect(xPos, yPos, cellWidth, cellHeight);
-        pdf.text(cell, xPos + 2, yPos + 8); // Adjust the text position
-
-        xPos += cellWidth; // Move to the next column
-
-        // Check if the next column exceeds the page width
-        if (xPos + cellWidth > pdf.internal.pageSize.width - 10) {
-          xPos = 10; // Move back to the leftmost column
-          yPos += cellHeight; // Move to the next row
-        }
+      
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-
-      xPos = 10; // Reset the column position for the next row
-      yPos += cellHeight; // Move to the next row
     }
+    fetchData();
+  }, []);
+  // สร้าง state สำหรับข้อมูลในตารางแรก
+  const [table1Data, setTable1Data] = useState([/* ข้อมูลในตารางแรก */]);
 
-    // Save PDF
-    pdf.save("generated-pdf-with-custom-table.pdf");
+  // สร้าง state สำหรับข้อมูลในตารางที่สอง
+  const [table2Data, setTable2Data] = useState([/* ข้อมูลในตารางที่สอง */]);
+
+  // ฟังก์ชันสำหรับการตัดข้อมูล
+  const cutData = () => {
+    // ตัดข้อมูลจากตารางแรก
+    const slicedData = table1Data.slice(0, 27);
+
+    // นำข้อมูลที่เหลือไปใส่ในตารางที่สอง
+    setTable2Data(table1Data.slice(27));
+
+    // ตั้งค่าข้อมูลในตารางแรกให้เป็นข้อมูลที่ถูกตัด
+    setTable1Data(slicedData);
   };
 
-  render() {
-    return (
-      <div>
-        {/* Your UI */}
-        {/* Content to be converted to PDF */}
+  return (
+    <div>
+      {/* แสดงข้อมูลในตารางแรก */}
+      <h2>Table 1</h2>
+      <ul>
+        {table1Data.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
 
-        {/* Button to generate PDF */}
-        <button onClick={this.generatePdf}>
-          Generate PDF with Custom Table
-        </button>
-      </div>
-    );
-  }
-}
+      {/* แสดงข้อมูลในตารางที่สอง */}
+      <h2>Table 2</h2>
+      <ul>
+        {table2Data.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
 
-export default PdfGenerator;
+      {/* ปุ่มสำหรับการตัดข้อมูล */}
+      <button onClick={cutData}>Cut Data</button>
+    </div>
+  );
+};
+
+export default MyComponent;
